@@ -88,24 +88,24 @@ def hello_world(request):
   return Response({"message": "Hello world lol"})
 
 
-# Test background process
-@background(queue='my-queue')
-def test_background_db_write():
+# # Test background process
+# @background(queue='my-queue')
+# def test_background_db_write():
 
-  url="testArticle.com"
-  title="testTitile"
-  text="testText"
-  author="testAuthor"
-  publish_date="11-25-2021"
-  articleEntry = ArticleModel(
-    url = url,
-    title = title,
-    text = text,
-    author = author,
-    publish_date = publish_date,
-  )
-  articleEntry.save()
-  print("Article saved to the database: ", articleEntry)
+#   url="testArticle.com"
+#   title="testTitile"
+#   text="testText"
+#   author="testAuthor"
+#   publish_date="11-25-2021"
+#   articleEntry = ArticleModel(
+#     url = url,
+#     title = title,
+#     text = text,
+#     author = author,
+#     publish_date = publish_date,
+#   )
+#   articleEntry.save()
+#   print("Article saved to the database: ", articleEntry)
 
 
 @api_view(['GET'])

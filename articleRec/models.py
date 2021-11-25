@@ -8,6 +8,7 @@ class ArticleModel (models.Model):
   image = models.TextField("Image")
   publish_date = models.TextField("Publish Date", null=True, blank=True)
   author = models.TextField("Author")
+  polarization = models.BooleanField("Polarity", default=0)
 
 
   def __str__(self):
