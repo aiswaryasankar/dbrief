@@ -13,3 +13,4 @@ logtail-python==0.1.2
 msgpack==1.0.2
 django-background-tasks==1.2.5
 django-compat==1.0.15
+awsebcli==3.18.1
