@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+from _typeshed import NoneType
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -83,7 +84,7 @@ WSGI_APPLICATION = 'root.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-if os.environ and 'RDS_DB_NAME' in os.environ:
+if os.environ is not NoneType:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
