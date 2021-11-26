@@ -94,17 +94,17 @@ if 'RDS_DB_NAME' in os.environ:
             'PORT': os.environ['RDS_PORT'],
         }
     }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ebdb',
-        'USER': 'root',
-        'PASSWORD': 'uber',
-        'HOST': 'localhost',
-        'PORT': '3306',
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'ebdb',
+            'USER': 'root',
+            'PASSWORD': 'uber',
+            'HOST': 'localhost',
+            'PORT': '3306',
+        }
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
