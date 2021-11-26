@@ -43,10 +43,11 @@ INSTALLED_APPS = [
     'articleRec.apps.ArticleRecConfig',
     'django_crontab',
     'background_task',
+    'logtail',
 ]
 
 CRONJOBS = [
-    ('*/5 * * * *', 'articleRec.articleApi.fetch_and_hydrate_articles')
+    ('*/5 * * * *', 'articleRec.articleApi.cron_job_test')
 ]
 
 MIDDLEWARE = [

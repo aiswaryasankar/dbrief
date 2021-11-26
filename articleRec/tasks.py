@@ -17,5 +17,13 @@ def test_background_db_write():
     author = author,
     publish_date = publish_date,
   )
-  articleEntry.save()
-  print("Article saved to the database: ", articleEntry)
+  try:
+    articleEntry.save()
+  except Exception as e:
+    print("Failed to save article in the database")
+
+  print("Background job completed")
+
+test_background_db_write(repeat=5)
+
+

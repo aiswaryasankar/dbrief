@@ -88,6 +88,15 @@ def hello_world(request):
   return Response({"message": "Hello world lol"})
 
 
+def cron_job_test(request):
+
+  print("Started the cron job")
+  handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+  logger = logging.getLogger(__name__)
+  logger.handlers = []
+  logger.addHandler(handler)
+  logger.info('LOGTAIL TEST')
+
 @api_view(['GET'])
 def fetch_and_hydrate_articles(request):
 
