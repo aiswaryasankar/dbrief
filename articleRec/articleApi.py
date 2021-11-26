@@ -151,8 +151,13 @@ def fetch_and_hydrate_articles(request):
       author = author,
       publish_date = publish_date,
     )
-    articleEntry.save()
-    print("Article saved to the database: ", articleEntry)
+    try:
+      articleEntry.save()
+      print("Article saved to the database: ", articleEntry)
+      logger.info("Saved article to the database: ", articleEntry)
+    except Exception as e:
+      logger.warn("Failed to save article to the database: ", articleEntry)
+      continue
 
     articleText.append(article.text)
 
