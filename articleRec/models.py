@@ -2,7 +2,8 @@ from django.db import models
 
 class ArticleModel (models.Model):
 
-  url = models.CharField("Url", primary_key=True, unique=True, max_length=255)
+  articleId = models.AutoField(primary_key=True)
+  url = models.CharField("Url", unique=True, max_length=255)
   title = models.TextField("Title")
   text = models.TextField("Text")
   image = models.TextField("Image")

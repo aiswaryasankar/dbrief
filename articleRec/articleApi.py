@@ -7,6 +7,8 @@ import schedule
 import time
 from logtail import LogtailHandler
 import logging
+import datetime
+from topicModeling.training import Top2Vec
 
 
 rss_feeds = [
@@ -80,6 +82,9 @@ rss_feeds = [
   "https://thehill.com/taxonomy/term/20/feed",
 ]
 
+
+### Endpoints
+
 @api_view(['GET', 'POST'])
 def hello_world(request):
   if request.method == 'POST':
@@ -87,15 +92,6 @@ def hello_world(request):
 
   return Response({"message": "Hello world lol"})
 
-
-def cron_job_test(request):
-
-  print("Started the cron job")
-  handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
-  logger = logging.getLogger(__name__)
-  logger.handlers = []
-  logger.addHandler(handler)
-  logger.info('LOGTAIL TEST')
 
 @api_view(['GET'])
 def fetch_and_hydrate_articles(request):
@@ -151,6 +147,71 @@ def fetch_and_hydrate_articles(request):
     articleText.append(article.text)
 
   return Response({"article text": articleText})
+
+
+### Helper Functions
+
+def cron_job_test(request):
+
+  print("Started the cron job")
+  handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+  logger = logging.getLogger(__name__)
+  logger.handlers = []
+  logger.addHandler(handler)
+  logger.info('LOGTAIL TEST')
+
+
+@api_view(['GET'])
+def retrain_topic_model(request):
+  """
+    This endpoint will first fetch all the documents from the database and keep it in memory
+    It will then pass in the doc_ids and the document text to the topic model endpoint
+    The topic model endpoint will then store the weights in a file that it will read during evaluation
+  """
+
+  documents = ArticleModel.objects.all()
+  data = [doc.text for doc in documents]
+  doc_ids = [doc.articleId for doc in documents]
+
+  startTime = datetime.datetime.now()
+  model = Top2Vec(documents=data, speed="learn",embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
+  endTime = datetime.datetime.now()
+
+  docIndex = Top2Vec.index_document_vectors(model)
+  wordIndex = Top2Vec.index_word_vectors(model)
+  savedModel = Top2Vec.save(self = model, file='./modelWeights/topicModelWeights')
+  loadedModel = Top2Vec.load("./modelWeights/topicModelWeights")
+
+  print(endTime - startTime)
+  return Response()
+
+
+@api_view(['GET'])
+def query_documents_url(request):
+  """
+    Gets the similar documents to a given document
+  """
+  top2vecModel = Top2Vec.load("./modelWeights/topicModelWeights")
+  article = Article("https://www.nytimes.com/2021/11/27/opinion/republicans-trump.html")
+  article.download()
+  try:
+    article.parse()
+  except Exception as e:
+    print("Failed to hydrate the article request")
+
+  text = article.text
+
+  similarDocs = Top2Vec.query_documents(self=top2vecModel, query=text, num_docs=10, return_documents=True, use_index=True, ef=200)
+  print("Documents returned")
+  print(similarDocs)
+
+  return Response({"similar docs": similarDocs[0]})
+
+def index_document_vectors(request):
+  """
+    This endpoint is responsible for re-indexing the documents after the topic model has been regenerated. In the case of individual articles being added to the topic model, it will be handled through add_document.
+  """
+  pass
 
 schedule.every().day.at("10:00").do(fetch_and_hydrate_articles)
 
