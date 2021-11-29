@@ -174,7 +174,7 @@ def retrain_topic_model(request):
   doc_ids = [doc.articleId for doc in documents]
 
   startTime = datetime.datetime.now()
-  model = Top2Vec(documents=data, speed="learn",embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
+  model = Top2Vec(documents=data, speed="learn",embedding_model='sentence-transformers', workers=4, document_ids=doc_ids)
   endTime = datetime.datetime.now()
 
   docIndex = Top2Vec.index_document_vectors(model)
