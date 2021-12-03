@@ -83,6 +83,12 @@ rss_feeds = [
 ]
 
 
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.addHandler(handler)
+logger.info('LOGTAIL TEST')
+
 ### Endpoints
 
 @api_view(['GET', 'POST'])
@@ -96,12 +102,6 @@ def hello_world(request):
 @api_view(['GET'])
 def fetch_and_hydrate_articles(request):
 
-  handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
-  logger = logging.getLogger(__name__)
-  logger.handlers = []
-  logger.addHandler(handler)
-  logger.info('LOGTAIL TEST')
-
   urls = []
   articleText = []
   for entry in rss_feeds:
@@ -112,16 +112,17 @@ def fetch_and_hydrate_articles(request):
       try:
         urls.append(article.links[0].href)
       except Exception as e:
+        logger.error("Failed to parse url", extra={"error":e})
         continue
 
   for url in urls:
-    logger.info('URL')
     logger.info(url)
     article = Article(url)
     article.download()
     try:
       article.parse()
     except Exception as e:
+      logger.error("Failed to populate article", extra={"url":url, "error": e})
       continue
 
     title = article.title
@@ -137,11 +138,22 @@ def fetch_and_hydrate_articles(request):
       publish_date = publish_date,
     )
     try:
-      articleEntry.save()
-      print("Article saved to the database: ", articleEntry)
-      logger.info("Saved article to the database: ", articleEntry)
+      response = articleEntry.save()
+      logger.info('saved article', extra={
+          "item": {
+              "url": url,
+              "res": response,
+          }
+      })
+      logger.info("Saved article to the database: ", extra={ "article": articleEntry })
+
     except Exception as e:
-      logger.warn("Failed to save article to the database: ", articleEntry)
+      logger.warn("Failed to save article to the database", extra= {
+        "article": articleEntry,
+        "error": e,
+      })
+      print("failed to save article")
+      print(e)
       continue
 
     articleText.append(article.text)
@@ -154,11 +166,6 @@ def fetch_and_hydrate_articles(request):
 def cron_job_test(request):
 
   print("Started the cron job")
-  handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
-  logger = logging.getLogger(__name__)
-  logger.handlers = []
-  logger.addHandler(handler)
-  logger.info('LOGTAIL TEST')
 
 
 @api_view(['GET'])
@@ -174,7 +181,7 @@ def retrain_topic_model(request):
   doc_ids = [doc.articleId for doc in documents]
 
   startTime = datetime.datetime.now()
-  model = Top2Vec(documents=data, speed="learn",embedding_model='sentence-transformers', workers=4, document_ids=doc_ids)
+  model = Top2Vec(documents=data, speed="learn",embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
   endTime = datetime.datetime.now()
 
   docIndex = Top2Vec.index_document_vectors(model)
@@ -182,7 +189,7 @@ def retrain_topic_model(request):
   savedModel = Top2Vec.save(self = model, file='./modelWeights/topicModelWeights')
   loadedModel = Top2Vec.load("./modelWeights/topicModelWeights")
 
-  print(endTime - startTime)
+  # logger.info("Time to train the topic2Vec model", endTime - startTime)
   return Response()
 
 
@@ -192,18 +199,18 @@ def query_documents_url(request):
     Gets the similar documents to a given document
   """
   top2vecModel = Top2Vec.load("./modelWeights/topicModelWeights")
-  article = Article("https://www.nytimes.com/2021/11/27/opinion/republicans-trump.html")
+  article = Article("https://www.nytimes.com/2021/12/03/health/long-covid-treatment.html")
   article.download()
   try:
     article.parse()
   except Exception as e:
-    print("Failed to hydrate the article request")
+    logger.error("Failed to hydrate the article request")
 
   text = article.text
 
   similarDocs = Top2Vec.query_documents(self=top2vecModel, query=text, num_docs=10, return_documents=True, use_index=True, ef=200)
-  print("Documents returned")
-  print(similarDocs)
+  logger.info("Documents returned")
+  logger.info(similarDocs)
 
   return Response({"similar docs": similarDocs[0]})
 

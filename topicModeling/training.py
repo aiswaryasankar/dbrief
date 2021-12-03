@@ -14,6 +14,8 @@ from sklearn.preprocessing import normalize
 from scipy.special import softmax
 import hnswlib
 from sentence_transformers import SentenceTransformer
+import logging
+from logtail import LogtailHandler
 
 try:
   import hnswlib
@@ -37,11 +39,18 @@ try:
 except ImportError:
     _HAVE_TORCH = False
 
-logger = logging.getLogger('top2vec')
-logger.setLevel(logging.WARNING)
-sh = logging.StreamHandler()
-sh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-logger.addHandler(sh)
+
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+logger = logging.getLogger(__name__)
+logger.handlers = [handler]
+logger.setLevel(logging.INFO)
+logger.info('LOGTAIL TEST')
+
+# logger = logging.getLogger('django')
+# logger.setLevel(logging.WARNING)
+# sh = logging.StreamHandler()
+# sh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+# logger.addHandler(sh)
 
 
 def default_tokenizer(doc):
@@ -159,12 +168,12 @@ class Top2Vec:
                  verbose=True
                  ):
 
-        if verbose:
-            logger.setLevel(logging.DEBUG)
-            self.verbose = True
-        else:
-            logger.setLevel(logging.WARNING)
-            self.verbose = False
+        # if verbose:
+        #     logger.setLevel(logging.DEBUG)
+        #     self.verbose = True
+        # else:
+        #     logger.setLevel(logging.WARNING)
+        #     self.verbose = False
 
         if tokenizer is None:
             tokenizer = default_tokenizer
@@ -799,9 +808,11 @@ class Top2Vec:
 
     def _check_model_status(self):
         if self.embed is None:
-            if self.verbose is False:
-                logger.setLevel(logging.DEBUG)
+            # if self.verbose is False:
+            #     logger.setLevel(logging.DEBUG)
 
+            logger.info("embedding model path")
+            logger.info(self.embedding_model_path)
             if self.embedding_model != "distiluse-base-multilingual-cased":
                 if self.embedding_model_path is None:
                     logger.info(f'Downloading {self.embedding_model} model')
@@ -824,8 +835,8 @@ class Top2Vec:
                 model = SentenceTransformer(module)
                 self.embed = model.encode
 
-        if self.verbose is False:
-            logger.setLevel(logging.WARNING)
+        # if self.verbose is False:
+        #     logger.setLevel(logging.WARNING)
 
     @staticmethod
     def _less_than_zero(num, var_name):
@@ -1561,6 +1572,7 @@ class Top2Vec:
             index of the document in the model will be returned.
         """
 
+        logger.info("Calling query documents")
         self._validate_query(query)
         self._validate_num_docs(num_docs)
 

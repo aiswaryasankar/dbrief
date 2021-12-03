@@ -2,9 +2,19 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import logging
+from logtail import LogtailHandler
 
 
 def main():
+
+    handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+    logger = logging.getLogger("django")
+    logger.handlers = []
+    logger.setLevel(logging.INFO)
+    logger.addHandler(handler)
+    logger.info('LOGTAIL TEST')
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'root.settings')
     try:
         from django.core.management import execute_from_command_line

@@ -30,6 +30,18 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'loggers': {
+        'django': {
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+    },
+}
+
 
 # Application definition
 INSTALLED_APPS = [
