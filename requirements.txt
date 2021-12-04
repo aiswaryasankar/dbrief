@@ -1,5 +1,5 @@
 -f https://download.pytorch.org/whl/torch_stable.html
--f https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
+# -f https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
 absl-py==1.0.0
 asgiref==3.4.1
 astunparse==1.6.3
@@ -75,6 +75,7 @@ six==1.16.0
 smart-open==5.2.1
 soupsieve==2.3.1
 sqlparse==0.4.2
+tensorflow==1.15
 # tensorboard==2.7.0
 # tensorboard-data-server==0.6.1
 # tensorboard-plugin-wit==1.8.0
