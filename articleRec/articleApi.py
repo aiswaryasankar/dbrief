@@ -5,7 +5,7 @@ import feedparser
 from .models import ArticleModel
 import schedule
 import time
-from logtail import LogtailHandler
+# from logtail import LogtailHandler
 import logging
 import datetime
 from topicModeling.training import Top2Vec
@@ -83,11 +83,11 @@ rss_feeds = [
 ]
 
 
-handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+# handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-logger.addHandler(handler)
-logger.info('LOGTAIL TEST')
+# logger.addHandler(handler)
+# logger.info('LOGTAIL TEST')
 
 ### Endpoints
 

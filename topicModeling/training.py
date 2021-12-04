@@ -15,7 +15,7 @@ from scipy.special import softmax
 import hnswlib
 from sentence_transformers import SentenceTransformer
 import logging
-from logtail import LogtailHandler
+# # from logtail import LogtailHandler
 
 try:
   import hnswlib
@@ -40,9 +40,9 @@ except ImportError:
     _HAVE_TORCH = False
 
 
-handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+# handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
-logger.handlers = [handler]
+logger.handlers = []
 logger.setLevel(logging.INFO)
 logger.info('LOGTAIL TEST')
 
