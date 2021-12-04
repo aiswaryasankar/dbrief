@@ -21,7 +21,6 @@ huggingface-hub==0.2.1
 idna==3.3
 jieba3k==0.35.1
 joblib==1.1.0
-logtail==1.0.1
 logtail-python==0.1.2
 lxml==4.6.4
 msgpack==1.0.3
