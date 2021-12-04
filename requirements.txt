@@ -35,6 +35,7 @@ sentence-transformers==2.1.0
 sentencepiece==0.1.96
 tokenizers==0.10.3
 # torchvision==0.11.1
+torch==1.5.0+cpu
 transformers==4.12.5
 typing-extensions==4.0.0
 absl-py==1.0.0
