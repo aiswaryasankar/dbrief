@@ -81,3 +81,6 @@ werkzeug==2.0.2
 wordcloud==1.8.1
 wrapt==1.13.3
 zipp==3.6.0
+
+torch==1.5.1+cpu
+torchvision==0.6.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
