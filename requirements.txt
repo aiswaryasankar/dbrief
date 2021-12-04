@@ -99,7 +99,7 @@ sentence-transformers==2.1.0
 sentencepiece==0.1.96
 setuptools-scm==6.3.2
 sgmllib3k==1.0.0
-six==1.16.0
+six
 smart-open==5.2.1
 soupsieve==2.3
 sqlparse==0.4.2
