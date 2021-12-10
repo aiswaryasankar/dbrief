@@ -85,8 +85,8 @@ threadpoolctl==3.0.0
 tinysegmenter==0.3
 tldextract==3.1.2
 tokenizers==0.10.3
-torch==1.10.0+cpu
-torchvision==0.11.1
+# torch==1.10.0+cpu
+# torchvision==0.11.1
 tqdm==4.62.3
 transformers==4.12.5
 typing_extensions==4.0.1
