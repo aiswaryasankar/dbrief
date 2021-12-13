@@ -14,20 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from articleRec import articleApi
-from articleRec import views
+from articleRec import handler as articleRecHandler
+from topicModeling import handler as topicModelHandler
 from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/', articleApi.hello_world),
-    path('trainTopicModel/', articleApi.retrain_topic_model),
-    path('populateArticles/', articleApi.fetch_and_hydrate_articles),
-    path('queryArticles/', articleApi.query_documents_url),
-    path('createArticle/', views.ArticleCreate.as_view(), name='create-article'),
-    path('updateArticle/', views.ArticleUpdate.as_view(), name='update-article'),
-    path('deleteArticle/', views.ArticleDelete.as_view(), name='delete-article'),
-    path('detailArticle/', views.ArticleDetail.as_view(), name='detail-article'),
-    path('listArticles/', views.ArticleList.as_view(), name='list-article'),
+    path('home/', articleRecHandler.hello_world),
+    path('populateArticles/', articleRecHandler.populate_articles),
+    path('queryArticles/', topicModelHandler.query_documents_url),
+    path('trainTopicModel/', topicModelHandler.retrain_topic_model),
 ]
 

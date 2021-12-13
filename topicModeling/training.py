@@ -1136,7 +1136,7 @@ class Top2Vec:
             topic_words = np.array([self.topic_words[topics] for topics in doc_topics])
             topic_word_scores = np.array([self.topic_word_scores[topics] for topics in doc_topics])
 
-        return doc_topics, doc_dist, topic_words, topic_word_scores
+        return doc_topics[0], doc_dist[0], topic_words[0][0], topic_word_scores[0][0]
 
     def add_documents(self, documents, doc_ids=None, tokenizer=None, use_embedding_model_tokenizer=False):
         """
