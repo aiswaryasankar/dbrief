@@ -1,6 +1,6 @@
 from .models import ArticleModel
-import logger
-from idl import SaveArticleRequest, SaveArticleResponse
+import logging
+from idl import *
 
 """
   This file will include all the basic database CRUD operations including:
@@ -10,45 +10,84 @@ from idl import SaveArticleRequest, SaveArticleResponse
     - Update
 """
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
-def saveArticle(article=SaveArticleRequest):
+
+def fetchAllArticles():
   """
-    Will save the article to the database
+    Will fetch the entire list of articles from the database and return them as hydrated Article objects
   """
 
-  url = article.url
-  title = article.title
-  text = article.text
-  author = article.authors
-  publish_date = article.publish_date
+  articleList = []
+  for article in ArticleModel.objects.all():
+    articleList.append(
+      Article(
+        id=article.articleId,
+        url=article.url,
+        authors=article.author,
+        text=article.text,
+        title=article.title,
+        primaryTopicID=None,
+        secondaryTopicID=None,
+        date=None,
+        summary=None,
+        imageURL=None,
+        polarizationScore=None,
+        isOpinion=None,
+      )
+    )
 
-  articleEntry = ArticleModel(
-    url = url,
-    title = title,
-    text = text,
-    author = author,
-    publish_date = publish_date,
-  )
+  return articleList
+
+
+def saveArticle(SaveArticleRequest):
+  """
+    Will save the article to the database.  If the article already exists it will update the existing article instead.
+  """
+
+  a = SaveArticleRequest.article
+  url = a.url
+  title = a.title
+  text = a.text
+  author = a.authors
+  publish_date = a.date
+  primary_topic = a.primaryTopic
+  sub_topic = a.secondaryTopic
+  created = False
+
   try:
-    response = articleEntry.save()
+    articleEntry, created = ArticleModel.objects.update_or_create(
+      url = url,
+      defaults={
+        'title': title,
+        'text': text,
+        'author': author,
+        'publish_date': publish_date,
+        'primary_topic': primary_topic,
+        'sub_topic': sub_topic,
+      },
+    )
     logger.info('saved article', extra={
         "item": {
             "url": url,
-            "res": response,
-            "id": response.id,
+            "res": articleEntry,
+            "id" : articleEntry.articleId,
+            "created": created,
         }
     })
     logger.info("Saved article to the database: ", extra={ "article": articleEntry })
 
   except Exception as e:
     logger.warn("Failed to save article to the database", extra= {
-      "article": articleEntry,
+      "article": a,
       "error": e,
     })
+    print(e)
 
-    return SaveArticleResponse(error=e)
+    return SaveArticleResponse(id=None, error=e, created=created)
 
-  return SaveArticleResponse(id=response.id)
+  return SaveArticleResponse(id=articleEntry.articleId, error=None, created=created)
 
 def queryArticles(queryParams):
   """

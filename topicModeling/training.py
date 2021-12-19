@@ -391,6 +391,9 @@ class Top2Vec:
         self.serialized_word_index = None
         self.words_indexed = False
 
+        # finished processing topics
+        logger.info('Generated topic model')
+
     def save(self, file):
         """
         Saves the current model to the specified file.
@@ -906,6 +909,8 @@ class Top2Vec:
 
         doc_ids_all = doc_ids + doc_ids_neg
 
+        print("DOC_ID2INDEX")
+        print(self.doc_id2index)
         if self.document_ids is not None:
             for doc_id in doc_ids_all:
                 if doc_id not in self.doc_id2index:
@@ -1103,10 +1108,14 @@ class Top2Vec:
             ...]
         """
         if reduced:
-            self._validate_hierarchical_reduction()
+            err = self._validate_hierarchical_reduction()
+            if err != None:
+                return None, None, None, None, err
 
         # make sure documents exist
-        self._validate_doc_ids(doc_ids, doc_ids_neg=[])
+        err = self._validate_doc_ids(doc_ids, doc_ids_neg=[])
+        if err != None:
+            return None, None, None, None, err
 
         # get document indexes from ids
         doc_indexes = self._get_document_indexes(doc_ids)
@@ -1136,7 +1145,7 @@ class Top2Vec:
             topic_words = np.array([self.topic_words[topics] for topics in doc_topics])
             topic_word_scores = np.array([self.topic_word_scores[topics] for topics in doc_topics])
 
-        return doc_topics[0], doc_dist[0], topic_words[0][0], topic_word_scores[0][0]
+        return doc_topics[0], doc_dist[0], topic_words[0][0], topic_word_scores[0][0], None
 
     def add_documents(self, documents, doc_ids=None, tokenizer=None, use_embedding_model_tokenizer=False):
         """
@@ -1171,10 +1180,16 @@ class Top2Vec:
 
         # add document ids
         if self.document_ids_provided is True:
+            print("adding the doc id provided to the index")
             self._validate_document_ids_add_doc(documents, doc_ids)
             doc_ids_len = len(self.document_ids)
+            print("document_ids before")
+            print(self.document_ids)
             self.document_ids = np.append(self.document_ids, doc_ids)
+            print("document_ids after")
+            print(self.document_ids)
             self.doc_id2index.update(dict(zip(doc_ids, list(range(doc_ids_len, doc_ids_len + len(doc_ids))))))
+            print(self.doc_id2index)
 
         elif doc_ids is None:
             num_docs = len(documents)
@@ -1228,6 +1243,9 @@ class Top2Vec:
 
         if self.hierarchy is not None:
             self._assign_documents_to_topic(document_vectors, hierarchy=True)
+
+        logger.info("Added document with id: " + str(doc_ids))
+        return None
 
     def delete_documents(self, doc_ids):
         """

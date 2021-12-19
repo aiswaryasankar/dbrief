@@ -8,6 +8,7 @@ from sklearn.preprocessing import normalize
 from scipy.special import softmax
 from sentence_transformers import SentenceTransformer
 import logging
+from articleRec.repository import fetchAllArticles
 from topicModeling.training import Top2Vec
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -17,6 +18,7 @@ from idl import AddDocumentRequest, GetDocumentTopicResponse, QueryDocumentsRequ
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+topicModelFile = "./modelWeights/topicModelWeights"
 
 @api_view(['GET'])
 def retrain_topic_model(request):
@@ -26,9 +28,9 @@ def retrain_topic_model(request):
     The topic model endpoint will then store the weights in a file that it will read during evaluation
   """
 
-  # documents = ArticleModel.objects.all()
-  # data = [doc.text for doc in documents]
-  # doc_ids = [doc.articleId for doc in documents]
+  articles = fetchAllArticles()
+  data = [article.text for article in articles]
+  doc_ids = [article.id for article in articles]
 
   startTime = datetime.datetime.now()
   model = Top2Vec(documents=data, speed="learn",embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
@@ -36,31 +38,32 @@ def retrain_topic_model(request):
 
   docIndex = Top2Vec.index_document_vectors(model)
   wordIndex = Top2Vec.index_word_vectors(model)
-  savedModel = Top2Vec.save(self = model, file='./modelWeights/topicModelWeights')
-  loadedModel = Top2Vec.load("./modelWeights/topicModelWeights")
+  savedModel = Top2Vec.save(self = model, file=topicModelFile)
+  loadedModel = Top2Vec.load(topicModelFile)
 
   # logger.info("Time to train the topic2Vec model", endTime - startTime)
   return Response()
 
-@api_view(['GET'])
+# @api_view(['GET'])
 def get_document_topic(GetDocumentTopicRequest):
   """
     This endpoint will query the topic model using the doc_ids, reduced, and num_topics parameters.
   """
-  top2vecModel = Top2Vec.load("./modelWeights/topicModelWeights")
-  res = top2vecModel.get_documents_topics(
+  top2vecModel = Top2Vec.load(topicModelFile)
+  topic_num, topic_score, topic_word, _, error = top2vecModel.get_documents_topics(
     GetDocumentTopicRequest.doc_ids,
     GetDocumentTopicRequest.reduced,
     GetDocumentTopicRequest.num_topics,
   )
   return GetDocumentTopicResponse(
-    topic_num = res.topic_num,
-    topic_score = res.topic_score,
-    topic_word = res.topic_word,
+    topic_num = topic_num,
+    topic_score = topic_score,
+    topic_word = topic_word,
+    error = error,
   )
 
 
-@api_view(['GET'])
+# @api_view(['GET'])
 def add_document(AddDocumentRequest):
   """
     Req:
@@ -73,13 +76,14 @@ def add_document(AddDocumentRequest):
 
     Add a one off document to the topic model.  This endpoint takes in the article text, doc_ids if provided and adds the document to the topic model so that you can fetch the topic for the article in the future.
   """
-  top2vecModel = Top2Vec.load("./modelWeights/topicModelWeights")
+  top2vecModel = Top2Vec.load(topicModelFile)
   res = top2vecModel.add_documents(AddDocumentRequest.documents, AddDocumentRequest.doc_ids)
+  top2vecModel.save(topicModelFile)
   return idl.AddDocumentResponse(error=res)
 
 
-@api_view(['GET'])
-def query_documents_url(QueryDocumentsRequest):
+# @api_view(['GET'])
+def query_documents_url(request, QueryDocumentsRequest):
   """
   Req: {
     Query: string - article body of text
@@ -92,11 +96,11 @@ def query_documents_url(QueryDocumentsRequest):
   Res: {
     Doc_scores: similarity scores of doc and vector
     Doc_ids: ids of the documents that are passed into the model
-  }
+  }#
 
     Gets the similar documents to a given document
   """
-  top2vecModel = Top2Vec.load("./modelWeights/topicModelWeights")
+  top2vecModel = Top2Vec.load(topicModelFile)
 
   similarDocs = Top2Vec.query_documents(
     self=top2vecModel,

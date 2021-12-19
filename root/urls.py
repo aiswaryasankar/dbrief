@@ -21,7 +21,8 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('home/', articleRecHandler.hello_world),
-    path('populateArticles/', articleRecHandler.populate_articles),
+    path('populateArticles/', articleRecHandler.populate_articles_batch),
+    path('populateArticle/<url>', articleRecHandler.populate_article_by_url),
     path('queryArticles/', topicModelHandler.query_documents_url),
     path('trainTopicModel/', topicModelHandler.retrain_topic_model),
 ]

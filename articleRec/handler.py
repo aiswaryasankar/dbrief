@@ -1,3 +1,4 @@
+from numpy.lib.npyio import save
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -10,9 +11,9 @@ import time
 import logging
 import datetime
 from topicModeling.training import Top2Vec
-from constants import rss_feeds
-import controller
-import repository
+from .constants import rss_feeds
+from  .controller import *
+from .repository import *
 import topicModeling.handler as tpHandler
 import idl
 
@@ -29,9 +30,15 @@ def hello_world(request):
 
   return Response({"message": "Hello world lol"})
 
+def fetch_all_articles(request):
+  """
+    Returns all the articles present in the database
+  """
+  return fetchAllArticles()
+
 
 @api_view(['GET'])
-def populate_articles():
+def populate_articles_batch(request):
   """
     PopulateArticles does the following:
 
@@ -47,63 +54,36 @@ def populate_articles():
   """
 
   articleText = []
-  urlList = controller.process_rss_feed()
+  urlList = process_rss_feed()
+  numArticlesPopulated, numErrors = 0, 0
 
   for url in urlList:
-
-    # Hydrate article
-    article = controller.hydrate_article(url)
-
-    # Save to database and fetch article id
-    articleId = repository.saveArticle(
-      idl.SaveArticleRequest(
+    populateArticleResponse = populate_article(
+      PopulateArticleRequest(
         url=url,
-        text=article.text,
-        title=article.title,
-        date=article.publish_date,
-        imageURL=article.top_image,
       )
     )
+    if populateArticleResponse.error != None:
+      numArticlesPopulated+=1
+    else:
+      numErrors+=1
 
-    # Add document to topic model with text and doc id
-    addedToTopicModel = tpHandler.add_document(
-      idl.AddDocumentRequest(
-        documents=[article.text],
-        doc_ids=[articleId],
-      )
+  return PopulateArticlesResponse(
+    num_articles_populated=numArticlesPopulated,
+    num_errors=numErrors
+  )
+
+@api_view(['GET'])
+def populate_article_by_url(request, url):
+  """
+    Populates a single article based on the request.url
+  """
+  url = request.GET.get('url', 'https://www.nytimes.com/2021/12/18/world/asia/afghanistan-marja-economy-taliban.html')
+  populateArticleResponse = populate_article(
+    PopulateArticleRequest(
+      url=url,
     )
-
-    # Get topic for the document from the topic model
-    getTopicResponse = tpHandler.get_document_topic(
-      idl.GetDocumentTopicRequest(
-        doc_ids=[articleId],
-        reduced=False,
-        num_topics=1,
-      )
-    )
-
-    # Get the subtopic for the document from the topic model
-    getSubtopicResponse = tpHandler.get_document_topic(
-      idl.GetDocumentTopicRequest(
-        doc_ids=[articleId],
-        reduced=False,
-        num_topics=1,
-      )
-    )
-
-    # Get the polarity of the document from the topic model
-
-    # Get the fact from the document
-
-    # Update the db with additional data
-
-
-    articleText.append(article.text)
-
-  return Response({"article text": articleText})
-
-
-
-
+  )
+  return Response()
 
 

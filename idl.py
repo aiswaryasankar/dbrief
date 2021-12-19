@@ -6,6 +6,8 @@ from marshmallow import EXCLUDE, fields, pre_dump, Schema, validate
 import requests
 import desert
 from enum import Enum
+from typing import List, Optional
+import time
 
 """
   This file is a bit unconventional, but it will store all of the entity definitions across each of the services. Thus there will be one source of truth / common location for all the request, response, api definitions to work with.
@@ -14,8 +16,8 @@ from enum import Enum
 ### Topic Model
 @dataclass
 class AddDocumentRequest:
-  documents: list(str)
-  doc_ids: list(int)
+  documents: List[str]
+  doc_ids: List[int]
   tokenizer: str
   use_embedding_model_tokenizer: bool
 
@@ -34,15 +36,16 @@ class QueryDocumentsRequest:
 
 @dataclass
 class QueryDocumentsResponse:
-  doc_scores: list(int)
-  doc_ids: list(int)
+  doc_scores: List[int]
+  doc_ids: List[int]
+  error: Exception
 
 @dataclass
 class TrainAndIndexTopicModelRequest:
-  documents: list(str)
+  documents: List[str]
   embedding_model: str
   speed: str
-  doc_ids: list(str)
+  doc_ids: List[str]
   keep_documents: bool
 
 @dataclass
@@ -59,12 +62,13 @@ class QueryDocumentsRequest:
 
 @dataclass
 class QueryDocumentsResponse:
-  doc_scores: list(int)
-  doc_ids: list(int)
+  doc_scores: List[int]
+  doc_ids: List[int]
+  error: Exception
 
 @dataclass
 class GetDocumentTopicRequest:
-  doc_ids: list(int)
+  doc_ids: List[int]
   reduced: bool
   num_topics: int
 
@@ -73,7 +77,7 @@ class GetDocumentTopicResponse:
   topic_num: int
   topic_score: float
   topic_word: str
-
+  error: Exception
 
 ### Newsletter
 
@@ -82,28 +86,47 @@ class GetDocumentTopicResponse:
 
 ### ArticleRec
 @dataclass
+class PopulateArticleRequest:
+  url: Optional[str]
+
+@dataclass
+class PopulateArticleResponse:
+  url: Optional[str]
+  error: Exception
+
+@dataclass
 class PopulateArticlesResponse:
   num_articles_populated: int
   num_errors: int
 
 @dataclass
+class Article:
+  id: Optional[int]
+  url: Optional[str]
+  authors: Optional[List[str]]
+  primaryTopic: Optional[int]
+  secondaryTopic: Optional[int]
+  text: Optional[str]
+  title: Optional[str]
+  date: Optional[time.time]
+  summary: Optional[str]
+  imageURL: Optional[str]
+  polarizationScore: Optional[float]
+  isOpinion: Optional[bool]
+
+@dataclass
 class SaveArticleRequest:
-  id: int
-  url: str
-  authorID: int
-  primaryTopicID: int
-  secondaryTopicID: int
-  text: str
-  title: str
-  date: time
-  summary: str
-  imageURL: str
-  polarizationScore: float
-  isOpinion: bool
+  article: Optional[Article]
 
 @dataclass
 class SaveArticleResponse:
   id: int
+  error: Exception
+  created: bool
+
+@dataclass
+class FetchAllArticlesResponse:
+  articleList: Optional[List[Article]]
   error: Exception
 
 ### User
@@ -133,29 +156,26 @@ class NewsletterRecurrenceType(Enum):
   WEEKLY = 2
   MONTHLY = 3
 
-@dataclass
-class Fact:
- Quote: Quote
-
-@dataclass
-class Opinion:
-  Quote: Quote
-
-@dataclass
-class TimelineSegment:
-  Quote: Quote
+class Day(Enum):
+  MONDAY = 1
+  TUESDAY = 2
+  WEDNESDAY = 3
+  THURSDAY = 4
+  FRIDAY = 5
+  SATURDAY = 6
+  SUNDAY = 7
 
 @dataclass
 class NewsletterConfig:
-  DeliveryTime: time
-  DeliveryDays: list(Day)
+  DeliveryTime: time.time
+  DeliveryDays: List[Day]
   RecurrenceAmount: int
   RecurrenceType: NewsletterRecurrenceType
   IsEnabled: bool
 
 @dataclass
 class ArticleInfo:
-  ID - int
+  Id: int
   Title: str
   Summary: str
   TopicName: str
@@ -170,12 +190,34 @@ class TopicInfo:
   TopicPageURL: str
 
 @dataclass
+class Quote:
+  Text: str
+  SourceName: str
+  SourceURL: str
+  ImageURL: str
+  Polarization: bool
+  Timestamp: time.time
+  ArticleID: int
+
+@dataclass
+class TimelineSegment:
+  Quote: Quote
+
+@dataclass
+class Fact:
+ Quote: Quote
+
+@dataclass
+class Opinion:
+  Quote: Quote
+
+@dataclass
 class TopicPage:
   Title: str
   MDSSummary: str
-  Facts: list(Fact)
-  Opinions: list(Opinion)
-  Timeline: list(TimelineSegment)
+  Facts: List[Fact]
+  Opinions: List[Opinion]
+  Timeline: List[TimelineSegment]
   TopArticleID: int
   TopicID: int
 
@@ -185,22 +227,12 @@ class TopicModal:
   TopicTitle: str
   Summary: str
   Image: str
-  Facts: list(Fact)
+  Facts: List[Fact]
 
 @dataclass
 class Author:
   ID: int
   Name: str
-
-@dataclass
-class Quote:
-  Text: str
-  SourceName: str
-  SourceURL: str
-  ImageURL: str
-  Polarization: bool
-  Timestamp: time
-  ArticleID: int
 
 
 
