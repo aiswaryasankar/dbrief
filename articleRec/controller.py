@@ -14,9 +14,21 @@ from .constants import *
 import idl
 from .repository import *
 from topicModeling import handler as tpHandler
+from polarityModel import handler as polarityHandler
+from passageRetrievalModel import handler as passageRetrievalHandler
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+
+def fetch_articles(fetchArticlesRequest):
+  """
+    This function will fetch all the articles from the articleId list provided or fetch all articles in the db if no articleIds are provided.
+  """
+  if fetchArticlesRequest.articleIds == None:
+    return fetchAllArticles()
+
+  return fetchArticlesById(fetchArticlesRequest.articleIds)
 
 
 def populate_article(populateArticleRequest):
@@ -33,11 +45,21 @@ def populate_article(populateArticleRequest):
       8. Update db with the additional data
   """
   # Hydrate article
-  # url = "https://www.nytimes.com/2021/12/13/us/politics/trump-subpoena-financial-records.html"
   url = populateArticleRequest.url
   article, error = hydrate_article(url)
   if error != None:
     return PopulateArticleResponse(url=url, error=error)
+
+  getFactsResponse = passageRetrievalHandler.get_facts(
+    GetFactsRequest(
+      article_text = article.text,
+    )
+  )
+  getTopPassageResponse = passageRetrievalHandler.get_top_passage(
+    GetTopPassageRequest(
+      article_text = article.text,
+    )
+  )
 
   # Save to database and fetch article id
   a = idl.Article(
@@ -92,7 +114,6 @@ def populate_article(populateArticleRequest):
   if getTopicResponse.error != None:
     return PopulateArticleResponse(url=url, error=getTopicResponse.error)
 
-
   # Get the subtopic for the document from the topic model
   getSubtopicResponse = tpHandler.get_document_topic(
     idl.GetDocumentTopicRequest(
@@ -105,14 +126,40 @@ def populate_article(populateArticleRequest):
     return PopulateArticleResponse(url=url, error=getSubtopicResponse.error)
 
   # Get the polarity of the document from the topic model
+  getDocumentPolarityResponse = polarityHandler.get_document_polarity(
+    GetDocumentPolarityRequest(
+      query=article.text,
+      source=None,
+    )
+  )
+  logger.info("Successfully fetched the polarity")
+  logger.info(getDocumentPolarityResponse.polarity_score)
 
-  # Get the fact from the document
+  isOpinion = False
+  if getDocumentPolarityResponse.polarity_score < 0.25 or getDocumentPolarityResponse.polarity_score > 0.75:
+    isOpinion = True
+
+  if isOpinion:
+    # Get the top passage from the document
+    getTopPassageResponse = passageRetrievalHandler.get_top_passage(
+      GetTopPassageRequest(
+        article_text = article.text,
+      )
+    )
+  else:
+    # Get the facts from the document
+    # Get the top passage from the document
+    getFactsResponse = passageRetrievalHandler.get_facts(
+      GetFactsRequest(
+        article_text = article.text,
+      )
+    )
 
   # Update the db with additional data
   updatedArticle = idl.Article(
     id=saveArticleResponse.id,
-    primaryTopic = getTopicResponse.topic_num,
-    secondaryTopic = getSubtopicResponse.topic_num,
+    primaryTopic = getTopicResponse.topic_word,
+    secondaryTopic = getSubtopicResponse.topic_word,
     url=url,
     text=article.text,
     title=article.title,
@@ -120,7 +167,7 @@ def populate_article(populateArticleRequest):
     imageURL=article.top_image,
     authors=None,
     summary=None,
-    polarizationScore=None,
+    polarizationScore=getDocumentPolarityResponse.polarity_score,
     isOpinion=None,
   )
 
@@ -182,9 +229,4 @@ def hydrate_article(url):
 
   return article, None
 
-
-### Helper Functions
-def cron_job_test(request):
-
-  print("Started the cron job")
 

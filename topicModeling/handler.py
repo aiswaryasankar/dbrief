@@ -13,14 +13,15 @@ from topicModeling.training import Top2Vec
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import datetime
-import idl
+from idl import *
 from idl import AddDocumentRequest, GetDocumentTopicResponse, QueryDocumentsRequest, QueryDocumentsResponse, GetDocumentTopicRequest
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
 topicModelFile = "./modelWeights/topicModelWeights"
 
-@api_view(['GET'])
+
 def retrain_topic_model(request):
   """
     This endpoint will first fetch all the documents from the database and keep it in memory
@@ -44,7 +45,7 @@ def retrain_topic_model(request):
   # logger.info("Time to train the topic2Vec model", endTime - startTime)
   return Response()
 
-# @api_view(['GET'])
+
 def get_document_topic(GetDocumentTopicRequest):
   """
     This endpoint will query the topic model using the doc_ids, reduced, and num_topics parameters.
@@ -63,7 +64,7 @@ def get_document_topic(GetDocumentTopicRequest):
   )
 
 
-# @api_view(['GET'])
+
 def add_document(AddDocumentRequest):
   """
     Req:
@@ -82,7 +83,7 @@ def add_document(AddDocumentRequest):
   return idl.AddDocumentResponse(error=res)
 
 
-# @api_view(['GET'])
+
 def query_documents_url(request, QueryDocumentsRequest):
   """
   Req: {
@@ -96,7 +97,7 @@ def query_documents_url(request, QueryDocumentsRequest):
   Res: {
     Doc_scores: similarity scores of doc and vector
     Doc_ids: ids of the documents that are passed into the model
-  }#
+  }
 
     Gets the similar documents to a given document
   """
@@ -118,10 +119,56 @@ def query_documents_url(request, QueryDocumentsRequest):
     doc_ids=similarDocs.doc_ids,
   )
 
+
 def index_document_vectors(request):
   """
     This endpoint is responsible for re-indexing the documents after the topic model has been regenerated. In the case of individual articles being added to the topic model, it will be handled through add_document.
   """
   pass
 
+
+
+def search_documents_by_topic(searchDocumentsByTopic):
+  """
+    This endpoint will get the documents that are most related to a given topic id.
+  """
+
+  top2vecModel = Top2Vec.load(topicModelFile)
+  doc_scores, doc_ids = top2vecModel.search_documents_by_topic(
+    searchDocumentsByTopic.topic_num,
+    searchDocumentsByTopic.num_docs,
+    False,
+    False,
+  )
+  logger.info("Doc scores")
+  logger.info(doc_scores)
+  logger.info(doc_ids)
+
+
+  return SearchDocumentsByTopicResponse(
+    doc_ids=doc_ids,
+    doc_scores=doc_scores,
+  )
+
+
+def search_topics(searchTopicsRequest):
+  """
+    This endpoint takes in a keyword and returns the top topics related to that keyword
+  """
+  top2vecModel = Top2Vec.load(topicModelFile)
+  topic_words, _, topic_scores, topic_nums = top2vecModel.search_topics(searchTopicsRequest.keywords, searchTopicsRequest.num_topics)
+
+  logger.info("Top topics for keyword")
+  logger.info(searchTopicsRequest.keywords)
+  logger.info("topic_words")
+  logger.info(topic_words)
+  logger.info("topic_nums")
+  logger.info(topic_nums)
+  logger.info(topic_scores)
+
+  return SearchTopicsResponse(
+    topics_words=topic_words,
+    topic_scores=topic_scores,
+    topic_nums=topic_nums,
+  )
 

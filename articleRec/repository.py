@@ -14,33 +14,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-def fetchAllArticles():
-  """
-    Will fetch the entire list of articles from the database and return them as hydrated Article objects
-  """
-
-  articleList = []
-  for article in ArticleModel.objects.all():
-    articleList.append(
-      Article(
-        id=article.articleId,
-        url=article.url,
-        authors=article.author,
-        text=article.text,
-        title=article.title,
-        primaryTopicID=None,
-        secondaryTopicID=None,
-        date=None,
-        summary=None,
-        imageURL=None,
-        polarizationScore=None,
-        isOpinion=None,
-      )
-    )
-
-  return articleList
-
-
 def saveArticle(SaveArticleRequest):
   """
     Will save the article to the database.  If the article already exists it will update the existing article instead.
@@ -89,9 +62,61 @@ def saveArticle(SaveArticleRequest):
 
   return SaveArticleResponse(id=articleEntry.articleId, error=None, created=created)
 
-def queryArticles(queryParams):
+
+def fetchAllArticles():
   """
-    Will query for articles based on the provided search parameters
+    Will fetch the entire list of articles from the database and return them as hydrated Article objects
   """
-  pass
+
+  articleList = []
+  for article in ArticleModel.objects.all():
+    articleList.append(
+      Article(
+        id=article.articleId,
+        url=article.url,
+        authors=article.author,
+        text=article.text,
+        title=article.title,
+        primaryTopic=article.primaryTopic,
+        secondaryTopic=article.secondaryTopic,
+        date=article.publish_date,
+        imageURL=article.image,
+        polarizationScore=article.polarizationScore,
+      )
+    )
+
+  return FetchArticlesResponse(
+    articleList=articleList,
+    error=None,
+  )
+
+
+def fetchArticlesById(articleIds):
+  """
+    Will fetch articles by the article Id and populate the Article entity
+  """
+  hydratedArticles = []
+
+  for id in articleIds:
+    article = ArticleModel.objects.get(articleId=id)
+    hydratedArticles.append(
+      Article(
+        id=article.articleId,
+        url=article.url,
+        authors=article.author,
+        text=article.text,
+        title=article.title,
+        primaryTopic=article.primary_topic,
+        secondaryTopic=article.sub_topic,
+        date=article.publish_date,
+        imageURL=article.image,
+        polarizationScore=article.polarizationScore,
+      )
+    )
+
+  return FetchArticlesResponse(
+    articleList=hydratedArticles,
+    error=None,
+  )
+
 

@@ -909,8 +909,6 @@ class Top2Vec:
 
         doc_ids_all = doc_ids + doc_ids_neg
 
-        print("DOC_ID2INDEX")
-        print(self.doc_id2index)
         if self.document_ids is not None:
             for doc_id in doc_ids_all:
                 if doc_id not in self.doc_id2index:
@@ -1180,16 +1178,10 @@ class Top2Vec:
 
         # add document ids
         if self.document_ids_provided is True:
-            print("adding the doc id provided to the index")
             self._validate_document_ids_add_doc(documents, doc_ids)
             doc_ids_len = len(self.document_ids)
-            print("document_ids before")
-            print(self.document_ids)
             self.document_ids = np.append(self.document_ids, doc_ids)
-            print("document_ids after")
-            print(self.document_ids)
             self.doc_id2index.update(dict(zip(doc_ids, list(range(doc_ids_len, doc_ids_len + len(doc_ids))))))
-            print(self.doc_id2index)
 
         elif doc_ids is None:
             num_docs = len(documents)

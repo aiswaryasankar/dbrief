@@ -9,9 +9,9 @@ class ArticleModel (models.Model):
   image = models.TextField("Image", null=True)
   publish_date = models.TextField("Publish Date", null=True, blank=True)
   author = models.TextField("Author", null=True)
-  polarization = models.BooleanField("Polarity", default=0, null=True)
-  primary_topic = models.IntegerField("PrimaryTopic", null=True)
-  sub_topic = models.IntegerField("SubTopic", null=True)
+  polarization_score = models.FloatField("Polarity", default=0, null=True)
+  primary_topic = models.TextField("PrimaryTopic", null=True)
+  sub_topic = models.TextField("SubTopic", null=True)
 
   def __str__(self):
     return self.url

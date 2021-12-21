@@ -13,134 +13,11 @@ import time
   This file is a bit unconventional, but it will store all of the entity definitions across each of the services. Thus there will be one source of truth / common location for all the request, response, api definitions to work with.
 """
 
-### Topic Model
-@dataclass
-class AddDocumentRequest:
-  documents: List[str]
-  doc_ids: List[int]
-  tokenizer: str
-  use_embedding_model_tokenizer: bool
-
-@dataclass
-class AddDocumentResponse:
-  error: Exception
-
-@dataclass
-class QueryDocumentsRequest:
-  query: str
-  num_docs: int
-  return_docs: bool
-  use_index: bool
-  ef: int
-  tokenizer: str
-
-@dataclass
-class QueryDocumentsResponse:
-  doc_scores: List[int]
-  doc_ids: List[int]
-  error: Exception
-
-@dataclass
-class TrainAndIndexTopicModelRequest:
-  documents: List[str]
-  embedding_model: str
-  speed: str
-  doc_ids: List[str]
-  keep_documents: bool
-
-@dataclass
-class TrainAndIndexTopicModelResponse:
-  error: Exception
-
-@dataclass
-class QueryDocumentsRequest:
-  query: str
-  num_docs: int
-  return_docs: bool
-  use_index: bool
-  ef: int
-
-@dataclass
-class QueryDocumentsResponse:
-  doc_scores: List[int]
-  doc_ids: List[int]
-  error: Exception
-
-@dataclass
-class GetDocumentTopicRequest:
-  doc_ids: List[int]
-  reduced: bool
-  num_topics: int
-
-@dataclass
-class GetDocumentTopicResponse:
-  topic_num: int
-  topic_score: float
-  topic_word: str
-  error: Exception
-
-### Newsletter
-
-
-
-
-### ArticleRec
-@dataclass
-class PopulateArticleRequest:
-  url: Optional[str]
-
-@dataclass
-class PopulateArticleResponse:
-  url: Optional[str]
-  error: Exception
-
-@dataclass
-class PopulateArticlesResponse:
-  num_articles_populated: int
-  num_errors: int
-
-@dataclass
-class Article:
-  id: Optional[int]
-  url: Optional[str]
-  authors: Optional[List[str]]
-  primaryTopic: Optional[int]
-  secondaryTopic: Optional[int]
-  text: Optional[str]
-  title: Optional[str]
-  date: Optional[time.time]
-  summary: Optional[str]
-  imageURL: Optional[str]
-  polarizationScore: Optional[float]
-  isOpinion: Optional[bool]
-
-@dataclass
-class SaveArticleRequest:
-  article: Optional[Article]
-
-@dataclass
-class SaveArticleResponse:
-  id: int
-  error: Exception
-  created: bool
-
-@dataclass
-class FetchAllArticlesResponse:
-  articleList: Optional[List[Article]]
-  error: Exception
-
-### User
-
-
-
-
 ###
-
-
-
-
-
-### Entities
+#
+# Entities
+#
+###
 
 @dataclass
 class User:
@@ -235,6 +112,282 @@ class Author:
   Name: str
 
 
+###
+#
+# TopicModel
+#
+###
 
+@dataclass
+class SearchDocumentsByTopicRequest:
+  topic_num: int
+  num_docs: int
+
+@dataclass
+class SearchDocumentsByTopicResponse:
+  doc_ids: List[int]
+  doc_scores: List[int]
+  error: Optional[Exception]
+
+@dataclass
+class SearchTopicsRequest:
+  keywords: List[str]
+  num_topics: int
+
+@dataclass
+class SearchTopicsResponse:
+  topics_words: List[str]
+  topic_scores: List[float]
+  topic_nums: List[int]
+
+@dataclass
+class AddDocumentRequest:
+  documents: List[str]
+  doc_ids: List[int]
+  tokenizer: str
+  use_embedding_model_tokenizer: bool
+
+@dataclass
+class AddDocumentResponse:
+  error: Exception
+
+@dataclass
+class QueryDocumentsRequest:
+  query: str
+  num_docs: int
+  return_docs: bool
+  use_index: bool
+  ef: int
+  tokenizer: str
+
+@dataclass
+class QueryDocumentsResponse:
+  doc_scores: List[int]
+  doc_ids: List[int]
+  error: Exception
+
+@dataclass
+class TrainAndIndexTopicModelRequest:
+  documents: List[str]
+  embedding_model: str
+  speed: str
+  doc_ids: List[str]
+  keep_documents: bool
+
+@dataclass
+class TrainAndIndexTopicModelResponse:
+  error: Exception
+
+@dataclass
+class QueryDocumentsRequest:
+  query: str
+  num_docs: int
+  return_docs: bool
+  use_index: bool
+  ef: int
+
+@dataclass
+class QueryDocumentsResponse:
+  doc_scores: List[int]
+  doc_ids: List[int]
+  error: Exception
+
+@dataclass
+class GetDocumentTopicRequest:
+  doc_ids: List[int]
+  reduced: bool
+  num_topics: int
+
+@dataclass
+class GetDocumentTopicResponse:
+  topic_num: int
+  topic_score: float
+  topic_word: str
+  error: Exception
+
+
+###
+#
+# ArticleRec
+#
+###
+
+@dataclass
+class HelloWorldRequest:
+  name: str
+
+@dataclass
+class PopulateArticleRequest:
+  url: Optional[str]
+
+@dataclass
+class PopulateArticleResponse:
+  url: Optional[str]
+  error: Exception
+
+@dataclass
+class PopulateArticlesResponse:
+  num_articles_populated: int
+  num_errors: int
+
+@dataclass
+class Article:
+  id: Optional[int]
+  url: Optional[str]
+  authors: Optional[List[str]]
+  primaryTopic: Optional[int]
+  secondaryTopic: Optional[int]
+  text: Optional[str]
+  title: Optional[str]
+  date: Optional[time.time]
+  summary: Optional[str]
+  imageURL: Optional[str]
+  polarizationScore: Optional[float]
+  isOpinion: Optional[bool]
+
+@dataclass
+class SaveArticleRequest:
+  article: Optional[Article]
+
+@dataclass
+class SaveArticleResponse:
+  id: int
+  error: Exception
+  created: bool
+
+@dataclass
+class FetchArticlesRequest:
+  articleIds: Optional[List[int]]
+
+@dataclass
+class FetchArticlesResponse:
+  articleList: Optional[List[Article]]
+  error: Exception
+
+@dataclass
+class HydrateArticleRequest:
+  url: str
+
+@dataclass
+class HydrateArticleResponse:
+  article: Article
+  error: Exception
+
+
+###
+#
+# PolarityModel
+#
+###
+
+@dataclass
+class GetDocumentPolarityRequest:
+  query: Optional[str]
+  source: Optional[str]
+
+@dataclass
+class GetDocumentPolarityResponse:
+  polarity_score: Optional[float]
+  error: Exception
+
+###
+#
+# PassageModel
+#
+###
+
+@dataclass
+class GetFactsRequest:
+  article_text: str
+
+@dataclass
+class GetFactsResponse:
+  facts: List[str]
+  error: Exception
+
+@dataclass
+class GetTopPassageRequest:
+  article_text: str
+
+@dataclass
+class GetTopPassageResponse:
+  passage: str
+  error: Exception
+
+###
+#
+# TopicFeed
+#
+###
+
+@dataclass
+class GetTopicPageByURLRequest:
+  source: str
+
+@dataclass
+class GetTopicPageByArticleIDRequest:
+  source: str
+
+@dataclass
+class GetTopicPageBySearchStringRequest:
+  source: str
+
+@dataclass
+class GetTopicPageByTopicIDRequest:
+  source: str
+
+@dataclass
+class GetTopicPageResponse:
+  topic_page: TopicPage
+  error: Exception
+
+@dataclass
+class WhatsHappeningRequest:
+  user_id: int
+
+@dataclass
+class WhatsHappeningResponse:
+  articles: List[ArticleInfo]
+  error: Exception
+
+@dataclass
+class GetTopicsForUserRequest:
+  user_id: int
+
+@dataclass
+class GetTopicsForUserResponse:
+  topics: List[TopicInfo]
+
+@dataclass
+class GetRecommendedTopicsForUserRequest:
+  user_id: int
+
+@dataclass
+class GetRecommendedTopicsForUserResponse:
+  topics: List[TopicInfo]
+
+
+###
+#
+# User
+#
+###
+
+
+
+
+###
+#
+# HomeFeed
+#
+###
+
+
+
+###
+#
+# Newsletter
+#
+###
 
 

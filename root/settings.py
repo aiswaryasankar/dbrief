@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'articleRec.apps.ArticleRecConfig',
+    'topicModeling.apps.TopicmodelingConfig',
+    'polarityModel.apps.PolaritymodelConfig',
     'django_crontab',
     'background_task',
     'logtail',
