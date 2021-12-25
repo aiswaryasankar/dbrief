@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import *
 import dataclasses
 import json
 
@@ -222,12 +222,12 @@ class GetDocumentTopicResponse:
 
 @dataclass
 class HelloWorldRequest:
-  name: str
+  name: str = "aiswarya"
 
 @dataclass_json
 @dataclass
 class HelloWorldResponse:
-  name: str = "aiswarya"
+  name: str
 
 @dataclass
 class PopulateArticleRequest:
@@ -248,17 +248,17 @@ class PopulateArticlesResponse:
 @dataclass
 class Article:
   id: Optional[int]
-  url: Optional[str]
-  authors: Optional[List[str]]
-  topic: Optional[int]
-  parentTopic: Optional[int]
-  text: Optional[str]
-  title: Optional[str]
-  date: Optional[time.time]
-  imageURL: Optional[str]
-  polarizationScore: Optional[float]
-  topPassage: Optional[str]
-  topFact: Optional[str]
+  url: str
+  authors: Optional[List[str]] = ""
+  topic: Optional[str] = ""
+  parentTopic: Optional[str] = ""
+  text: Optional[str] = ""
+  title: Optional[str] = ""
+  date: Optional[time.time] = ""
+  imageURL: Optional[str] = ""
+  polarizationScore: Optional[float] = 0.0
+  topPassage: Optional[str]= ""
+  topFact: Optional[str] = ""
 
 @dataclass
 class SaveArticleRequest:
@@ -273,7 +273,7 @@ class SaveArticleResponse:
 
 @dataclass
 class FetchArticlesRequest:
-  articleIds: Optional[List[int]] = dataclass.field(default_factory=list)
+  articleIds: Optional[List[int]] = field(default_factory=list)
 
 @dataclass_json
 @dataclass

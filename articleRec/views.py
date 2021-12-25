@@ -17,10 +17,10 @@ def hello_world_view(request):
     Demo function for testing purposes
   """
   req = HelloWorldRequestSerializer(data=request.data)
-  # if not req.is_valid():
-  #   return JsonResponse(req.errors)
+  if not req.is_valid():
+    return JsonResponse(req.errors)
 
-  helloWorldRequest = req.initial_data
+  helloWorldRequest = req.validated_data
   res = hello_world(helloWorldRequest)
 
   return Response(res.to_json())

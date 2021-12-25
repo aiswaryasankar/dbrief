@@ -80,23 +80,40 @@ def fetchAllArticles():
   """
 
   articleList = []
+  print(ArticleModel.objects.values())
+
   for article in ArticleModel.objects.all():
-    articleList.append(
-      Article(
-        id=article.articleId,
-        url=article.url,
-        authors=article.author,
-        text=article.text,
-        title=article.title,
-        topic=article.topic,
-        parentTopic=article.parentTopic,
-        date=article.publish_date,
-        imageURL=article.image,
-        polarizationScore=article.polarization_score,
-        topPassage=article.topPassage,
-        topFact=article.topFact,
-      )
-    )
+    try:
+      a = Article(
+          id=article.articleId,
+          url=article.url,
+          authors=article.author,
+          text=article.text,
+          title=article.title,
+        )
+
+      if article.topic:
+        a.topic = article.topic
+      if article.parent_topic:
+        a.parentTopic = article.parent_topic
+      if article.publish_date:
+        a.topic = article.publish_date
+      if article.image:
+        a.imageURL = article.image
+      if article.polarization_score:
+        a.polarizationScore = article.polarization_score
+      if article.top_passage:
+        a.topPassage = article.top_passage
+      if article.top_fact:
+        a.topFact = article.top_fact
+
+      articleList.append(a)
+    except Exception as e:
+      logger.warn("Failed to fetch article from database", extra={
+        "article": article,
+        "error": e,
+      })
+      print(e)
 
   return FetchArticlesResponse(
     articleList=articleList,
@@ -112,22 +129,38 @@ def fetchArticlesById(articleIds):
 
   for id in articleIds:
     article = ArticleModel.objects.get(articleId=id)
-    hydratedArticles.append(
-      Article(
-        id=article.articleId,
-        url=article.url,
-        authors=article.author,
-        text=article.text,
-        title=article.title,
-        topic=article.topic,
-        parentTopic=article.parentTopic,
-        date=article.publish_date,
-        imageURL=article.image,
-        polarizationScore=article.polarization_score,
-        topPassage=article.topPassage,
-        topFact=article.topFact,
-      )
-    )
+    try:
+      a = Article(
+          id=article.articleId,
+          url=article.url,
+          authors=article.author,
+          text=article.text,
+          title=article.title,
+        )
+
+      if article.topic:
+        a.topic = article.topic
+      if article.parent_topic:
+        a.parentTopic = article.parent_topic
+      if article.publish_date:
+        a.topic = article.publish_date
+      if article.image:
+        a.imageURL = article.image
+      if article.polarization_score:
+        a.polarizationScore = article.polarization_score
+      if article.top_passage:
+        a.topPassage = article.top_passage
+      if article.top_fact:
+        a.topFact = article.top_fact
+
+      hydratedArticles.append(a)
+
+    except Exception as e:
+      logger.warn("Failed to fetch article from database", extra={
+        "article": article,
+        "error": e,
+      })
+      print(e)
 
   return FetchArticlesResponse(
     articleList=hydratedArticles,
