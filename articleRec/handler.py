@@ -4,18 +4,24 @@ import logging
 from  .controller import *
 from .repository import *
 from .serializers import *
+from logtail import LogtailHandler
 
-
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
+logger.handlers = []
+logger.addHandler(handler)
 logger.setLevel(logging.INFO)
+
 
 def hello_world(helloWorldRequest):
   """
     Demo function for testing purposes
   """
-  print(helloWorldRequest)
-  print(helloWorldRequest.name)
-  return Response(helloWorldRequest)
+  logger.info(helloWorldRequest)
+  logger.info(helloWorldRequest.name)
+  return HelloWorldResponse(
+    name=helloWorldRequest.name
+  )
 
 
 def fetch_articles(fetchArticlesRequest):

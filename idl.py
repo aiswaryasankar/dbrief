@@ -224,6 +224,11 @@ class GetDocumentTopicResponse:
 class HelloWorldRequest:
   name: str
 
+@dataclass_json
+@dataclass
+class HelloWorldResponse:
+  name: str
+
 @dataclass
 class PopulateArticleRequest:
   url: Optional[str]

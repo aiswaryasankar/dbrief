@@ -5,4 +5,4 @@ class Command(BaseCommand):
 
   def handle(self, *args, **options):
 
-    print("Started the cron job")
+    self.stdout.write("Started the cron job", ending='')

@@ -13,8 +13,11 @@ import tensorflow_hub as hub
 import numpy as np
 import logging
 import nltk
+from logtail import LogtailHandler
 
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
+logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 module = "https://tfhub.dev/google/universal-sentence-encoder/4"

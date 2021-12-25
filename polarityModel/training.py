@@ -8,11 +8,17 @@ from keras.preprocessing.sequence import pad_sequences
 import numpy as np
 import pandas as pd
 import sentencepiece
-
+import logging
+from logtail import LogtailHandler
 
 """
   Define the classification model for evaluation.
 """
+
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+logger = logging.getLogger(__name__)
+logger.handlers = [handler]
+logger.setLevel(logging.INFO)
 
 polarizationWeightsFile = "./modelWeights/xlnet_1.bin"
 MAX_LEN = 512
@@ -111,8 +117,8 @@ class XLNetPredict(torch.nn.Module):
 
     outputs = model(input_ids=input_ids, attention_mask=attention_mask)
     logits = outputs.sigmoid().detach().cpu().numpy()
-    print("logits: ", logits)
-    print("rounded: ", round(logits[0][0]))
+    logging.info("logits: ", logits)
+    logging.info("rounded: ", round(logits[0][0]))
 
     return logits[0][0]
 

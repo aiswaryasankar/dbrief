@@ -5,8 +5,11 @@ import idl
 import logging
 from idl import GetDocumentPolarityRequest, GetDocumentPolarityResponse
 from .training import *
+from logtail import LogtailHandler
 
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
+logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 topicModelFile = "./modelWeights/polarityModelWeights.bin"

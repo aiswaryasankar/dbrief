@@ -10,8 +10,13 @@ from rest_framework.response import Response
 import datetime
 import idl
 
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+logger = logging.getLogger(__name__)
+logger.handlers = [handler]
+logger.setLevel(logging.INFO)
 
-@api_view(['GET'])
+
+
 def getTopicPage(request):
   """
     This function will map the request params of url, articleID, topic string or search string to the appropriate field and pass it to the controller to hydrate the page appropriately. It will execute the following in order to hydrate the TopicPage struct:
@@ -82,17 +87,16 @@ def getTopicPage(request):
 
 
 
-@api_view(['GET'])
 def whatsHappening(request):
   pass
 
 
-@api_view(['GET'])
+
 def getRecommendedTopicsForUser(request):
   pass
 
 
-@api_view(['GET'])
+
 def getTopicsYouFollow(request):
   pass
 

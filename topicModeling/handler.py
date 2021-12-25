@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from sentence_transformers import SentenceTransformer
-import logging
+from logtail import LogtailHandler
 from topicModeling.training import Top2Vec
 from rest_framework.response import Response
 import datetime
@@ -11,7 +11,9 @@ from idl import *
 from articleRec import handler as articleRecHandler
 from idl import AddDocumentRequest, GetDocumentTopicResponse, QueryDocumentsRequest, QueryDocumentsResponse, GetDocumentTopicRequest
 
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
+logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 topicModelFile = "./modelWeights/topicModelWeights"

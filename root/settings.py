@@ -61,7 +61,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('*/5 * * * *', 'articleRec.articleApi.cron_job_test')
+    ('*/5 * * * *', 'articleRec.management.commands.populateArticles.py ')
 ]
 
 MIDDLEWARE = [
