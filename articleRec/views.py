@@ -17,8 +17,8 @@ def hello_world_view(request):
     Demo function for testing purposes
   """
   req = HelloWorldRequestSerializer(data=request.data)
-  if not req.is_valid():
-    return JsonResponse(req.errors)
+  # if not req.is_valid():
+  #   return JsonResponse(req.errors)
 
   helloWorldRequest = req.validated_data
   res = hello_world(helloWorldRequest)
@@ -32,8 +32,8 @@ def fetch_articles_view(request):
     Given a list of articleIds, this will return the entire hydrated article entity in the db for the batch of articles.  If no articleIds are provided, it will return all articles in the database.
   """
   req = FetchArticlesRequestSerializer(data=request.data)
-  if not req.is_valid():
-    return JsonResponse(req.errors)
+  # if not req.is_valid():
+  #   return JsonResponse(req.errors)
 
   fetchArticlesRequest = req.validated_data
 
