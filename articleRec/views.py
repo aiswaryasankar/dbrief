@@ -20,7 +20,7 @@ def hello_world_view(request):
   # if not req.is_valid():
   #   return JsonResponse(req.errors)
 
-  helloWorldRequest = req.validated_data
+  helloWorldRequest = req.data
   res = hello_world(helloWorldRequest)
 
   return Response(res.to_json())
@@ -35,7 +35,7 @@ def fetch_articles_view(request):
   # if not req.is_valid():
   #   return JsonResponse(req.errors)
 
-  fetchArticlesRequest = req.validated_data
+  fetchArticlesRequest = req.data
 
   res = fetch_articles(fetchArticlesRequest)
 
