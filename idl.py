@@ -273,7 +273,7 @@ class SaveArticleResponse:
 
 @dataclass
 class FetchArticlesRequest:
-  articleIds: Optional[List[int]] = []
+  articleIds: Optional[List[int]] = dataclass.field(default_factory=list)
 
 @dataclass_json
 @dataclass
