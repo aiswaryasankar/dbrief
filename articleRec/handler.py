@@ -22,14 +22,14 @@ def fetch_articles(fetchArticlesRequest):
   """
     Given a list of articleIds, this will return the entire hydrated article entity in the db for the batch of articles.  If no articleIds are provided, it will return all articles in the database.
   """
-  return fetch_articles(fetchArticlesRequest)
+  return fetch_articles_controller(fetchArticlesRequest)
 
 
 def hydrate_article(hydrateArticleRequest):
   """
     Will scrape and hydrate the url passed in and return the result as an Article model object
   """
-  return hydrate_article(hydrateArticleRequest.url)
+  return hydrate_article_controller(hydrateArticleRequest.url)
 
 
 def populate_articles_batch():
@@ -76,5 +76,5 @@ def populate_article_by_url(populateArticleByUrlRequest):
       url=url,
     )
   )
-  return Response(populateArticleResponse)
+  return populateArticleResponse
 

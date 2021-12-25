@@ -33,7 +33,7 @@ urlpatterns = [
     # ArticleRec endpoints
     path('home/', articleRecView.hello_world_view),
     path('populateArticles/', articleRecView.populate_articles_batch_view),
-    path('populateArticle/<url>', articleRecView.populate_article_by_url_view),
+    path('populateArticle/', articleRecView.populate_article_by_url_view),
     path('fetchArticles/', articleRecView.fetch_articles_view),
     path('hydrateArticleView/', articleRecView.hydrate_article_view),
 

@@ -25,8 +25,12 @@ def saveArticle(SaveArticleRequest):
   text = a.text
   author = a.authors
   publish_date = a.date
-  primary_topic = a.primaryTopic
-  sub_topic = a.secondaryTopic
+  topic = a.topic
+  parentTopic = a.parentTopic
+  topPassage = a.topPassage
+  topFact = a.topFact
+  image= a.imageURL
+  polarizationScore = a.polarizationScore
   created = False
 
   try:
@@ -37,19 +41,26 @@ def saveArticle(SaveArticleRequest):
         'text': text,
         'author': author,
         'publish_date': publish_date,
-        'primary_topic': primary_topic,
-        'sub_topic': sub_topic,
+        'topic': topic,
+        'parent_topic': parentTopic,
+        'top_passage': topPassage,
+        'top_fact': topFact,
+        'polarization_score': polarizationScore,
+        'image': image,
       },
     )
-    logger.info('saved article', extra={
-        "item": {
-            "url": url,
-            "res": articleEntry,
-            "id" : articleEntry.articleId,
-            "created": created,
-        }
-    })
-    logger.info("Saved article to the database: ", extra={ "article": articleEntry })
+    if created:
+      logger.info('saved article', extra={
+          "item": {
+              "url": url,
+              "res": articleEntry,
+              "id" : articleEntry.articleId,
+              "created": created,
+          }
+      })
+      logger.info("Saved article to the database: ", extra={ "article": articleEntry })
+    else:
+      logger.info("Updated already existing article")
 
   except Exception as e:
     logger.warn("Failed to save article to the database", extra= {
@@ -77,11 +88,13 @@ def fetchAllArticles():
         authors=article.author,
         text=article.text,
         title=article.title,
-        primaryTopic=article.primaryTopic,
-        secondaryTopic=article.secondaryTopic,
+        topic=article.topic,
+        parentTopic=article.parentTopic,
         date=article.publish_date,
         imageURL=article.image,
-        polarizationScore=article.polarizationScore,
+        polarizationScore=article.polarization_score,
+        topPassage=article.topPassage,
+        topFact=article.topFact,
       )
     )
 
@@ -106,11 +119,13 @@ def fetchArticlesById(articleIds):
         authors=article.author,
         text=article.text,
         title=article.title,
-        primaryTopic=article.primary_topic,
-        secondaryTopic=article.sub_topic,
+        topic=article.topic,
+        parentTopic=article.parentTopic,
         date=article.publish_date,
         imageURL=article.image,
-        polarizationScore=article.polarizationScore,
+        polarizationScore=article.polarization_score,
+        topPassage=article.topPassage,
+        topFact=article.topFact,
       )
     )
 

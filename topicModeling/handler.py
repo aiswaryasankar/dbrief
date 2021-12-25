@@ -2,18 +2,13 @@ import logging
 import numpy as np
 import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-import tempfile
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import normalize
-from scipy.special import softmax
 from sentence_transformers import SentenceTransformer
 import logging
-from articleRec.repository import fetchAllArticles
 from topicModeling.training import Top2Vec
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import datetime
 from idl import *
+from articleRec import handler as articleRecHandler
 from idl import AddDocumentRequest, GetDocumentTopicResponse, QueryDocumentsRequest, QueryDocumentsResponse, GetDocumentTopicRequest
 
 logger = logging.getLogger(__name__)
@@ -26,10 +21,18 @@ def retrain_topic_model(request):
   """
     This endpoint will first fetch all the documents from the database and keep it in memory
     It will then pass in the doc_ids and the document text to the topic model endpoint
-    The topic model endpoint will then store the weights in a file that it will read during evaluation
+    The topic model endpoint will then store the weights in a file that it will read during evaluation. Finally it will call the topic model to perform hierarchical topic reduction in order to get the topics and the sub topics as well.
   """
 
-  articles = fetchAllArticles()
+  fetchAllArticlesResponse = articleRecHandler.fetch_articles(
+    FetchArticlesRequest(articleIds=[])
+  )
+  if fetchAllArticlesResponse.error != None:
+    return TrainAndIndexTopicModelResponse(
+      error=ValueError(fetchAllArticlesResponse.error, "Failed to fetch articles from the articleRec db")
+    )
+
+  articles = fetchAllArticlesResponse.articleList
   data = [article.text for article in articles]
   doc_ids = [article.id for article in articles]
 
@@ -39,11 +42,24 @@ def retrain_topic_model(request):
 
   docIndex = Top2Vec.index_document_vectors(model)
   wordIndex = Top2Vec.index_word_vectors(model)
+  topicReduction = model.hierarchical_topic_reduction(num_topics=20)
+  parentTopics = model.get_topics(reduced=True)
+  topics = model.get_topics(reduced=False)
+
+  # Print out the topic hierarchy
+  logger.info("Parent Topics")
+  logger.info(parentTopics)
+  logger.info("Topics")
+  logger.info(topics)
+
+  # Save and reload the model for validation purposes
   savedModel = Top2Vec.save(self = model, file=topicModelFile)
   loadedModel = Top2Vec.load(topicModelFile)
 
   # logger.info("Time to train the topic2Vec model", endTime - startTime)
-  return Response()
+  return TrainAndIndexTopicModelResponse(
+    error=None,
+  )
 
 
 def get_document_topic(GetDocumentTopicRequest):
@@ -64,7 +80,6 @@ def get_document_topic(GetDocumentTopicRequest):
   )
 
 
-
 def add_document(AddDocumentRequest):
   """
     Req:
@@ -80,8 +95,7 @@ def add_document(AddDocumentRequest):
   top2vecModel = Top2Vec.load(topicModelFile)
   res = top2vecModel.add_documents(AddDocumentRequest.documents, AddDocumentRequest.doc_ids)
   top2vecModel.save(topicModelFile)
-  return idl.AddDocumentResponse(error=res)
-
+  return AddDocumentResponse(error=res)
 
 
 def query_documents_url(request, QueryDocumentsRequest):
@@ -125,7 +139,6 @@ def index_document_vectors(request):
     This endpoint is responsible for re-indexing the documents after the topic model has been regenerated. In the case of individual articles being added to the topic model, it will be handled through add_document.
   """
   pass
-
 
 
 def search_documents_by_topic(searchDocumentsByTopic):

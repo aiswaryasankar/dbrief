@@ -1394,7 +1394,8 @@ class Top2Vec:
             else:
                 self._validate_num_topics(num_topics, reduced)
 
-            return self.topic_words_reduced[0:num_topics], self.topic_word_scores_reduced[0:num_topics], np.array(
+            topic_words = [topic_words[0] for topic_words in self.topic_words_reduced[0:num_topics]]
+            return topic_words, self.topic_word_scores_reduced[0:num_topics][:][0], np.array(
                 range(0, num_topics))
         else:
 
@@ -1403,7 +1404,8 @@ class Top2Vec:
             else:
                 self._validate_num_topics(num_topics, reduced)
 
-            return self.topic_words[0:num_topics], self.topic_word_scores[0:num_topics], np.array(range(0, num_topics))
+            topic_words = [topic_words[0] for topic_words in self.topic_words[0:num_topics]]
+            return topic_words, self.topic_word_scores[0:num_topics][:][0], np.array(range(0, num_topics))
 
     def get_topic_hierarchy(self):
         """

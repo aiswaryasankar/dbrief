@@ -110,15 +110,10 @@ class XLNetPredict(torch.nn.Module):
     model = self.load_model(polarizationWeightsFile)
 
     outputs = model(input_ids=input_ids, attention_mask=attention_mask)
-    print("model outputs")
-    print(outputs)
     logits = outputs.sigmoid().detach().cpu().numpy()
     print("logits: ", logits)
     print("rounded: ", round(logits[0][0]))
 
-    return round(logits[0][0])
-
-
-
+    return logits[0][0]
 
 

@@ -8,6 +8,7 @@ import desert
 from enum import Enum
 from typing import List, Optional
 import time
+from dataclasses_json import dataclass_json
 
 """
   This file is a bit unconventional, but it will store all of the entity definitions across each of the services. Thus there will be one source of truth / common location for all the request, response, api definitions to work with.
@@ -123,6 +124,7 @@ class SearchDocumentsByTopicRequest:
   topic_num: int
   num_docs: int
 
+@dataclass_json
 @dataclass
 class SearchDocumentsByTopicResponse:
   doc_ids: List[int]
@@ -134,6 +136,7 @@ class SearchTopicsRequest:
   keywords: List[str]
   num_topics: int
 
+@dataclass_json
 @dataclass
 class SearchTopicsResponse:
   topics_words: List[str]
@@ -147,6 +150,7 @@ class AddDocumentRequest:
   tokenizer: str
   use_embedding_model_tokenizer: bool
 
+@dataclass_json
 @dataclass
 class AddDocumentResponse:
   error: Exception
@@ -160,6 +164,7 @@ class QueryDocumentsRequest:
   ef: int
   tokenizer: str
 
+@dataclass_json
 @dataclass
 class QueryDocumentsResponse:
   doc_scores: List[int]
@@ -174,6 +179,7 @@ class TrainAndIndexTopicModelRequest:
   doc_ids: List[str]
   keep_documents: bool
 
+@dataclass_json
 @dataclass
 class TrainAndIndexTopicModelResponse:
   error: Exception
@@ -186,6 +192,7 @@ class QueryDocumentsRequest:
   use_index: bool
   ef: int
 
+@dataclass_json
 @dataclass
 class QueryDocumentsResponse:
   doc_scores: List[int]
@@ -198,6 +205,7 @@ class GetDocumentTopicRequest:
   reduced: bool
   num_topics: int
 
+@dataclass_json
 @dataclass
 class GetDocumentTopicResponse:
   topic_num: int
@@ -220,11 +228,13 @@ class HelloWorldRequest:
 class PopulateArticleRequest:
   url: Optional[str]
 
+@dataclass_json
 @dataclass
 class PopulateArticleResponse:
   url: Optional[str]
   error: Exception
 
+@dataclass_json
 @dataclass
 class PopulateArticlesResponse:
   num_articles_populated: int
@@ -235,20 +245,21 @@ class Article:
   id: Optional[int]
   url: Optional[str]
   authors: Optional[List[str]]
-  primaryTopic: Optional[int]
-  secondaryTopic: Optional[int]
+  topic: Optional[int]
+  parentTopic: Optional[int]
   text: Optional[str]
   title: Optional[str]
   date: Optional[time.time]
-  summary: Optional[str]
   imageURL: Optional[str]
   polarizationScore: Optional[float]
-  isOpinion: Optional[bool]
+  topPassage: Optional[str]
+  topFact: Optional[str]
 
 @dataclass
 class SaveArticleRequest:
   article: Optional[Article]
 
+@dataclass_json
 @dataclass
 class SaveArticleResponse:
   id: int
@@ -259,6 +270,7 @@ class SaveArticleResponse:
 class FetchArticlesRequest:
   articleIds: Optional[List[int]]
 
+@dataclass_json
 @dataclass
 class FetchArticlesResponse:
   articleList: Optional[List[Article]]
@@ -268,6 +280,7 @@ class FetchArticlesResponse:
 class HydrateArticleRequest:
   url: str
 
+@dataclass_json
 @dataclass
 class HydrateArticleResponse:
   article: Article
@@ -285,6 +298,7 @@ class GetDocumentPolarityRequest:
   query: Optional[str]
   source: Optional[str]
 
+@dataclass_json
 @dataclass
 class GetDocumentPolarityResponse:
   polarity_score: Optional[float]
@@ -300,6 +314,7 @@ class GetDocumentPolarityResponse:
 class GetFactsRequest:
   article_text: str
 
+@dataclass_json
 @dataclass
 class GetFactsResponse:
   facts: List[str]
@@ -309,6 +324,7 @@ class GetFactsResponse:
 class GetTopPassageRequest:
   article_text: str
 
+@dataclass_json
 @dataclass
 class GetTopPassageResponse:
   passage: str
@@ -336,6 +352,7 @@ class GetTopicPageBySearchStringRequest:
 class GetTopicPageByTopicIDRequest:
   source: str
 
+@dataclass_json
 @dataclass
 class GetTopicPageResponse:
   topic_page: TopicPage
@@ -345,6 +362,7 @@ class GetTopicPageResponse:
 class WhatsHappeningRequest:
   user_id: int
 
+@dataclass_json
 @dataclass
 class WhatsHappeningResponse:
   articles: List[ArticleInfo]
@@ -354,6 +372,7 @@ class WhatsHappeningResponse:
 class GetTopicsForUserRequest:
   user_id: int
 
+@dataclass_json
 @dataclass
 class GetTopicsForUserResponse:
   topics: List[TopicInfo]
@@ -362,6 +381,7 @@ class GetTopicsForUserResponse:
 class GetRecommendedTopicsForUserRequest:
   user_id: int
 
+@dataclass_json
 @dataclass
 class GetRecommendedTopicsForUserResponse:
   topics: List[TopicInfo]

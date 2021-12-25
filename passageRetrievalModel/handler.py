@@ -17,6 +17,7 @@ import nltk
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+module = "https://tfhub.dev/google/universal-sentence-encoder/4"
 
 def get_top_passage(getTopPassageRequest):
   """
@@ -24,12 +25,28 @@ def get_top_passage(getTopPassageRequest):
   """
   article = getTopPassageRequest.article_text
   paragraphs = article.split("\n")
+  if article == "" or len(paragraphs) == 0:
+    return GetTopPassageResponse(
+      passage=[],
+      error= ValueError("Empty article"),
+    )
 
   # Enforce that a paragraph has at least 2 sentences
   paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
-  embeddedParagraphs = []
 
-  module = "https://tfhub.dev/google/universal-sentence-encoder/4"
+  if len(paragraphs) == 0:
+    return GetTopPassageResponse(
+      passage=[],
+      error= ValueError("No paragraphs in article"),
+  )
+
+  if len(paragraphs) <= 1:
+    return GetTopPassageResponse(
+      passage=paragraphs[0],
+      error= None,
+  )
+
+  embeddedParagraphs = []
   embeddingModel = hub.load(module)
 
   for paragraph in paragraphs:
@@ -37,6 +54,7 @@ def get_top_passage(getTopPassageRequest):
       embeddedParagraphs.append(embeddingModel([paragraph]))
 
   embeddedParagraphs = np.squeeze(embeddedParagraphs)
+
 
   # Create a matrix of paragraphs and compute the dot product between the matrices
   dot_products = np.dot(embeddedParagraphs, embeddedParagraphs.T)
@@ -67,9 +85,19 @@ def get_facts(getFactsRequest):
   article = getFactsRequest.article_text
   facts = nltk.download("punkt")
   facts = nltk.tokenize.sent_tokenize(article)
-  embeddedFacts = []
 
-  module = "https://tfhub.dev/google/universal-sentence-encoder/4"
+  if len(facts) == 0 or article == '':
+    return GetFactsResponse(
+      facts=[],
+      error= ValueError("Article text is empty"),
+  )
+  if len(facts) == 1:
+    return GetFactsResponse(
+      facts=facts[0],
+      error= None,
+  )
+
+  embeddedFacts = []
   embeddingModel = hub.load(module)
 
   for fact in facts:
@@ -83,15 +111,14 @@ def get_facts(getFactsRequest):
 
   # Return the top row as the result
   dot_product_sum = sum(dot_products)
-  logger.info('dot product sum')
-  logger.info(dot_product_sum)
-  top_fact_indices = np.argpartition(dot_product_sum, -3)[-3:]
-  logger.info('top_fact_index')
-  logger.info(top_fact_indices)
+  if len(dot_product_sum) >= 3:
+    top_fact_indices = np.argpartition(dot_product_sum, -3)[-3:]
+  else:
+    top_fact_indices = [i for i in range(len(dot_product_sum))]
 
   # Top fact
   top_facts = [facts[index] for index in top_fact_indices]
-  logger.info("top_facts")
+
   for fact in top_facts:
     logger.info(fact)
 
@@ -99,4 +126,6 @@ def get_facts(getFactsRequest):
     facts=top_facts,
     error= None,
   )
+
+
 

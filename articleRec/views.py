@@ -23,7 +23,7 @@ def hello_world_view(request):
   helloWorldRequest = req.validated_data
   res = hello_world(helloWorldRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['GET'])
@@ -39,7 +39,7 @@ def fetch_articles_view(request):
 
   res = fetch_articles(fetchArticlesRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['GET'])
@@ -55,7 +55,7 @@ def hydrate_article_view(request):
 
   res = hydrate_article(hydrateArticleRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['GET'])
@@ -65,10 +65,10 @@ def populate_articles_batch_view(request):
   """
   res = populate_articles_batch()
   #TODO: add response validation when converting from dataclass to JSON
-  return Response(res)
+  return Response(res.to_json())
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def populate_article_by_url_view(request):
   """
     Populates a single article based on the request.url
@@ -81,5 +81,5 @@ def populate_article_by_url_view(request):
 
   res = populate_article_by_url(populateArticleRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 

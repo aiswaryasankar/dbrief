@@ -21,11 +21,11 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-def fetch_articles(fetchArticlesRequest):
+def fetch_articles_controller(fetchArticlesRequest):
   """
     This function will fetch all the articles from the articleId list provided or fetch all articles in the db if no articleIds are provided.
   """
-  if fetchArticlesRequest.articleIds == None:
+  if fetchArticlesRequest.articleIds == None or len(fetchArticlesRequest.articleIds) == 0:
     return fetchAllArticles()
 
   return fetchArticlesById(fetchArticlesRequest.articleIds)
@@ -46,20 +46,9 @@ def populate_article(populateArticleRequest):
   """
   # Hydrate article
   url = populateArticleRequest.url
-  article, error = hydrate_article(url)
+  article, error = hydrate_article_controller(url)
   if error != None:
     return PopulateArticleResponse(url=url, error=error)
-
-  getFactsResponse = passageRetrievalHandler.get_facts(
-    GetFactsRequest(
-      article_text = article.text,
-    )
-  )
-  getTopPassageResponse = passageRetrievalHandler.get_top_passage(
-    GetTopPassageRequest(
-      article_text = article.text,
-    )
-  )
 
   # Save to database and fetch article id
   a = idl.Article(
@@ -70,11 +59,11 @@ def populate_article(populateArticleRequest):
     date=article.publish_date,
     imageURL=article.top_image,
     authors=None,
-    primaryTopic=None,
-    secondaryTopic=None,
-    summary=None,
+    topic=None,
+    parentTopic=None,
     polarizationScore=None,
-    isOpinion=None,
+    topPassage=None,
+    topFact=None,
   )
   saveArticleResponse = saveArticle(
     idl.SaveArticleRequest(
@@ -83,20 +72,22 @@ def populate_article(populateArticleRequest):
   )
 
   # If article is already in the db, don't populate remaining fields
-  if saveArticleResponse.error != None or not saveArticleResponse.created:
-    return PopulateArticleResponse(url=url, error=saveArticleResponse.error)
+  if saveArticleResponse.error != None:
+    return PopulateArticleResponse(url=url, error=str(ValueError("Article already in database")))
 
-  # Add document to topic model with text and doc id
-  addedToTopicModel = tpHandler.add_document(
-    idl.AddDocumentRequest(
-      documents=[article.text],
-      doc_ids=[saveArticleResponse.id],
-      tokenizer=None,
-      use_embedding_model_tokenizer=None,
+  # If the article is already in the database, its already added to the topic model and thus should not be readded
+  if saveArticleResponse.created:
+    # Add document to topic model with text and doc id
+    addedToTopicModel = tpHandler.add_document(
+      idl.AddDocumentRequest(
+        documents=[article.text],
+        doc_ids=[saveArticleResponse.id],
+        tokenizer=None,
+        use_embedding_model_tokenizer=None,
+      )
     )
-  )
-  if addedToTopicModel.error != None:
-    return PopulateArticleResponse(url=url, error=addedToTopicModel.error)
+    if addedToTopicModel.error != None:
+      return PopulateArticleResponse(url=url, error=addedToTopicModel.error)
 
   # Get topic for the document from the topic model
   getTopicResponse = tpHandler.get_document_topic(
@@ -106,24 +97,29 @@ def populate_article(populateArticleRequest):
       num_topics=1,
     )
   )
+  if getTopicResponse.error != None:
+    return PopulateArticleResponse(url=url, error=getTopicResponse.error)
+
   logger.info("Document topic")
   logger.info(getTopicResponse.topic_num)
   logger.info(getTopicResponse.topic_score)
   logger.info(getTopicResponse.topic_word)
 
-  if getTopicResponse.error != None:
-    return PopulateArticleResponse(url=url, error=getTopicResponse.error)
-
   # Get the subtopic for the document from the topic model
   getSubtopicResponse = tpHandler.get_document_topic(
     idl.GetDocumentTopicRequest(
       doc_ids=[saveArticleResponse.id],
-      reduced=False,
+      reduced=True,
       num_topics=1,
     )
   )
   if getSubtopicResponse.error != None:
     return PopulateArticleResponse(url=url, error=getSubtopicResponse.error)
+
+  logger.info("Document parent topic")
+  logger.info(getSubtopicResponse.topic_num)
+  logger.info(getSubtopicResponse.topic_score)
+  logger.info(getSubtopicResponse.topic_word)
 
   # Get the polarity of the document from the topic model
   getDocumentPolarityResponse = polarityHandler.get_document_polarity(
@@ -139,6 +135,7 @@ def populate_article(populateArticleRequest):
   if getDocumentPolarityResponse.polarity_score < 0.25 or getDocumentPolarityResponse.polarity_score > 0.75:
     isOpinion = True
 
+  topPassage, topFact = "", ""
   if isOpinion:
     # Get the top passage from the document
     getTopPassageResponse = passageRetrievalHandler.get_top_passage(
@@ -146,6 +143,12 @@ def populate_article(populateArticleRequest):
         article_text = article.text,
       )
     )
+    if getTopPassageResponse.error != None:
+      logger.warn("Failed to get top passage for article")
+      logger.warn(getTopPassageResponse.error)
+    else:
+      topPassage=getTopPassageResponse.passage
+
   else:
     # Get the facts from the document
     # Get the top passage from the document
@@ -154,21 +157,26 @@ def populate_article(populateArticleRequest):
         article_text = article.text,
       )
     )
+    if getFactsResponse.error != None:
+      logger.warn("Failed to get facts for article")
+      logger.warn(getFactsResponse.error)
+    else:
+      topFact = getFactsResponse.facts[0]
 
   # Update the db with additional data
   updatedArticle = idl.Article(
     id=saveArticleResponse.id,
-    primaryTopic = getTopicResponse.topic_word,
-    secondaryTopic = getSubtopicResponse.topic_word,
+    topic = getTopicResponse.topic_word,
+    parentTopic = getSubtopicResponse.topic_word,
     url=url,
     text=article.text,
     title=article.title,
     date=article.publish_date,
     imageURL=article.top_image,
     authors=None,
-    summary=None,
     polarizationScore=getDocumentPolarityResponse.polarity_score,
-    isOpinion=None,
+    topPassage=topPassage,
+    topFact=topFact,
   )
 
   # Save to database and fetch article id
@@ -213,7 +221,7 @@ def hydrate_articles_batch(urls):
   return articleEntities
 
 
-def hydrate_article(url):
+def hydrate_article_controller(url):
   """
     Given a url, will return a hydrated Article object
   """
