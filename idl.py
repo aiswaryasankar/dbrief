@@ -227,7 +227,7 @@ class HelloWorldRequest:
 @dataclass_json
 @dataclass
 class HelloWorldResponse:
-  name: str
+  name: str = "aiswarya"
 
 @dataclass
 class PopulateArticleRequest:
@@ -273,7 +273,7 @@ class SaveArticleResponse:
 
 @dataclass
 class FetchArticlesRequest:
-  articleIds: Optional[List[int]]
+  articleIds: Optional[List[int]] = []
 
 @dataclass_json
 @dataclass
