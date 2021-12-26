@@ -52,8 +52,6 @@ def populate_article(populateArticleRequest):
   logger.info(populateArticleRequest)
   # Hydrate article
   url = populateArticleRequest.url
-  logger.info("Populating article for url")
-  logger.info(url)
   article, error = hydrate_article_controller(url)
   if error != None:
     return PopulateArticleResponse(url=url, error=str(error))

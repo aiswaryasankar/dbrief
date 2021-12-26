@@ -54,22 +54,24 @@ def populate_articles_batch():
 
   urlList = process_rss_feed()
   numArticlesPopulated, numErrors = 0, 0
-  logger.info("Finished populating RSS feed")
 
   for url in urlList:
-    populateArticleRequest = PopulateArticleRequest(
-        url=url,
-      )
-    logger.info(populateArticleRequest)
-    populateArticleResponse = populate_article(
-      populateArticleRequest
-    )
-    logger.info(populateArticleResponse)
 
-    if populateArticleResponse.error != None:
-      numArticlesPopulated+=1
-    else:
-      numErrors+=1
+    res = hydrate_article_controller(url)
+    logger.info("Hydrate article controller response")
+    logger.info(res)
+
+    # populateArticleResponse = populate_article(
+    #   PopulateArticleRequest(
+    #     url=url,
+    #   )
+    # )
+    # logger.info(populateArticleResponse)
+
+    # if populateArticleResponse.error != None:
+    #   numErrors+=1
+    # else:
+    #   numArticlesPopulated+=1
 
   return PopulateArticlesResponse(
     num_articles_populated=numArticlesPopulated,
