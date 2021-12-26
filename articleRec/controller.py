@@ -52,7 +52,7 @@ def populate_article(populateArticleRequest):
   # Hydrate article
   url = populateArticleRequest.url
   logger.info("Populating article for url")
-  logger.info("url")
+  logger.info(url)
   article, error = hydrate_article_controller(url)
   if error != None:
     return PopulateArticleResponse(url=url, error=str(error))
@@ -216,7 +216,6 @@ def process_rss_feed():
     for article in feed.entries:
       try:
         urlList.append(article.links[0].href)
-        logger.info("Added URL")
         logger.info(article.links[0].href)
       except Exception as e:
         logger.error("Failed to parse url", extra={"error":e})
