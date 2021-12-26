@@ -57,21 +57,17 @@ def populate_articles_batch():
 
   for url in urlList[:10]:
 
-    res = hydrate_article_controller(url)
-    logger.info("Hydrate article controller response")
-    logger.info(res)
+    populateArticleResponse = populate_article(
+      PopulateArticleRequest(
+        url=url,
+      )
+    )
+    logger.info(populateArticleResponse)
 
-    # populateArticleResponse = populate_article(
-    #   PopulateArticleRequest(
-    #     url=url,
-    #   )
-    # )
-    # logger.info(populateArticleResponse)
-
-    # if populateArticleResponse.error != None:
-    #   numErrors+=1
-    # else:
-    #   numArticlesPopulated+=1
+    if populateArticleResponse.error != None:
+      numErrors+=1
+    else:
+      numArticlesPopulated+=1
 
   return PopulateArticlesResponse(
     num_articles_populated=numArticlesPopulated,
