@@ -216,6 +216,8 @@ def process_rss_feed():
     for article in feed.entries:
       try:
         urlList.append(article.links[0].href)
+        logger.info("Added URL")
+        logger.info(article.links[0].href)
       except Exception as e:
         logger.error("Failed to parse url", extra={"error":e})
         continue
