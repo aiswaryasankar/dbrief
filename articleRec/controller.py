@@ -51,6 +51,8 @@ def populate_article(populateArticleRequest):
   """
   # Hydrate article
   url = populateArticleRequest.url
+  logger.info("Populating article for url")
+  logger.info("url")
   article, error = hydrate_article_controller(url)
   if error != None:
     return PopulateArticleResponse(url=url, error=str(error))
@@ -75,6 +77,8 @@ def populate_article(populateArticleRequest):
       article=a,
     )
   )
+  logger.info("Saved hydrated article to db")
+  logger.info(article.text)
 
   # If article is already in the db, don't populate remaining fields
   if saveArticleResponse.error != None:
@@ -93,6 +97,8 @@ def populate_article(populateArticleRequest):
     )
     if addedToTopicModel.error != None:
       return PopulateArticleResponse(url=url, error=str(addedToTopicModel.error))
+
+  logger.info("Added document to the topic model")
 
   # Get topic for the document from the topic model
   getTopicResponse = tpHandler.get_document_topic(
@@ -153,6 +159,7 @@ def populate_article(populateArticleRequest):
       logger.warn(getTopPassageResponse.error)
     else:
       topPassage=getTopPassageResponse.passage
+      logger.info("Successfully extracted the topic passage")
 
   else:
     # Get the facts from the document
@@ -167,6 +174,7 @@ def populate_article(populateArticleRequest):
       logger.warn(getFactsResponse.error)
     else:
       topFact = getFactsResponse.facts[0]
+      logger.info("Successfully extracted the top fact")
 
   # Update the db with additional data
   updatedArticle = idl.Article(
@@ -183,6 +191,7 @@ def populate_article(populateArticleRequest):
     topPassage=topPassage,
     topFact=topFact,
   )
+  logger.info("Successfully updated the article")
 
   # Save to database and fetch article id
   updateArticleResponse = saveArticle(
