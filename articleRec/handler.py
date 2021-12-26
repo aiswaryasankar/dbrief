@@ -57,11 +57,15 @@ def populate_articles_batch():
   logger.info("Finished populating RSS feed")
 
   for url in urlList:
-    populateArticleResponse = populate_article(
-      PopulateArticleRequest(
+    populateArticleRequest = PopulateArticleRequest(
         url=url,
       )
+    logger.info(populateArticleRequest)
+    populateArticleResponse = populate_article(
+      populateArticleRequest
     )
+    logger.info(populateArticleResponse)
+
     if populateArticleResponse.error != None:
       numArticlesPopulated+=1
     else:

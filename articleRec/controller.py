@@ -49,6 +49,7 @@ def populate_article(populateArticleRequest):
       7. Get the primary passage of the article
       8. Update db with the additional data
   """
+  logger.info(populateArticleRequest)
   # Hydrate article
   url = populateArticleRequest.url
   logger.info("Populating article for url")
