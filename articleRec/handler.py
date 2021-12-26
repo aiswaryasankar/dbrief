@@ -55,7 +55,7 @@ def populate_articles_batch():
   urlList = process_rss_feed()
   numArticlesPopulated, numErrors = 0, 0
 
-  for url in urlList:
+  for url in urlList[:10]:
 
     res = hydrate_article_controller(url)
     logger.info("Hydrate article controller response")
