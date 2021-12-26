@@ -10,6 +10,11 @@ from .handler import *
   This file will handle the actual external facing API for the articleRec service. This includes mapping all the httpRequest / httpResponse objects to internal dataclass objects and performing the necessary validation steps that are specified in the serializers class. If there are any issues in this mapping / validation it will return an error immediately.  This file is necessary since service to service will make calls to the handler based on the dataclass request/ response whereas the front end will make requests through http which needs to be serialized from the JSON struct that's passed in.
 """
 
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+logger = logging.getLogger(__name__)
+logger.handlers = []
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 @api_view(['POST'])
 def hello_world_view(request):
@@ -17,20 +22,20 @@ def hello_world_view(request):
     Demo function for testing purposes
   """
   req = HelloWorldRequestSerializer(data=request.data)
-  print("request")
-  print(req)
+  logger.info("request")
+  logger.info(req)
   if not req.is_valid():
-    print("req not valid")
-    print(req.errors)
+    logger.info("req not valid")
+    logger.info(req.errors)
     return JsonResponse(req.errors)
 
-  print("req valid")
+  logger.info("req valid")
   helloWorldRequest = req.validated_data
-  print(req.data)
-  print(req.validated_data)
+  logger.info(req.data)
+  logger.info(req.validated_data)
   res = hello_world(helloWorldRequest)
-  print("res")
-  print(res)
+  logger.info("res")
+  logger.info(res)
   return Response(res.to_json())
 
 
@@ -82,21 +87,21 @@ def populate_article_by_url_view(request):
     Populates a single article based on the request.url
   """
   req = PopulateArticleRequestSerializer(data=request.data)
-  print("request")
-  print(req)
+  logger.info("request")
+  logger.info(req)
   if not req.is_valid():
-    print("req not valid")
-    print(req.errors)
+    logger.info("req not valid")
+    logger.info(req.errors)
     return JsonResponse(req.errors)
 
-  print("req valid")
+  logger.info("req valid")
   populateArticleRequest = req.validated_data
-  print(req.data)
-  print(req.validated_data)
+  logger.info(req.data)
+  logger.info(req.validated_data)
 
   res = populate_article_by_url(populateArticleRequest)
-  print("res")
-  print(res)
+  logger.info("res")
+  logger.info(res)
 
   return Response(res.to_json())
 
