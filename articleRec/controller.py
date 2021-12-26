@@ -2,13 +2,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 from newspaper import Article as ArticleAPI
+from newspaper import Config
 import feedparser
 from .models import ArticleModel
 import schedule
 import time
 import logging
-import logtail
-# from logtail import LogtailHandler
+from logtail import LogtailHandler
 import logging
 import datetime
 from topicModeling.training import Top2Vec
@@ -20,7 +20,7 @@ from polarityModel import handler as polarityHandler
 from passageRetrievalModel import handler as passageRetrievalHandler
 
 
-handler = logtail.LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
 logger.handlers = [handler]
 logger.setLevel(logging.INFO)
@@ -239,8 +239,12 @@ def hydrate_article_controller(url):
     Given a url, will return a hydrated Article object
   """
 
+  user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+  config = Config()
+  config.browser_user_agent = user_agent
+
   logger.info(url)
-  article = ArticleAPI(url)
+  article = ArticleAPI(url, config=config)
   article.download()
   try:
     article.parse()
