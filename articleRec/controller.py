@@ -53,7 +53,7 @@ def populate_article(populateArticleRequest):
   url = populateArticleRequest.url
   article, error = hydrate_article_controller(url)
   if error != None:
-    return PopulateArticleResponse(url=url, error=error)
+    return PopulateArticleResponse(url=url, error=str(error))
 
   # Save to database and fetch article id
   a = idl.Article(
@@ -92,7 +92,7 @@ def populate_article(populateArticleRequest):
       )
     )
     if addedToTopicModel.error != None:
-      return PopulateArticleResponse(url=url, error=addedToTopicModel.error)
+      return PopulateArticleResponse(url=url, error=str(addedToTopicModel.error))
 
   # Get topic for the document from the topic model
   getTopicResponse = tpHandler.get_document_topic(
@@ -103,7 +103,7 @@ def populate_article(populateArticleRequest):
     )
   )
   if getTopicResponse.error != None:
-    return PopulateArticleResponse(url=url, error=getTopicResponse.error)
+    return PopulateArticleResponse(url=url, error=str(getTopicResponse.error))
 
   logger.info("Document topic")
   logger.info(getTopicResponse.topic_num)
@@ -119,7 +119,7 @@ def populate_article(populateArticleRequest):
     )
   )
   if getSubtopicResponse.error != None:
-    return PopulateArticleResponse(url=url, error=getSubtopicResponse.error)
+    return PopulateArticleResponse(url=url, error=str(getSubtopicResponse.error))
 
   logger.info("Document parent topic")
   logger.info(getSubtopicResponse.topic_num)
@@ -191,7 +191,7 @@ def populate_article(populateArticleRequest):
     )
   )
   if updateArticleResponse.error != None:
-    return PopulateArticleResponse(url=url, error=updateArticleResponse.error)
+    return PopulateArticleResponse(url=url, error=str(updateArticleResponse.error))
 
   return PopulateArticleResponse(url=url, error=None)
 

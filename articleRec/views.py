@@ -17,12 +17,20 @@ def hello_world_view(request):
     Demo function for testing purposes
   """
   req = HelloWorldRequestSerializer(data=request.data)
+  print("request")
+  print(req)
   if not req.is_valid():
+    print("req not valid")
+    print(req.errors)
     return JsonResponse(req.errors)
 
+  print("req valid")
   helloWorldRequest = req.validated_data
+  print(req.data)
+  print(req.validated_data)
   res = hello_world(helloWorldRequest)
-
+  print("res")
+  print(res)
   return Response(res.to_json())
 
 
@@ -74,12 +82,21 @@ def populate_article_by_url_view(request):
     Populates a single article based on the request.url
   """
   req = PopulateArticleRequestSerializer(data=request.data)
+  print("request")
+  print(req)
   if not req.is_valid():
+    print("req not valid")
+    print(req.errors)
     return JsonResponse(req.errors)
 
+  print("req valid")
   populateArticleRequest = req.validated_data
+  print(req.data)
+  print(req.validated_data)
 
   res = populate_article_by_url(populateArticleRequest)
+  print("res")
+  print(res)
 
   return Response(res.to_json())
 
