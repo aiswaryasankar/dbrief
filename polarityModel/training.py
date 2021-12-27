@@ -119,8 +119,8 @@ class XLNetPredict(torch.nn.Module):
 
     outputs = model(input_ids=input_ids, attention_mask=attention_mask)
     logits = outputs.sigmoid().detach().cpu().numpy()
-    logger.info("logits: ", logits)
-    logger.info("rounded: ", round(logits[0][0]))
+    logger.info(logits)
+    logger.info(round(logits[0][0]))
 
     return logits[0][0]
 
