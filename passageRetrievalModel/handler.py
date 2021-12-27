@@ -12,7 +12,7 @@ from idl import *
 import tensorflow_hub as hub
 import numpy as np
 import logging
-import nltk.data
+import nltk
 from logtail import LogtailHandler
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -35,8 +35,8 @@ def get_top_passage(getTopPassageRequest):
     )
 
   # Enforce that a paragraph has at least 2 sentences
-  tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-  paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(tokenizer.tokenize(paragraph)) >= 2]
+  facts = nltk.download("punkt")
+  paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
 
   if len(paragraphs) == 0:
     return GetTopPassageResponse(
@@ -87,8 +87,8 @@ def get_facts(getFactsRequest):
     Get facts from the article and return a list of top facts
   """
   article = getFactsRequest.article_text
-  tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-  facts = tokenizer.tokenize(article)
+  facts = nltk.download("punkt")
+  facts = nltk.tokenize.sent_tokenize(article)
 
   if len(facts) == 0 or article == '':
     return GetFactsResponse(
