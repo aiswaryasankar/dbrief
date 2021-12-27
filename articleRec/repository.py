@@ -10,7 +10,9 @@ from idl import *
     - Update
 """
 
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
+logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 
@@ -80,7 +82,6 @@ def fetchAllArticles():
   """
 
   articleList = []
-  print(ArticleModel.objects.values())
 
   for article in ArticleModel.objects.all():
     try:
