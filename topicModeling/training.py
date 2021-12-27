@@ -153,7 +153,7 @@ class Top2Vec:
 
     def __init__(self,
                  documents,
-                 min_count=50,
+                 min_count=10,
                  embedding_model='doc2vec',
                  embedding_model_path=None,
                  speed='learn',

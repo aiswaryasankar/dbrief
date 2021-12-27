@@ -55,7 +55,7 @@ def populate_articles_batch():
   urlList = process_rss_feed()
   numArticlesPopulated, numErrors = 0, 0
 
-  for url in urlList[:10]:
+  for url in urlList:
 
     populateArticleResponse = populate_article(
       PopulateArticleRequest(
