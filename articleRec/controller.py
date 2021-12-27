@@ -79,7 +79,7 @@ def populate_article(populateArticleRequest):
 
   # If article is already in the db, don't populate remaining fields
   if saveArticleResponse.error != None:
-    return PopulateArticleResponse(url=url, error=str(ValueError("Article already in database")))
+    return PopulateArticleResponse(url=url, error=str(ValueError("Failed to save article to database")))
 
   # If the article is already in the database, its already added to the topic model and thus should not be readded
   if saveArticleResponse.created:
