@@ -83,6 +83,7 @@ class XLNetPredict(torch.nn.Module):
     model_state_dict = checkpoint['state_dict']
     model = XLNetForPolarizationClassification(num_labels=2)
     model.load_state_dict(model_state_dict)
+    logger.info("Successfully loaded the polarization model")
 
     return model
 
@@ -109,6 +110,7 @@ class XLNetPredict(torch.nn.Module):
     attention_mask = pad_sequences(encoded_text['attention_mask'], maxlen=MAX_LEN, dtype=torch.Tensor ,truncating="post",padding="post")
     attention_mask = attention_mask.astype(dtype = 'int64')
     attention_mask = torch.tensor(attention_mask)
+    logger.info("Prepared the input for polarization model")
 
     input_ids = input_ids.reshape(1,512)
     attention_mask = attention_mask
@@ -117,8 +119,8 @@ class XLNetPredict(torch.nn.Module):
 
     outputs = model(input_ids=input_ids, attention_mask=attention_mask)
     logits = outputs.sigmoid().detach().cpu().numpy()
-    logging.info("logits: ", logits)
-    logging.info("rounded: ", round(logits[0][0]))
+    logger.info("logits: ", logits)
+    logger.info("rounded: ", round(logits[0][0]))
 
     return logits[0][0]
 

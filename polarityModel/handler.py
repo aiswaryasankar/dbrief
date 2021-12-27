@@ -33,6 +33,8 @@ def get_document_polarity(GetDocumentPolarityRequest):
 
   # Pass in the source and query
   polarity_score = xlNetPolarityModel.predict(GetDocumentPolarityRequest.query)
+  logger.info("Polarity score")
+  logger.info(polarity_score)
 
   return GetDocumentPolarityResponse(
     polarity_score = polarity_score,

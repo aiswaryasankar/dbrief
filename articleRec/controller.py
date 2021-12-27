@@ -95,7 +95,7 @@ def populate_article(populateArticleRequest):
     if addedToTopicModel.error != None:
       return PopulateArticleResponse(url=url, error=str(addedToTopicModel.error))
 
-  logger.info("Added document to the topic model")
+    logger.info("Added document to the topic model")
 
   # Get topic for the document from the topic model
   getTopicResponse = tpHandler.get_document_topic(
