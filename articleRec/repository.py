@@ -1,6 +1,7 @@
 from .models import ArticleModel
 import logging
 from idl import *
+from logtail import LogtailHandler
 
 """
   This file will include all the basic database CRUD operations including:
