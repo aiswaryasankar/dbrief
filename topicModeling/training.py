@@ -1454,6 +1454,9 @@ class Top2Vec:
             [0,1] <Reduced Topic 3> contains original Topics 0 and 1
             ...]
         """
+        if num_topics > len(self.topic_vectors):
+            num_topics = int(self.topic_vectors / 2)
+
         self._validate_hierarchical_reduction_num_topics(num_topics)
 
         num_topics_current = self.topic_vectors.shape[0]
