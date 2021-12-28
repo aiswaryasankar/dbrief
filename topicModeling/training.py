@@ -941,22 +941,22 @@ class Top2Vec:
 
     def _validate_document_ids_add_doc(self, documents, document_ids):
         if document_ids is None:
-            raise ValueError("Document ids need to be provided.")
+            return ValueError("Document ids need to be provided.")
         if len(documents) != len(document_ids):
-            raise ValueError("Document ids need to match number of documents.")
+            return ValueError("Document ids need to match number of documents.")
         if len(document_ids) != len(set(document_ids)):
-            raise ValueError("Document ids need to be unique.")
+            return ValueError("Document ids need to be unique.")
 
         if len(set(document_ids).intersection(self.document_ids)) > 0:
-            raise ValueError("Some document ids already exist in model.")
+            return ValueError("Some document ids already exist in model.")
 
         if self.doc_id_type == np.str_:
             if not all((isinstance(doc_id, str) or isinstance(doc_id, np.str_)) for doc_id in document_ids):
-                raise ValueError("Document ids need to be of type str.")
+                return ValueError("Document ids need to be of type str.")
 
         if self.doc_id_type == np.int_:
             if not all((isinstance(doc_id, int) or isinstance(doc_id, np.int_)) for doc_id in document_ids):
-                raise ValueError("Document ids need to be of type int.")
+                return ValueError("Document ids need to be of type int.")
 
     @staticmethod
     def _validate_documents(documents):
@@ -1178,7 +1178,9 @@ class Top2Vec:
 
         # add document ids
         if self.document_ids_provided is True:
-            self._validate_document_ids_add_doc(documents, doc_ids)
+            err = self._validate_document_ids_add_doc(documents, doc_ids)
+            if err != None:
+                return err
             doc_ids_len = len(self.document_ids)
             self.document_ids = np.append(self.document_ids, doc_ids)
             self.doc_id2index.update(dict(zip(doc_ids, list(range(doc_ids_len, doc_ids_len + len(doc_ids))))))
@@ -1191,7 +1193,7 @@ class Top2Vec:
             self.document_ids = np.append(self.document_ids, doc_ids)
             self.doc_id2index.update(dict(zip(doc_ids, list(range(doc_ids_len, doc_ids_len + len(doc_ids))))))
         else:
-            raise ValueError("doc_ids cannot be used because they were not provided to model during training.")
+            return ValueError("doc_ids cannot be used because they were not provided to model during training.")
 
         if self.embedding_model == "doc2vec":
             docs_processed = [tokenizer(doc) for doc in documents]

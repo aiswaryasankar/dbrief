@@ -95,9 +95,12 @@ def add_document(AddDocumentRequest):
     Add a one off document to the topic model.  This endpoint takes in the article text, doc_ids if provided and adds the document to the topic model so that you can fetch the topic for the article in the future.
   """
   top2vecModel = Top2Vec.load(topicModelFile)
-  res = top2vecModel.add_documents(AddDocumentRequest.documents, AddDocumentRequest.doc_ids)
+  err = top2vecModel.add_documents(AddDocumentRequest.documents, AddDocumentRequest.doc_ids)
+  if err != None:
+    return AddDocumentRequest(error=err)
+
   top2vecModel.save(topicModelFile)
-  return AddDocumentResponse(error=res)
+  return AddDocumentResponse(error=None)
 
 
 def query_documents_url(request, QueryDocumentsRequest):
