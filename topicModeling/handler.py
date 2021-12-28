@@ -97,7 +97,7 @@ def add_document(AddDocumentRequest):
   top2vecModel = Top2Vec.load(topicModelFile)
   err = top2vecModel.add_documents(AddDocumentRequest.documents, AddDocumentRequest.doc_ids)
   if err != None:
-    return AddDocumentRequest(error=err)
+    return AddDocumentResponse(error=err)
 
   top2vecModel.save(topicModelFile)
   return AddDocumentResponse(error=None)
