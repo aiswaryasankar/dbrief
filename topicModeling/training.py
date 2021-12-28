@@ -180,9 +180,9 @@ class Top2Vec:
 
         # validate documents
         if not (isinstance(documents, list) or isinstance(documents, np.ndarray)):
-            raise ValueError("Documents need to be a list of strings")
+            return ValueError("Documents need to be a list of strings")
         if not all((isinstance(doc, str) or isinstance(doc, np.str_)) for doc in documents):
-            raise ValueError("Documents need to be a list of strings")
+            return ValueError("Documents need to be a list of strings")
         if keep_documents:
             self.documents = np.array(documents, dtype="object")
         else:
@@ -191,19 +191,19 @@ class Top2Vec:
         # validate document ids
         if document_ids is not None:
             if not (isinstance(document_ids, list) or isinstance(document_ids, np.ndarray)):
-                raise ValueError("Documents ids need to be a list of str or int")
+                return ValueError("Documents ids need to be a list of str or int")
 
             if len(documents) != len(document_ids):
-                raise ValueError("Document ids need to match number of documents")
+                return ValueError("Document ids need to match number of documents")
             elif len(document_ids) != len(set(document_ids)):
-                raise ValueError("Document ids need to be unique")
+                return ValueError("Document ids need to be unique")
 
             if all((isinstance(doc_id, str) or isinstance(doc_id, np.str_)) for doc_id in document_ids):
                 self.doc_id_type = np.str_
             elif all((isinstance(doc_id, int) or isinstance(doc_id, np.int_)) for doc_id in document_ids):
                 self.doc_id_type = np.int_
             else:
-                raise ValueError("Document ids need to be str or int")
+                return ValueError("Document ids need to be str or int")
 
             self.document_ids_provided = True
             self.document_ids = np.array(document_ids)
@@ -240,14 +240,14 @@ class Top2Vec:
                 negative = 5
                 epochs = 1
             else:
-                raise ValueError("speed parameter needs to be one of: fast-learn, learn or deep-learn")
+                return ValueError("speed parameter needs to be one of: fast-learn, learn or deep-learn")
 
             if workers is None:
                 pass
             elif isinstance(workers, int):
                 pass
             else:
-                raise ValueError("workers needs to be an int")
+                return ValueError("workers needs to be an int")
 
             doc2vec_args = {"vector_size": 300,
                             "min_count": min_count,
@@ -306,7 +306,7 @@ class Top2Vec:
             vocab_inds = np.where(word_counts > min_count)[0]
 
             if len(vocab_inds) == 0:
-                raise ValueError(f"A min_count of {min_count} results in "
+                return ValueError(f"A min_count of {min_count} results in "
                                  f"all words being ignored, choose a lower value.")
             self.vocab = [words[ind] for ind in vocab_inds]
 
@@ -326,7 +326,7 @@ class Top2Vec:
                 self.document_vectors = self._embed_documents(train_corpus)
 
         else:
-            raise ValueError(f"{embedding_model} is an invalid embedding model.")
+            return ValueError(f"{embedding_model} is an invalid embedding model.")
 
         # create 5D embeddings of documents
         logger.info('Creating lower dimension embedding of documents')
@@ -448,7 +448,7 @@ class Top2Vec:
         # load document index
         if top2vec_model.documents_indexed:
             if not _HAVE_HNSWLIB:
-                raise ImportError(f"Cannot load document index.\n\n"
+                return ImportError(f"Cannot load document index.\n\n"
                                   "Try: pip install top2vec[indexing]\n\n"
                                   "Alternatively try: pip install hnswlib")
 
@@ -470,7 +470,7 @@ class Top2Vec:
         if top2vec_model.words_indexed:
 
             if not _HAVE_HNSWLIB:
-                raise ImportError(f"Cannot load word index.\n\n"
+                return ImportError(f"Cannot load word index.\n\n"
                                   "Try: pip install top2vec[indexing]\n\n"
                                   "Alternatively try: pip install hnswlib")
 
@@ -783,29 +783,29 @@ class Top2Vec:
     @staticmethod
     def _check_hnswlib_status():
         if not _HAVE_HNSWLIB:
-            raise ImportError(f"Indexing is not available.\n\n"
+            return ImportError(f"Indexing is not available.\n\n"
                               "Try: pip install top2vec[indexing]\n\n"
                               "Alternatively try: pip install hnswlib")
 
     def _check_document_index_status(self):
         if self.document_index is None:
-            raise ImportError("There is no document index.\n\n"
+            return ImportError("There is no document index.\n\n"
                               "Call index_document_vectors method before setting use_index=True.")
 
     def _check_word_index_status(self):
         if self.word_index is None:
-            raise ImportError("There is no word index.\n\n"
+            return ImportError("There is no word index.\n\n"
                               "Call index_word_vectors method before setting use_index=True.")
 
     def _check_import_status(self):
         if self.embedding_model != 'distiluse-base-multilingual-cased':
             if not _HAVE_TENSORFLOW:
-                raise ImportError(f"{self.embedding_model} is not available.\n\n"
+                return ImportError(f"{self.embedding_model} is not available.\n\n"
                                   "Try: pip install top2vec[sentence_encoders]\n\n"
                                   "Alternatively try: pip install tensorflow tensorflow_hub tensorflow_text")
         else:
             if not _HAVE_TORCH:
-                raise ImportError(f"{self.embedding_model} is not available.\n\n"
+                return ImportError(f"{self.embedding_model} is not available.\n\n"
                                   "Try: pip install top2vec[sentence_transformers]\n\n"
                                   "Alternatively try: pip install torch sentence_transformers")
 
@@ -848,29 +848,29 @@ class Top2Vec:
 
     def _validate_hierarchical_reduction(self):
         if self.hierarchy is None:
-            raise ValueError("Hierarchical topic reduction has not been performed.")
+            return ValueError("Hierarchical topic reduction has not been performed.")
 
     def _validate_hierarchical_reduction_num_topics(self, num_topics):
         current_num_topics = len(self.topic_vectors)
         if num_topics >= current_num_topics:
-            raise ValueError(f"Number of topics must be less than {current_num_topics}.")
+            return ValueError(f"Number of topics must be less than {current_num_topics}.")
 
     def _validate_num_docs(self, num_docs):
         self._less_than_zero(num_docs, "num_docs")
         document_count = len(self.doc_top)
         if num_docs > document_count:
-            raise ValueError(f"num_docs cannot exceed the number of documents: {document_count}.")
+            return ValueError(f"num_docs cannot exceed the number of documents: {document_count}.")
 
     def _validate_num_topics(self, num_topics, reduced):
         self._less_than_zero(num_topics, "num_topics")
         if reduced:
             topic_count = len(self.topic_vectors_reduced)
             if num_topics > topic_count:
-                raise ValueError(f"num_topics cannot exceed the number of reduced topics: {topic_count}.")
+                return ValueError(f"num_topics cannot exceed the number of reduced topics: {topic_count}.")
         else:
             topic_count = len(self.topic_vectors)
             if num_topics > topic_count:
-                raise ValueError(f"num_topics cannot exceed the number of topics: {topic_count}.")
+                return ValueError(f"num_topics cannot exceed the number of topics: {topic_count}.")
 
     def _validate_topic_num(self, topic_num, reduced):
         self._less_than_zero(topic_num, "topic_num")
@@ -878,29 +878,29 @@ class Top2Vec:
         if reduced:
             topic_count = len(self.topic_vectors_reduced) - 1
             if topic_num > topic_count:
-                raise ValueError(f"Invalid topic number: valid reduced topics numbers are 0 to {topic_count}.")
+                return ValueError(f"Invalid topic number: valid reduced topics numbers are 0 to {topic_count}.")
         else:
             topic_count = len(self.topic_vectors) - 1
             if topic_num > topic_count:
-                raise ValueError(f"Invalid topic number: valid original topics numbers are 0 to {topic_count}.")
+                return ValueError(f"Invalid topic number: valid original topics numbers are 0 to {topic_count}.")
 
     def _validate_topic_search(self, topic_num, num_docs, reduced):
         self._less_than_zero(num_docs, "num_docs")
         if reduced:
             if num_docs > self.topic_sizes_reduced[topic_num]:
-                raise ValueError(f"Invalid number of documents: reduced topic {topic_num}"
+                return ValueError(f"Invalid number of documents: reduced topic {topic_num}"
                                  f" only has {self.topic_sizes_reduced[topic_num]} documents.")
         else:
             if num_docs > self.topic_sizes[topic_num]:
-                raise ValueError(f"Invalid number of documents: original topic {topic_num}"
+                return ValueError(f"Invalid number of documents: original topic {topic_num}"
                                  f" only has {self.topic_sizes[topic_num]} documents.")
 
     def _validate_doc_ids(self, doc_ids, doc_ids_neg):
 
         if not (isinstance(doc_ids, list) or isinstance(doc_ids, np.ndarray)):
-            raise ValueError("doc_ids must be a list of string or int.")
+            return ValueError("doc_ids must be a list of string or int.")
         if not (isinstance(doc_ids_neg, list) or isinstance(doc_ids_neg, np.ndarray)):
-            raise ValueError("doc_ids_neg must be a list of string or int.")
+            return ValueError("doc_ids_neg must be a list of string or int.")
 
         if isinstance(doc_ids, np.ndarray):
             doc_ids = list(doc_ids)
@@ -912,18 +912,18 @@ class Top2Vec:
         if self.document_ids is not None:
             for doc_id in doc_ids_all:
                 if doc_id not in self.doc_id2index:
-                    raise ValueError(f"{doc_id} is not a valid document id.")
+                    return ValueError(f"{doc_id} is not a valid document id.")
         elif min(doc_ids) < 0:
-            raise ValueError(f"{min(doc_ids)} is not a valid document id.")
+            return ValueError(f"{min(doc_ids)} is not a valid document id.")
         elif max(doc_ids) > len(self.doc_top) - 1:
-            raise ValueError(f"{max(doc_ids)} is not a valid document id.")
+            return ValueError(f"{max(doc_ids)} is not a valid document id.")
 
     def _validate_keywords(self, keywords, keywords_neg):
         if not (isinstance(keywords, list) or isinstance(keywords, np.ndarray)):
-            raise ValueError("keywords must be a list of strings.")
+            return ValueError("keywords must be a list of strings.")
 
         if not (isinstance(keywords_neg, list) or isinstance(keywords_neg, np.ndarray)):
-            raise ValueError("keywords_neg must be a list of strings.")
+            return ValueError("keywords_neg must be a list of strings.")
 
         keywords_lower = [keyword.lower() for keyword in keywords]
         keywords_neg_lower = [keyword.lower() for keyword in keywords_neg]
@@ -935,7 +935,7 @@ class Top2Vec:
 
         for word in keywords_lower + keywords_neg_lower:
             if word not in vocab:
-                raise ValueError(f"'{word}' has not been learned by the model so it cannot be searched.")
+                return ValueError(f"'{word}' has not been learned by the model so it cannot be searched.")
 
         return keywords_lower, keywords_neg_lower
 
@@ -961,19 +961,19 @@ class Top2Vec:
     @staticmethod
     def _validate_documents(documents):
         if not all((isinstance(doc, str) or isinstance(doc, np.str_)) for doc in documents):
-            raise ValueError("Documents need to be a list of strings.")
+            return ValueError("Documents need to be a list of strings.")
 
     @staticmethod
     def _validate_query(query):
         if not isinstance(query, str) or isinstance(query, np.str_):
-            raise ValueError("Query needs to be a string.")
+            return ValueError("Query needs to be a string.")
 
     def _validate_vector(self, vector):
         if not isinstance(vector, np.ndarray):
-            raise ValueError("Vector needs to be a numpy array.")
+            return ValueError("Vector needs to be a numpy array.")
         vec_size = self._get_document_vectors().shape[1]
         if not vector.shape[0] == vec_size:
-            raise ValueError(f"Vector needs to be of {vec_size} dimensions.")
+            return ValueError(f"Vector needs to be of {vec_size} dimensions.")
 
     def index_document_vectors(self, ef_construction=200, M=64):
         """
@@ -1455,7 +1455,7 @@ class Top2Vec:
             ...]
         """
         if num_topics > len(self.topic_vectors):
-            num_topics = int(self.topic_vectors / 2)
+            num_topics = int(len(self.topic_vectors) / 2)
 
         self._validate_hierarchical_reduction_num_topics(num_topics)
 
