@@ -35,6 +35,8 @@ def retrain_topic_model(request):
     )
 
   articles = fetchAllArticlesResponse.articleList
+  logger.info("Fetched all articles from the db")
+  logger.info(len(articles))
   data = [article.text for article in articles]
   doc_ids = [article.id for article in articles]
 
