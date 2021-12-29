@@ -2,6 +2,8 @@ from dataclasses import *
 import dataclasses
 import json
 
+from nltk import data
+
 from marshmallow import EXCLUDE, fields, pre_dump, Schema, validate
 import requests
 import desert
@@ -20,6 +22,7 @@ from dataclasses_json import dataclass_json
 #
 ###
 
+@dataclass_json
 @dataclass
 class User:
   FirebaseAuthID: int
@@ -43,6 +46,7 @@ class Day(Enum):
   SATURDAY = 6
   SUNDAY = 7
 
+@dataclass_json
 @dataclass
 class NewsletterConfig:
   DeliveryTime: time.time
@@ -51,6 +55,7 @@ class NewsletterConfig:
   RecurrenceType: NewsletterRecurrenceType
   IsEnabled: bool
 
+@dataclass_json
 @dataclass
 class ArticleInfo:
   Id: int
@@ -60,6 +65,7 @@ class ArticleInfo:
   ImageURL: str
   TopPassage: str
 
+@dataclass_json
 @dataclass
 class TopicInfo:
   TopicID: int
@@ -67,6 +73,7 @@ class TopicInfo:
   PrimaryTopicName: str
   TopicPageURL: str
 
+@dataclass_json
 @dataclass
 class Quote:
   Text: str
@@ -77,14 +84,17 @@ class Quote:
   Timestamp: time.time
   ArticleID: int
 
+@dataclass_json
 @dataclass
 class TimelineSegment:
   Quote: Quote
 
+@dataclass_json
 @dataclass
 class Fact:
  Quote: Quote
 
+@dataclass_json
 @dataclass
 class Opinion:
   Quote: Quote
@@ -100,6 +110,7 @@ class TopicPage:
   TopArticleID: int
   TopicID: int
 
+@dataclass_json
 @dataclass
 class TopicModal:
   Topic: str
@@ -108,6 +119,7 @@ class TopicModal:
   Image: str
   Facts: List[Fact]
 
+@dataclass_json
 @dataclass
 class Author:
   ID: int
@@ -119,6 +131,18 @@ class Author:
 # TopicModel
 #
 ###
+
+@dataclass
+class GetTopicsRequest:
+  num_topics: int
+  reduced: bool
+
+@dataclass_json
+@dataclass
+class GetTopicsResponse:
+  topic_words: List[str]
+  topic_nums: List[int]
+  error: Optional[Exception]
 
 @dataclass
 class SearchDocumentsByTopicRequest:

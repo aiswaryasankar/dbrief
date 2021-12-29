@@ -142,9 +142,65 @@ def getTopicPage(getTopicPageByURLRequest):
   )
 
 
-def whatsHappening(request):
-  pass
+def whatsHappening(whatsHappeningRequest):
+  """
+    This endpoint will get a list of the top x topics, select the top article per topic to include in the side bar for whatsHappening and then hydrate each of the articles into the appropriate whatsHappeningResponse struct.
+  """
+  getTopicsResponse = get_topics(GetTopicsRequest(
+    num_topics=5,
+    reduced = False,
+  ))
+  if getTopicsResponse.error != None:
+    return WhatsHappeningResponse(
+      articles=[],
+      error=getTopicsResponse.error
+    )
 
+  articleIds = []
+
+  # For each topic returned, get the top article for the topic
+  for topic in getTopicsResponse.topic_nums:
+    searchDocumentsByTopicResponse = search_documents_by_topic(
+      SearchDocumentsByTopicRequest(
+        topic_num = topic,
+        num_docs=2,
+      )
+    )
+    # No hard failure if one of the search requests fails
+    if searchDocumentsByTopicResponse.error != None:
+      logger.warn("Failed to get documents for topic")
+      continue
+
+    articleIds.append(searchDocumentsByTopicResponse.doc_ids)
+
+  # Fetch all the articles from the database
+  fetchArticlesByIdResponse = fetchArticlesById(
+    FetchArticlesRequest(
+      articleIds=articleIds,
+    )
+  )
+  if fetchArticlesByIdResponse.error != None:
+    return WhatsHappeningResponse(
+      articles=[],
+      error=fetchArticlesByIdResponse.error
+    )
+
+  articleInfo = []
+  for article in fetchArticlesByIdResponse.articleList:
+    articleInfo.append(
+      ArticleInfo(
+        Id= article.id,
+        Title=article.title,
+        TopicName=article.topic,
+        ImageURL=article.imageURL,
+        TopPassage=article.topPassage,
+      )
+    )
+
+  return WhatsHappeningResponse(
+    articles=articleInfo,
+    error = None,
+  )
 
 
 def getRecommendedTopicsForUser(request):

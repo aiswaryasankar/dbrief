@@ -38,7 +38,7 @@ def whats_happening_view(request):
   whatsHappeningRequest = req.validated_data
   res = whatsHappening(whatsHappeningRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])

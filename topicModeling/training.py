@@ -844,7 +844,7 @@ class Top2Vec:
     @staticmethod
     def _less_than_zero(num, var_name):
         if num < 0:
-            raise ValueError(f"{var_name} cannot be less than 0.")
+            return ValueError(f"{var_name} cannot be less than 0.")
 
     def _validate_hierarchical_reduction(self):
         if self.hierarchy is None:
@@ -1166,13 +1166,19 @@ class Top2Vec:
         use_embedding_model_tokenizer: bool (Optional, default False)
             If using an embedding model other than doc2vec, use the model's
             tokenizer for document embedding.
+        Returns
+        -------
+        error: Exception
         """
         # if tokenizer is not passed use default
         if tokenizer is None:
             tokenizer = default_tokenizer
 
         # add documents
-        self._validate_documents(documents)
+        err = self._validate_documents(documents)
+        if err != None:
+            return err
+
         if self.documents is not None:
             self.documents = np.append(self.documents, documents)
 
@@ -1255,9 +1261,14 @@ class Top2Vec:
         doc_ids: List of str, int
             A unique value per document that is used for referring to documents
             in search results.
+        Returns
+        -------
+        error: Exception
         """
         # make sure documents exist
-        self._validate_doc_ids(doc_ids, doc_ids_neg=[])
+        err = self._validate_doc_ids(doc_ids, doc_ids_neg=[])
+        if err != None:
+            return err
 
         # update index
         if self.documents_indexed:
@@ -1303,6 +1314,8 @@ class Top2Vec:
         if self.hierarchy is not None:
             self._unassign_documents_from_topic(doc_indexes, hierarchy=True)
 
+        return None
+
     def get_num_topics(self, reduced=False):
         """
         Get number of topics.
@@ -1317,13 +1330,16 @@ class Top2Vec:
         Returns
         -------
         num_topics: int
+        error: Exception
         """
 
         if reduced:
-            self._validate_hierarchical_reduction()
-            return len(self.topic_vectors_reduced)
+            err = self._validate_hierarchical_reduction()
+            if err != None:
+                return 0, err
+            return len(self.topic_vectors_reduced), None
         else:
-            return len(self.topic_vectors)
+            return len(self.topic_vectors), None
 
     def get_topic_sizes(self, reduced=False):
         """
@@ -1343,12 +1359,15 @@ class Top2Vec:
             The number of documents most similar to the topic.
         topic_nums: array of int, shape(num_topics)
             The unique number of every topic will be returned.
+        error: Exception
         """
         if reduced:
-            self._validate_hierarchical_reduction()
-            return np.array(self.topic_sizes_reduced.values), np.array(self.topic_sizes_reduced.index)
+            err = self._validate_hierarchical_reduction()
+            if err != None:
+                return [], [], err
+            return np.array(self.topic_sizes_reduced.values), np.array(self.topic_sizes_reduced.index), None
         else:
-            return np.array(self.topic_sizes.values), np.array(self.topic_sizes.index)
+            return np.array(self.topic_sizes.values), np.array(self.topic_sizes.index), None
 
     def get_topics(self, num_topics=None, reduced=False):
         """
@@ -1387,27 +1406,35 @@ class Top2Vec:
             ...]
         topic_nums: array of int, shape(num_topics)
             The unique number of every topic will be returned.
+        error: Exception
+
         """
         if reduced:
-            self._validate_hierarchical_reduction()
+            err = self._validate_hierarchical_reduction()
+            if err != None:
+                return [], [], [], err
 
             if num_topics is None:
                 num_topics = len(self.topic_vectors_reduced)
             else:
-                self._validate_num_topics(num_topics, reduced)
+                err = self._validate_num_topics(num_topics, reduced)
+                if err != None:
+                    return [], [], [], err
 
             topic_words = [topic_words[0] for topic_words in self.topic_words_reduced[0:num_topics]]
             return topic_words, self.topic_word_scores_reduced[0:num_topics][:][0], np.array(
-                range(0, num_topics))
+                range(0, num_topics)), None
         else:
 
             if num_topics is None:
                 num_topics = len(self.topic_vectors)
             else:
-                self._validate_num_topics(num_topics, reduced)
+                err = self._validate_num_topics(num_topics, reduced)
+                if err != None:
+                    return [], [], [], err
 
             topic_words = [topic_words[0] for topic_words in self.topic_words[0:num_topics]]
-            return topic_words, self.topic_word_scores[0:num_topics][:][0], np.array(range(0, num_topics))
+            return topic_words, self.topic_word_scores[0:num_topics][:][0], np.array(range(0, num_topics)), None
 
     def get_topic_hierarchy(self):
         """
@@ -1426,11 +1453,14 @@ class Top2Vec:
             [2,4] <Reduced Topic 1> contains original Topics 2 and 4
             [0,1] <Reduced Topic 3> contains original Topics 0 and 1
             ...]
+        error: Exception
         """
 
-        self._validate_hierarchical_reduction()
+        err = self._validate_hierarchical_reduction()
+        if err != None:
+            return [], err
 
-        return self.hierarchy
+        return self.hierarchy, None
 
     def hierarchical_topic_reduction(self, num_topics):
         """
@@ -1453,11 +1483,14 @@ class Top2Vec:
             [2,4] <Reduced Topic 1> contains original Topics 2 and 4
             [0,1] <Reduced Topic 3> contains original Topics 0 and 1
             ...]
+        error: exception
         """
         if num_topics > len(self.topic_vectors):
             num_topics = int(len(self.topic_vectors) / 2)
 
-        self._validate_hierarchical_reduction_num_topics(num_topics)
+        err = self._validate_hierarchical_reduction_num_topics(num_topics)
+        if err != None:
+            return [], err
 
         num_topics_current = self.topic_vectors.shape[0]
         top_vecs = self.topic_vectors
@@ -1547,7 +1580,7 @@ class Top2Vec:
         # re-order topics
         self._reorder_topics(hierarchy=True)
 
-        return self.hierarchy
+        return self.hierarchy, None
 
     def query_documents(self, query, num_docs, return_documents=True, use_index=False, ef=None, tokenizer=None):
         """
@@ -1587,11 +1620,17 @@ class Top2Vec:
         doc_ids: array of int, shape(num_docs)
             Unique ids of documents. If ids were not given to the model, the
             index of the document in the model will be returned.
+        error: Exception
         """
 
         logger.info("Calling query documents")
-        self._validate_query(query)
-        self._validate_num_docs(num_docs)
+        err = self._validate_query(query)
+        if err != None:
+            return [], [], [], err
+
+        err = self._validate_num_docs(num_docs)
+        if err != None:
+            return [], [], [], err
 
         if self.embedding_model != "doc2vec":
             query_vec = self._embed_query(query)
@@ -1653,9 +1692,12 @@ class Top2Vec:
             returned.
         topic_nums: array of int, shape(num_topics)
             The unique number of every topic will be returned.
+        error: Exception
         """
 
-        self._validate_query(query)
+        err = self._validate_query(query)
+        if err != None:
+            return [], [], [], [], err
 
         if self.embedding_model != "doc2vec":
             query_vec = self._embed_query(query)
@@ -1711,9 +1753,15 @@ class Top2Vec:
         doc_ids: array of int, shape(num_docs)
             Unique ids of documents. If ids were not given to the model, the
             index of the document in the model will be returned.
+        error: exception
         """
-        self._validate_vector(vector)
-        self._validate_num_docs(num_docs)
+        err = self._validate_vector(vector)
+        if err != None:
+            return [], [], [], err
+
+        err = self._validate_num_docs(num_docs)
+        if err != None:
+            return [], [], [], err
 
         vector = self._l2_normalize(vector)
 
@@ -1738,9 +1786,9 @@ class Top2Vec:
 
         if self.documents is not None and return_documents:
             documents = self.documents[doc_indexes]
-            return documents, doc_scores, doc_ids
+            return documents, doc_scores, doc_ids, None
         else:
-            return doc_scores, doc_ids
+            return [], doc_scores, doc_ids, None
 
     def search_words_by_vector(self, vector, num_words, use_index=False, ef=None):
         """
@@ -1770,9 +1818,12 @@ class Top2Vec:
         word_scores: array of float, shape(num_words)
             Semantic similarity of word to vector. The cosine similarity of
             the word and vector.
+        error: exception
         """
 
-        self._validate_vector(vector)
+        err = self._validate_vector(vector)
+        if err != None:
+            return [], [], err
 
         vector = self._l2_normalize(vector)
 
@@ -1795,7 +1846,7 @@ class Top2Vec:
 
         words = np.array([self._index2word(index) for index in word_indexes])
 
-        return words, word_scores
+        return words, word_scores, None
 
     def search_topics_by_vector(self, vector, num_topics, reduced=False):
         """
@@ -1834,15 +1885,22 @@ class Top2Vec:
             returned.
         topic_nums: array of int, shape(num_topics)
             The unique number of every topic will be returned.
+        error: Exception
         """
 
-        self._validate_vector(vector)
-        self._validate_num_topics(num_topics, reduced)
+        err = self._validate_vector(vector)
+        if err != None:
+            return [], [], [], [], err
+        err = self._validate_num_topics(num_topics, reduced)
+        if err != None:
+            return [], [], [], [], err
 
         vector = self._l2_normalize(vector)
 
         if reduced:
-            self._validate_hierarchical_reduction()
+            err = self._validate_hierarchical_reduction()
+            if err != None:
+                return [], [], [], [], err
 
             topic_nums, topic_scores = self._search_vectors_by_vector(self.topic_vectors_reduced,
                                                                       vector, num_topics)
@@ -1855,7 +1913,7 @@ class Top2Vec:
             topic_words = [self.topic_words[topic] for topic in topic_nums]
             word_scores = [self.topic_word_scores[topic] for topic in topic_nums]
 
-        return topic_words, word_scores, topic_scores, topic_nums
+        return topic_words, word_scores, topic_scores, topic_nums, None
 
     def search_documents_by_topic(self, topic_num, num_docs, return_documents=True, reduced=False):
         """
@@ -1887,12 +1945,19 @@ class Top2Vec:
         doc_ids: array of int, shape(num_docs)
             Unique ids of documents. If ids were not given to the model, the
             index of the document in the model will be returned.
+        error: Exception
         """
 
         if reduced:
-            self._validate_hierarchical_reduction()
-            self._validate_topic_num(topic_num, reduced)
-            self._validate_topic_search(topic_num, num_docs, reduced)
+            err = self._validate_hierarchical_reduction()
+            if err != None:
+                return [], [], [], err
+            err = self._validate_topic_num(topic_num, reduced)
+            if err != None:
+                return [], [], [], err
+            err = self._validate_topic_search(topic_num, num_docs, reduced)
+            if err != None:
+                return [], [], [], err
 
             topic_document_indexes = np.where(self.doc_top_reduced == topic_num)[0]
             topic_document_indexes_ordered = np.flip(np.argsort(self.doc_dist_reduced[topic_document_indexes]))
@@ -1902,8 +1967,12 @@ class Top2Vec:
 
         else:
 
-            self._validate_topic_num(topic_num, reduced)
-            self._validate_topic_search(topic_num, num_docs, reduced)
+            err = self._validate_topic_num(topic_num, reduced)
+            if err != None:
+                return [], [], [], err
+            err = self._validate_topic_search(topic_num, num_docs, reduced)
+            if err != None:
+                return [], [], [], err
 
             topic_document_indexes = np.where(self.doc_top == topic_num)[0]
             topic_document_indexes_ordered = np.flip(np.argsort(self.doc_dist[topic_document_indexes]))
@@ -1913,9 +1982,9 @@ class Top2Vec:
 
         if self.documents is not None and return_documents:
             documents = self.documents[doc_indexes]
-            return documents, doc_scores, doc_ids
+            return documents, doc_scores, doc_ids, None
         else:
-            return doc_scores, doc_ids
+            return [], doc_scores, doc_ids, None
 
     def search_documents_by_keywords(self, keywords, num_docs, keywords_neg=None, return_documents=True,
                                      use_index=False, ef=None):
@@ -1961,12 +2030,16 @@ class Top2Vec:
         doc_ids: array of int, shape(num_docs)
             Unique ids of documents. If ids were not given to the model, the
             index of the document in the model will be returned.
+        error: Exception
         """
 
         if keywords_neg is None:
             keywords_neg = []
 
-        self._validate_num_docs(num_docs)
+        error = self._validate_num_docs(num_docs)
+        if error != None:
+            return [], [], [], error
+
         keywords, keywords_neg = self._validate_keywords(keywords, keywords_neg)
         word_vecs = self._words2word_vectors(keywords)
         neg_word_vecs = self._words2word_vectors(keywords_neg)
@@ -1992,9 +2065,9 @@ class Top2Vec:
 
         if self.documents is not None and return_documents:
             documents = self.documents[doc_indexes]
-            return documents, doc_scores, doc_ids
+            return documents, doc_scores, doc_ids, None
         else:
-            return doc_scores, doc_ids
+            return [], doc_scores, doc_ids, None
 
     def similar_words(self, keywords, num_words, keywords_neg=None, use_index=False, ef=None):
         """
@@ -2155,12 +2228,17 @@ class Top2Vec:
         doc_ids: array of int, shape(num_docs)
             Unique ids of documents. If ids were not given to the model, the
             index of the document in the model will be returned.
+        error: Exception
         """
         if doc_ids_neg is None:
             doc_ids_neg = []
 
-        self._validate_num_docs(num_docs)
-        self._validate_doc_ids(doc_ids, doc_ids_neg)
+        err = self._validate_num_docs(num_docs)
+        if err != None:
+            return [], [], [], err
+        err = self._validate_doc_ids(doc_ids, doc_ids_neg)
+        if err != None:
+            return [], [], [], err
 
         doc_indexes = self._get_document_indexes(doc_ids)
         doc_indexes_neg = self._get_document_indexes(doc_ids_neg)
@@ -2201,6 +2279,6 @@ class Top2Vec:
 
         if self.documents is not None and return_documents:
             documents = self.documents[doc_indexes]
-            return documents, doc_scores, doc_ids
+            return documents, doc_scores, doc_ids, None
         else:
-            return doc_scores, doc_ids
+            return [], doc_scores, doc_ids, None

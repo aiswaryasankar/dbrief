@@ -124,7 +124,7 @@ def query_documents_url(queryDocumentsRequest):
   """
   top2vecModel = Top2Vec.load(topicModelFile)
 
-  doc_scores, doc_ids = Top2Vec.query_documents(
+  doc_scores, doc_ids, error = Top2Vec.query_documents(
     self=top2vecModel,
     query=queryDocumentsRequest.query,
     num_docs=queryDocumentsRequest.num_docs,
@@ -135,7 +135,7 @@ def query_documents_url(queryDocumentsRequest):
   logger.info("Documents returned")
   logger.info(doc_ids)
 
-  if doc_scores == [] or doc_ids == []:
+  if doc_scores == [] or doc_ids == [] or error != None:
     return QueryDocumentsResponse(
       doc_scores=doc_scores,
       doc_ids=doc_ids,
@@ -162,7 +162,7 @@ def search_documents_by_topic(searchDocumentsByTopic):
   """
 
   top2vecModel = Top2Vec.load(topicModelFile)
-  doc_scores, doc_ids = top2vecModel.search_documents_by_topic(
+  _, doc_scores, doc_ids, error = top2vecModel.search_documents_by_topic(
     searchDocumentsByTopic.topic_num,
     searchDocumentsByTopic.num_docs,
     False,
@@ -176,6 +176,7 @@ def search_documents_by_topic(searchDocumentsByTopic):
   return SearchDocumentsByTopicResponse(
     doc_ids=doc_ids,
     doc_scores=doc_scores,
+    error=error,
   )
 
 
@@ -199,4 +200,25 @@ def search_topics(searchTopicsRequest):
     topic_scores=topic_scores,
     topic_nums=topic_nums,
   )
+
+
+def get_topics(getTopicsRequest):
+  """
+    This endpoint will get the top x topics listed by size and return the topic word and topic number associated with the topic
+  """
+  top2vecModel = Top2Vec.load(topicModelFile)
+  topic_words, _, topic_nums, error = top2vecModel.get_topics(
+    num_topics=getTopicsRequest.num_topics,
+    reduced = getTopicsRequest.reduced,
+  )
+
+  return GetTopicsResponse(
+    topic_words=topic_words,
+    word_scores= None,
+    topic_nums=topic_nums,
+    error=error,
+  )
+
+
+
 
