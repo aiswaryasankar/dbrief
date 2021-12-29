@@ -105,7 +105,7 @@ def add_document(AddDocumentRequest):
   return AddDocumentResponse(error=None)
 
 
-def query_documents_url(request, QueryDocumentsRequest):
+def query_documents_url(queryDocumentsRequest):
   """
   Req: {
     Query: string - article body of text
@@ -124,20 +124,28 @@ def query_documents_url(request, QueryDocumentsRequest):
   """
   top2vecModel = Top2Vec.load(topicModelFile)
 
-  similarDocs = Top2Vec.query_documents(
+  doc_scores, doc_ids = Top2Vec.query_documents(
     self=top2vecModel,
-    query=QueryDocumentsRequest.query,
-    num_docs=QueryDocumentsRequest.num_docs,
-    return_documents=QueryDocumentsRequest.return_docs,
-    use_index=QueryDocumentsRequest.use_index,
-    ef=QueryDocumentsRequest.ef,
+    query=queryDocumentsRequest.query,
+    num_docs=queryDocumentsRequest.num_docs,
+    return_documents=queryDocumentsRequest.return_docs,
+    use_index=queryDocumentsRequest.use_index,
+    ef=queryDocumentsRequest.ef,
   )
   logger.info("Documents returned")
-  logger.info(similarDocs)
+  logger.info(doc_ids)
+
+  if doc_scores == [] or doc_ids == []:
+    return QueryDocumentsResponse(
+      doc_scores=doc_scores,
+      doc_ids=doc_ids,
+      error=ValueError("No documents returned by search"),
+    )
 
   return QueryDocumentsResponse(
-    doc_scores=similarDocs.doc_scores,
-    doc_ids=similarDocs.doc_ids,
+    doc_scores=doc_scores,
+    doc_ids=doc_ids,
+    error=None,
   )
 
 

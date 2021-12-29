@@ -5,6 +5,7 @@
 import logging
 from articleRec.handler import *
 from topicModeling.handler import *
+from mdsModel.handler import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import datetime
@@ -17,7 +18,7 @@ logger.setLevel(logging.INFO)
 
 
 
-def getTopicPage(request):
+def getTopicPage(getTopicPageByURLRequest):
   """
     This function will map the request params of url, articleID, topic string or search string to the appropriate field and pass it to the controller to hydrate the page appropriately. It will execute the following in order to hydrate the TopicPage struct:
 
@@ -31,60 +32,114 @@ def getTopicPage(request):
     Determine whether or not to display a timeline or the opinion format.
   """
 
-  topArticleUrl = ""
+  # Try to fetch the article if already in db
+  articleId = -1
+  fetchArticlesResponse = fetchArticlesByUrl([getTopicPageByURLRequest.source])
 
-  if request.url != "":
-    # Use the provided url to create the topic page
-    topArticleUrl = request.url
+  if fetchArticlesResponse.error != None or len(fetchArticlesResponse.articleList) == 0:
+    # Hydrate the article if not in db and rewrite
+    article = hydrate_article(getTopicPageByURLRequest.source)
 
-  if request.articleId != "":
-    # Use the articleId to fetch the article from the db
-    article = fetchArticlesById(idl.FetchArticlesRequest(
-      articleIds=[request.articleId]
-    ))
-    if len(article.articleList[0]) == 0:
-      return GetTopicPageResponse(
-        topic_page= None,
-        error= ValueError("Failed to fetch article for provided articleId")
+    # Populate the article
+    populateArticleRes = populate_article_by_url(
+      PopulateArticleRequest(
+        url = getTopicPageByURLRequest.source,
       )
-    topArticleUrl = article.articleList[0].url
+    )
+    if populateArticleRes.error != None:
+      logger.warn("Failed to populate article in the db")
+    else:
+      articleId = populateArticleRes.id
 
-  if request.topicString != "":
-    pass
-    # Fetch the topicId given the topic string
-
-
-    # Fetch the top document that corresponds to that topicId
-
-
-  if request.searchString != "":
-    pass
-
-  article = hydrate_article(topArticleUrl)
+  else:
+    article = fetchArticlesResponse.articleList[0]
+    articleId = fetchArticlesResponse.articleList[0].id
 
   # Query for top documents based on the article text
-  queryDocumentsResponse = query_documents_url(QueryDocumentsRequest(
-    query=article.text,
-    num_docs=10,
-    return_docs=False,
-    use_index=True,
-    ef=200,
-  ))
+  queryDocumentsResponse = query_documents_url(
+    QueryDocumentsRequest(
+      query=article.text,
+      num_docs=10,
+      return_docs=False,
+      use_index=True,
+      ef=200,
+    )
+  )
+  if queryDocumentsResponse.error != None:
+    return GetTopicPageResponse(topic_page=None, error=str(queryDocumentsResponse.error))
 
   # Fetch the related articles from the database
-  articles = fetchArticlesById(FetchArticlesRequest(
-    articleIds= queryDocumentsResponse.doc_ids,
-  ))
+  fetchArticlesResponse = fetchArticlesById(
+    FetchArticlesRequest(
+      articleIds= queryDocumentsResponse.doc_ids,
+    )
+  )
+  if fetchArticlesResponse.error != None:
+    return GetTopicPageResponse(topic_page=None, error=str(fetchArticlesResponse.error))
 
-  # GetTitleSummaryForSearch in order to fetch the title for the articles
-
+  # TODO: GetTitleSummaryForSearch in order to fetch the title for the articles
 
   # GetMDS to get the MDS for the articles
+  articles = ""
+  for a in fetchArticlesResponse.articleList:
+    articles += a.text
 
+  getMDSSummaryResponse = get_mds_summary_handler(
+    GetMDSSummaryRequest(
+      articles=articles
+    )
+  )
+  if getMDSSummaryResponse.error != None:
+    return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponse.error))
 
-  # Optionally query for the key facts and passages if not stored in the DB already
+  # Aggregate the list of facts for the page
+  facts = []
+  passages = []
 
+  for article in fetchArticlesResponse.articleList:
+    if article.topFact != None:
+      facts.append(
+        Fact(
+          Quote= Quote(
+            Text=article.topFact,
+            SourceName="source",
+            SourceURL=article.url,
+            ArticleID=article.id,
+            Polarization=0,
+            Timestamp=article.date,
+            ImageURL=article.imageURL,
+          )
+        )
+      )
 
+    if article.topPassage != None:
+      passages.append(
+        Opinion(
+          Quote= Quote(
+            Text=article.topPassage,
+            SourceName="source",
+            SourceURL=article.url,
+            ArticleID=article.id,
+            Polarization=article.polarizationScore,
+            Timestamp=article.date,
+            ImageURL=article.imageURL,
+          )
+        )
+      )
+
+  topic_page = TopicPage(
+    Title = article.title,
+    MDSSummary = getMDSSummaryResponse.summary,
+    Facts = facts,
+    Opinions = passages,
+    TopArticleID = articleId,
+    TopicID = None,
+    Timeline = None,
+  )
+  return GetTopicPageResponse(
+    topic_page=topic_page,
+    error= None,
+  )
 
 
 def whatsHappening(request):

@@ -38,7 +38,10 @@ urlpatterns = [
     path('hydrateArticleView/', articleRecView.hydrate_article_view),
 
     #TopicFeed endpoints
-    path('queryArticles/', topicFeedView.query_documents_url),
+    path('getRecommendedTopics/', topicFeedView.get_recommended_topics_for_user_view),
+    path('getTopicPage/', topicFeedView.get_topic_page_view),
+    path('whatsHappening/', topicFeedView.whats_happening_view),
+    path('getTopicsYouFollow', topicFeedView.get_topics_you_follow_view),
 
     # TopicModeling endpoints
     path('trainTopicModel/', topicModelView.retrain_topic_model_view),

@@ -54,7 +54,7 @@ def populate_article(populateArticleRequest):
   url = populateArticleRequest.url
   article, error = hydrate_article_controller(url)
   if error != None:
-    return PopulateArticleResponse(url=url, error=str(error))
+    return PopulateArticleResponse(url=url, id=None, error=str(error))
 
   # Save to database and fetch article id
   a = idl.Article(
@@ -79,7 +79,7 @@ def populate_article(populateArticleRequest):
 
   # If article is already in the db, don't populate remaining fields
   if saveArticleResponse.error != None:
-    return PopulateArticleResponse(url=url, error=str(ValueError("Failed to save article to database")))
+    return PopulateArticleResponse(url=url, id=None, error=str(ValueError("Failed to save article to database")))
 
   # If the article is already in the database, its already added to the topic model and thus should not be readded
   if saveArticleResponse.created:
@@ -93,7 +93,7 @@ def populate_article(populateArticleRequest):
       )
     )
     if addedToTopicModel.error != None:
-      return PopulateArticleResponse(url=url, error=str(addedToTopicModel.error))
+      return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(addedToTopicModel.error))
 
     logger.info("Added document to the topic model")
 
@@ -106,7 +106,7 @@ def populate_article(populateArticleRequest):
     )
   )
   if getTopicResponse.error != None:
-    return PopulateArticleResponse(url=url, error=str(getTopicResponse.error))
+    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(getTopicResponse.error))
 
   logger.info("Document topic")
   logger.info(getTopicResponse.topic_num)
@@ -122,7 +122,7 @@ def populate_article(populateArticleRequest):
     )
   )
   if getSubtopicResponse.error != None:
-    return PopulateArticleResponse(url=url, error=str(getSubtopicResponse.error))
+    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(getSubtopicResponse.error))
 
   logger.info("Document parent topic")
   logger.info(getSubtopicResponse.topic_num)
@@ -197,9 +197,9 @@ def populate_article(populateArticleRequest):
     )
   )
   if updateArticleResponse.error != None:
-    return PopulateArticleResponse(url=url, error=str(updateArticleResponse.error))
+    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(updateArticleResponse.error))
 
-  return PopulateArticleResponse(url=url, error=None)
+  return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=None)
 
 
 def process_rss_feed():

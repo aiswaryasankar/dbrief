@@ -73,7 +73,7 @@ class Quote:
   SourceName: str
   SourceURL: str
   ImageURL: str
-  Polarization: bool
+  Polarization: float
   Timestamp: time.time
   ArticleID: int
 
@@ -89,6 +89,7 @@ class Fact:
 class Opinion:
   Quote: Quote
 
+@dataclass_json
 @dataclass
 class TopicPage:
   Title: str
@@ -237,6 +238,7 @@ class PopulateArticleRequest:
 @dataclass
 class PopulateArticleResponse:
   url: Optional[str]
+  id: Optional[int]
   error: Exception
 
 @dataclass_json
@@ -245,6 +247,7 @@ class PopulateArticlesResponse:
   num_articles_populated: int
   num_errors: int
 
+@dataclass_json
 @dataclass
 class Article:
   id: Optional[int]
@@ -399,7 +402,22 @@ class GetRecommendedTopicsForUserResponse:
 ###
 
 
+###
+#
+# MDSModel
+#
+###
 
+@dataclass
+class GetMDSSummaryRequest:
+  articles: str
+
+
+@dataclass_json
+@dataclass
+class GetMDSSummaryResponse:
+  summary: str
+  error: Exception
 
 ###
 #

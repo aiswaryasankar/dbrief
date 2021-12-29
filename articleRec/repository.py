@@ -17,12 +17,12 @@ logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 
-def saveArticle(SaveArticleRequest):
+def saveArticle(saveArticleRequest):
   """
     Will save the article to the database.  If the article already exists it will update the existing article instead.
   """
 
-  a = SaveArticleRequest.article
+  a = saveArticleRequest.article
   url = a.url
   title = a.title
   text = a.text
@@ -123,11 +123,12 @@ def fetchAllArticles():
   )
 
 
-def fetchArticlesById(articleIds):
+def fetchArticlesById(fetchArticlesRequest):
   """
     Will fetch articles by the article Id and populate the Article entity
   """
   hydratedArticles = []
+  articleIds = fetchArticlesRequest.articleIds
 
   for id in articleIds:
     article = ArticleModel.objects.get(articleId=id)
@@ -162,7 +163,10 @@ def fetchArticlesById(articleIds):
         "article": article,
         "error": e,
       })
-      print(e)
+      return FetchArticlesResponse(
+        articleList=hydratedArticles,
+        error=e,
+      )
 
   return FetchArticlesResponse(
     articleList=hydratedArticles,
@@ -170,3 +174,51 @@ def fetchArticlesById(articleIds):
   )
 
 
+def fetchArticlesByUrl(articleUrls):
+  """
+    Will fetch articles by the article URL and populate the Article entity
+  """
+  hydratedArticles = []
+
+  for url in articleUrls:
+    article = ArticleModel.objects.get(url=url)
+    try:
+      a = Article(
+          id=article.articleId,
+          url=article.url,
+          authors=article.author,
+          text=article.text,
+          title=article.title,
+        )
+
+      if article.topic:
+        a.topic = article.topic
+      if article.parent_topic:
+        a.parentTopic = article.parent_topic
+      if article.publish_date:
+        a.topic = article.publish_date
+      if article.image:
+        a.imageURL = article.image
+      if article.polarization_score:
+        a.polarizationScore = article.polarization_score
+      if article.top_passage:
+        a.topPassage = article.top_passage
+      if article.top_fact:
+        a.topFact = article.top_fact
+
+      hydratedArticles.append(a)
+
+    except Exception as e:
+      logger.warn("Failed to fetch article from database", extra={
+        "article": article,
+        "error": e,
+      })
+      return FetchArticlesResponse(
+        articleList=hydratedArticles,
+        error=e,
+      )
+
+  return FetchArticlesResponse(
+    articleList=hydratedArticles,
+    error=None,
+  )
