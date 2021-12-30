@@ -203,13 +203,3 @@ def whatsHappening(whatsHappeningRequest):
   )
 
 
-def getRecommendedTopicsForUser(request):
-  pass
-
-
-
-def getTopicsYouFollow(request):
-  pass
-
-
-

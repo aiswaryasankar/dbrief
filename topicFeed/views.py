@@ -41,34 +41,4 @@ def whats_happening_view(request):
   return Response(res.to_json())
 
 
-@api_view(['POST'])
-def get_recommended_topics_for_user_view(request):
-  """
-    Gets a list of the recommended topics for a given user
-  """
-  req = GetRecommendedTopicsForUserRequestSerializer(data=request.data)
-  if not req.is_valid():
-    return JsonResponse(req.errors)
-
-  getRecommendedTopicsForUserRequest = req.validated_data
-  res = getRecommendedTopicsForUser(getRecommendedTopicsForUserRequest)
-
-  return Response(res)
-
-
-@api_view(['POST'])
-def get_topics_you_follow_view(request):
-  """
-    Gets a list of the topics a user follows
-  """
-  req = GetTopicsForUserRequestSerializer(data=request.data)
-  if not req.is_valid():
-    return JsonResponse(req.errors)
-
-  getTopicsForUserRequest = req.validated_data
-  res = getTopicsYouFollow(getTopicsForUserRequest)
-
-  return Response(res)
-
-
 

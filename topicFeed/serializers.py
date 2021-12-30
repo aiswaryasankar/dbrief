@@ -26,11 +26,3 @@ class WhatsHappeningRequestSerializer(DataclassSerializer):
   class Meta:
     dataclass = WhatsHappeningRequest
 
-class GetTopicsForUserRequestSerializer(DataclassSerializer):
-  class Meta:
-    dataclass = GetTopicsForUserRequest
-
-class GetRecommendedTopicsForUserRequestSerializer(DataclassSerializer):
-  class Meta:
-    dataclass = GetRecommendedTopicsForUserRequest
-

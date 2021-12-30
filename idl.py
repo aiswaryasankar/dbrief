@@ -425,6 +425,49 @@ class GetRecommendedTopicsForUserResponse:
 #
 ###
 
+@dataclass
+class CreateUserRequest:
+  firstName: str
+  lastName: str
+  email: str
+  firebaseAuthId: str
+
+@dataclass_json
+@dataclass
+class CreateUserResponse:
+  user: User
+  error: Exception
+
+@dataclass
+class GetUserRequest:
+  userId: int
+
+@dataclass_json
+@dataclass
+class GetUserResponse:
+  user: User
+  error: Exception
+
+@dataclass
+class FollowTopicRequest:
+  userId: int
+  topic: str
+
+@dataclass_json
+@dataclass
+class FollowTopicResponse:
+  error: Exception
+
+@dataclass
+class UnfollowTopicRequest:
+  userId: int
+  topic: str
+
+@dataclass_json
+@dataclass
+class UnfollowTopicResponse:
+  error: Exception
+
 
 ###
 #
