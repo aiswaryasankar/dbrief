@@ -124,7 +124,7 @@ def query_documents_url(queryDocumentsRequest):
   """
   top2vecModel = Top2Vec.load(topicModelFile)
 
-  doc_scores, doc_ids, error = Top2Vec.query_documents(
+  _, doc_scores, doc_ids, error = Top2Vec.query_documents(
     self=top2vecModel,
     query=queryDocumentsRequest.query,
     num_docs=queryDocumentsRequest.num_docs,

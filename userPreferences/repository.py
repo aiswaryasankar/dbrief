@@ -84,3 +84,91 @@ def getUser(getUserRequest):
   )
 
 
+def followTopic(followTopicRequest):
+  """
+    Will create an entry in the UserTopic table associating the user and the topic
+  """
+
+  userId = followTopicRequest.userId
+  topic = followTopicRequest.topic
+
+  try:
+    userTopicEntry, created = UserTopicModel.objects.update_or_create(
+      defaults={
+        'userId': userId,
+        'topic': topic,
+      },
+    )
+    if created:
+      logger.info('saved user topic pair', extra={
+          "item": {
+            'userId': userId,
+            'topic': topic,
+            "created": created,
+          }
+      })
+      logger.info("Saved userTopic to the database: ", extra={ "user": userTopicEntry })
+    else:
+      logger.info("Updated already existing user topic")
+
+  except Exception as e:
+    logger.warn("Failed to save user topic to the database", extra= {
+      "user": userId,
+      "error": e,
+    })
+
+    return FollowTopicResponse(id=None, error=e, created=created)
+
+  return FollowTopicResponse(id=userTopicEntry.userTopicId, error=None, created=created)
+
+
+def unfollowTopic(unfollowTopicRequest):
+  """
+    Will remove an entry in the UserTopic table associating the user and the topic
+  """
+
+  userId = unfollowTopicRequest.userId
+  topic = unfollowTopicRequest.topic
+
+  try:
+    numDeleted, obj = UserTopicModel.objects.filter(userId=userId, topic=topic).delete()
+    if numDeleted > 0:
+      logger.info('deleted user topic pair', extra={
+          "item": {
+            'userId': userId,
+            'topic': topic,
+          }
+      })
+      logger.info("Deleted userTopic from the database: ", extra={ "userTopic": obj })
+    else:
+      logger.info("UserTopic not in the database")
+
+  except Exception as e:
+    logger.warn("Failed to delete user topic from the database", extra= {
+      "user": userId,
+      "topic": topic,
+      "error": e,
+    })
+
+    return UnfollowTopicResponse(error=e)
+
+  return UnfollowTopicResponse(error=None)
+
+
+def getTopicsYouFollow(getTopicsYouFollowRequest):
+  """
+    Gets the topics a user follows in the UserTopic table
+  """
+
+  userId = getTopicsYouFollowRequest.user_id
+  followedTopics = UserTopicModel.objects.filter(userId=userId)
+  topics = []
+
+  for topicEntity in followedTopics:
+    topics.append(topicEntity.topic)
+
+  return GetTopicsForUserResponse(
+    List
+  )
+
+

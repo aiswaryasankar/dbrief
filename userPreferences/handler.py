@@ -8,7 +8,7 @@ from topicModeling.training import Top2Vec
 from rest_framework.response import Response
 import datetime
 from idl import *
-from repository import *
+from .repository import *
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -51,12 +51,18 @@ def get_user(getUserRequest):
 
 
 
-
 def follow_topic(followTopicRequest):
   """
     Gets a user to follow a topic
   """
+  followTopicRes = followTopic(followTopicRequest)
+  if followTopicRes.error != None:
+    return FollowTopicResponse(
+      user= None,
+      error= followTopicRes.error
+    )
 
+  return followTopicRes
 
 
 
@@ -64,7 +70,14 @@ def unfollow_topic(unfollowTopicRequest):
   """
     Gets a user to unfollow a topic
   """
+  unfollowTopicRes = unfollowTopic(unfollowTopicRequest)
+  if unfollowTopicRes.error != None:
+    return UnfollowTopicResponse(
+      user= None,
+      error= unfollowTopicRes.error
+    )
 
+  return unfollowTopicRes
 
 
 
@@ -72,7 +85,13 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
   """
     Gets a list of the recommended topics for a given user
   """
+  # Queries the UserTopic database for the topics that the user currently follows
+  # currentTopics =
 
+  # Queries for topics similar to the existing topics
+
+
+  # Returns a list of the top topics returned up to num_topics, default 5
 
 
 
@@ -80,6 +99,11 @@ def get_topics_you_follow(getTopicsYouFollowRequest):
   """
     Gets a list of the topics a user follows
   """
+  # Fetches the topics in the UserTopic database that correspond to the given user
+  # currentTopics =
+
+
+
 
 
 

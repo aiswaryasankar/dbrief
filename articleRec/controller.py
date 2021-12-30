@@ -52,9 +52,11 @@ def populate_article(populateArticleRequest):
 
   # Hydrate article
   url = populateArticleRequest.url
-  article, error = hydrate_article_controller(url)
-  if error != None:
-    return PopulateArticleResponse(url=url, id=None, error=str(error))
+  hydrateArticleResponse = hydrate_article_controller(url)
+  if hydrateArticleResponse.error != None:
+    return PopulateArticleResponse(url=url, id=None, error=str(hydrateArticleResponse.error))
+
+  article=hydrateArticleResponse.article
 
   # Save to database and fetch article id
   a = idl.Article(
@@ -245,12 +247,20 @@ def hydrate_article_controller(url):
   logger.info(url)
   article = ArticleAPI(url, config=config)
   article.download()
+
   try:
     article.parse()
+
   except Exception as e:
     logger.error("Failed to populate article", extra={"url":url, "error": e})
-    return None, e
+    return HydrateArticleResponse(
+      article=None,
+      error=e,
+    )
 
-  return article, None
+  return HydrateArticleResponse(
+    article=article,
+    error=None,
+  )
 
 

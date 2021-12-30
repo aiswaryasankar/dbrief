@@ -181,8 +181,8 @@ def fetchArticlesByUrl(articleUrls):
   hydratedArticles = []
 
   for url in articleUrls:
-    article = ArticleModel.objects.get(url=url)
     try:
+      article = ArticleModel.objects.get(url=url)
       a = Article(
           id=article.articleId,
           url=article.url,
@@ -210,11 +210,11 @@ def fetchArticlesByUrl(articleUrls):
 
     except Exception as e:
       logger.warn("Failed to fetch article from database", extra={
-        "article": article,
+        "url": url,
         "error": e,
       })
       return FetchArticlesResponse(
-        articleList=hydratedArticles,
+        articleList=[],
         error=e,
       )
 

@@ -34,11 +34,22 @@ def getTopicPage(getTopicPageByURLRequest):
 
   # Try to fetch the article if already in db
   articleId = -1
-  fetchArticlesResponse = fetchArticlesByUrl([getTopicPageByURLRequest.source])
+  fetchArticlesResponse = fetchArticlesByUrl(
+    [getTopicPageByURLRequest.source],
+  )
 
   if fetchArticlesResponse.error != None or len(fetchArticlesResponse.articleList) == 0:
     # Hydrate the article if not in db and rewrite
-    article = hydrate_article(getTopicPageByURLRequest.source)
+    hydrateArticleResponse = hydrate_article(
+      HydrateArticleRequest(
+        url=getTopicPageByURLRequest.source
+      )
+    )
+    if hydrateArticleResponse.error != None:
+      return GetTopicPageResponse(
+        topic_page=None,
+        error=hydrateArticleResponse.error,
+      )
 
     # Populate the article
     populateArticleRes = populate_article_by_url(
@@ -49,11 +60,17 @@ def getTopicPage(getTopicPageByURLRequest):
     if populateArticleRes.error != None:
       logger.warn("Failed to populate article in the db")
     else:
+      article = hydrateArticleResponse.article
       articleId = populateArticleRes.id
 
   else:
     article = fetchArticlesResponse.articleList[0]
     articleId = fetchArticlesResponse.articleList[0].id
+
+  logger.info("Article")
+  logger.info(article)
+  logger.info("Article ID")
+  logger.info(articleId)
 
   # Query for top documents based on the article text
   queryDocumentsResponse = query_documents_url(

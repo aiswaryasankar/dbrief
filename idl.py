@@ -310,7 +310,7 @@ class FetchArticlesResponse:
 
 @dataclass
 class HydrateArticleRequest:
-  url: str
+  url: List[str]
 
 @dataclass_json
 @dataclass
@@ -400,24 +400,6 @@ class WhatsHappeningResponse:
   articles: List[ArticleInfo]
   error: Exception
 
-@dataclass
-class GetTopicsForUserRequest:
-  user_id: int
-
-@dataclass_json
-@dataclass
-class GetTopicsForUserResponse:
-  topics: List[TopicInfo]
-
-@dataclass
-class GetRecommendedTopicsForUserRequest:
-  user_id: int
-
-@dataclass_json
-@dataclass
-class GetRecommendedTopicsForUserResponse:
-  topics: List[TopicInfo]
-
 
 ###
 #
@@ -467,6 +449,25 @@ class UnfollowTopicRequest:
 @dataclass
 class UnfollowTopicResponse:
   error: Exception
+
+@dataclass
+class GetTopicsForUserRequest:
+  user_id: int
+
+@dataclass_json
+@dataclass
+class GetTopicsForUserResponse:
+  topics: List[TopicInfo]
+
+@dataclass
+class GetRecommendedTopicsForUserRequest:
+  user_id: int
+  num_topics: int = 5
+
+@dataclass_json
+@dataclass
+class GetRecommendedTopicsForUserResponse:
+  topics: List[TopicInfo]
 
 
 ###
