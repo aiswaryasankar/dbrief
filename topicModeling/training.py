@@ -46,13 +46,6 @@ logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 
-# logger = logging.getLogger('django')
-# logger.setLevel(logging.WARNING)
-# sh = logging.StreamHandler()
-# sh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-# logger.addHandler(sh)
-
-
 def default_tokenizer(doc):
     """Tokenize documents for training and remove too long/short words"""
     return simple_preprocess(strip_tags(doc), deacc=True)
@@ -167,13 +160,6 @@ class Top2Vec:
                  hdbscan_args=None,
                  verbose=True
                  ):
-
-        # if verbose:
-        #     logger.setLevel(logging.DEBUG)
-        #     self.verbose = True
-        # else:
-        #     logger.setLevel(logging.WARNING)
-        #     self.verbose = False
 
         if tokenizer is None:
             tokenizer = default_tokenizer
@@ -1451,7 +1437,7 @@ class Top2Vec:
             Example:
             [[3]  <Reduced Topic 0> contains original Topic 3
             [2,4] <Reduced Topic 1> contains original Topics 2 and 4
-            [0,1] <Reduced Topic 3> contains original Topics 0 and 1
+            [0,1] <Reduced Topic 2> contains original Topics 0 and 1
             ...]
         error: Exception
         """
@@ -1461,6 +1447,33 @@ class Top2Vec:
             return [], err
 
         return self.hierarchy, None
+
+
+    def generate_topic_parent_topic_pairs(self):
+        """
+            This endpoint will generate the topic<>parentTopic pairs given the hierarchy of topics in the topic model. It will be returned as a list of lists with [topic, parentTopic]
+        """
+
+        pairs = []
+
+        print(len(self.hierarchy))
+        print("topic words reduced")
+        print(self.topic_words_reduced)
+        print("topic words")
+        print(self.topic_words)
+        print(self.hierarchy)
+
+        parentTopicIndex = 0
+        for topicList in self.hierarchy:
+            parentTopic = self.topic_words_reduced[parentTopicIndex][:][0]
+            childTopics = [self.topic_words[i][:][0] for i in topicList]
+            pairs.extend([[childTopic, parentTopic] for childTopic in childTopics])
+            parentTopicIndex += 1
+
+        print("Topic, parent topic pairs")
+        print(pairs)
+        return pairs
+
 
     def hierarchical_topic_reduction(self, num_topics):
         """
@@ -1481,7 +1494,7 @@ class Top2Vec:
             Example:
             [[3]  <Reduced Topic 0> contains original Topic 3
             [2,4] <Reduced Topic 1> contains original Topics 2 and 4
-            [0,1] <Reduced Topic 3> contains original Topics 0 and 1
+            [0,1] <Reduced Topic 2> contains original Topics 0 and 1
             ...]
         error: exception
         """
@@ -1580,7 +1593,7 @@ class Top2Vec:
         # re-order topics
         self._reorder_topics(hierarchy=True)
 
-        return self.hierarchy, None
+        return self.generate_topic_parent_topic_pairs(), None
 
     def query_documents(self, query, num_docs, return_documents=True, use_index=False, ef=None, tokenizer=None):
         """

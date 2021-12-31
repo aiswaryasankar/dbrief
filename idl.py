@@ -68,10 +68,9 @@ class ArticleInfo:
 @dataclass_json
 @dataclass
 class TopicInfo:
-  TopicID: int
+  TopicID: Optional[int]
   TopicName: str
-  PrimaryTopicName: str
-  TopicPageURL: str
+  ParentTopicName: str
 
 @dataclass_json
 @dataclass
@@ -131,6 +130,16 @@ class Author:
 # TopicModel
 #
 ###
+
+@dataclass
+class CreateTopicsRequest:
+  topics: List[TopicInfo]
+
+@dataclass_json
+@dataclass
+class CreateTopicsResponse:
+  ids: List[int]
+  error: Exception
 
 @dataclass
 class GetTopicsRequest:
@@ -237,6 +246,11 @@ class GetDocumentTopicResponse:
   topic_score: float
   topic_word: str
   error: Exception
+
+@dataclass_json
+@dataclass
+class GenerateTopicPairsResponse:
+  topic_pairs: List[TopicInfo]
 
 
 ###

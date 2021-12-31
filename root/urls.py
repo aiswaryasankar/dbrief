@@ -49,6 +49,7 @@ urlpatterns = [
     path('searchDocumentsByTopic/', topicModelView.search_documents_by_topic_view),
     path('searchTopics/', topicModelView.search_topics_view),
     path('indexDocuments/', topicModelView.index_document_vectors_view),
+    path('generateTopicPairs/', topicModelView.generate_topic_pairs_view),
 
     # PolarityModel endpoints
     path('getDocumentPolarity/', polarityModelView.get_document_polarity_view),

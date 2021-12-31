@@ -9,7 +9,8 @@ from rest_framework.response import Response
 import datetime
 from idl import *
 from articleRec import handler as articleRecHandler
-from idl import AddDocumentRequest, GetDocumentTopicResponse, QueryDocumentsRequest, QueryDocumentsResponse, GetDocumentTopicRequest
+from idl import *
+from .repository import *
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -46,7 +47,24 @@ def retrain_topic_model(request):
 
   docIndex = Top2Vec.index_document_vectors(model)
   wordIndex = Top2Vec.index_word_vectors(model)
-  topicReduction = model.hierarchical_topic_reduction(num_topics=20)
+  topicPairs, error = model.hierarchical_topic_reduction(num_topics=20)
+  if error != None:
+    return TrainAndIndexTopicModelResponse(
+      error=ValueError("Failed to perform hierarchical topic reduction")
+    )
+
+  createTopicsResponse = createTopics(
+    CreateTopicsRequest(
+      topics=[TopicInfo(
+        TopicID=None,
+        TopicName=elem[0],
+        ParentTopicName=elem[1],
+      ) for elem in topicPairs]
+    )
+  )
+  if createTopicsResponse.error != None:
+    logger.info("Failed to store the topics in the database")
+
   parentTopics = model.get_topics(reduced=True)
   topics = model.get_topics(reduced=False)
 
@@ -154,6 +172,19 @@ def index_document_vectors(request):
     This endpoint is responsible for re-indexing the documents after the topic model has been regenerated. In the case of individual articles being added to the topic model, it will be handled through add_document.
   """
   pass
+
+
+def generate_topic_pairs():
+  """
+    This endpoint will generate the topic<>parentTopic pairs given the hierarchy of topics in the topic model. It will be returned as a list of lists with [topic, parentTopic]
+  """
+  top2vecModel = Top2Vec.load(topicModelFile)
+  topicPairs = top2vecModel.generate_topic_parent_topic_pairs()
+  logger.info("topic pairs")
+  logger.info(topicPairs)
+  return GenerateTopicPairsResponse(
+    topic_pairs=topicPairs
+  )
 
 
 def search_documents_by_topic(searchDocumentsByTopic):

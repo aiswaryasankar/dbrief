@@ -104,5 +104,13 @@ def index_document_vectors_view(request):
   pass
 
 
+@api_view(['POST'])
+def generate_topic_pairs_view(request):
+  """
+    This endpoint will generate the topic pairs
+  """
 
+  res = generate_topic_pairs()
+
+  return Response()
 
