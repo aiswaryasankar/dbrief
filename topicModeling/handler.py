@@ -215,21 +215,31 @@ def search_topics(searchTopicsRequest):
   """
     This endpoint takes in a keyword and returns the top topics related to that keyword
   """
+
   top2vecModel = Top2Vec.load(topicModelFile)
-  topic_words, _, topic_scores, topic_nums = top2vecModel.search_topics(searchTopicsRequest.keywords, searchTopicsRequest.num_topics)
+  topic_words, _, topic_scores, topic_nums, error = top2vecModel.search_topics(searchTopicsRequest.keywords, searchTopicsRequest.num_topics)
+
+  if error != None:
+    return SearchTopicsResponse(
+      topics_words=topic_words,
+      topic_scores=topic_scores,
+      topic_nums=topic_nums,
+      error=error,
+    )
 
   logger.info("Top topics for keyword")
   logger.info(searchTopicsRequest.keywords)
   logger.info("topic_words")
-  logger.info(topic_words)
+  logger.info([words[0] for words in topic_words])
   logger.info("topic_nums")
   logger.info(topic_nums)
   logger.info(topic_scores)
 
   return SearchTopicsResponse(
-    topics_words=topic_words,
+    topics_words=[words[0] for words in topic_words],
     topic_scores=topic_scores,
     topic_nums=topic_nums,
+    error=None
   )
 
 
@@ -258,7 +268,6 @@ def fetch_topic_infos_batch(fetchTopicInfoBatchRequest):
   fetchTopicInfoBatchResponse = fetchTopicInfoBatch(fetchTopicInfoBatchRequest)
 
   return fetchTopicInfoBatchResponse
-
 
 
 

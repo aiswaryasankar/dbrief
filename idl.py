@@ -132,6 +132,20 @@ class Author:
 ###
 
 @dataclass
+class QueryTopicsRequest:
+  query: str
+  num_topics: int
+  reduced: bool
+
+@dataclass_json
+@dataclass
+class QueryTopicsResponse:
+  topics: List[str]
+  topic_scores: List[int]
+  topic_nums: List[int]
+  error: Exception
+
+@dataclass
 class CreateTopicsRequest:
   topics: List[TopicInfo]
 
@@ -143,7 +157,8 @@ class CreateTopicsResponse:
 
 @dataclass
 class FetchTopicInfoBatchRequest:
-  topicIds: List[int]
+  topicIds: Optional[List[int]] = field(default_factory=list)
+  topicNames: Optional[List[str]] = field(default_factory=list)
 
 @dataclass_json
 @dataclass
@@ -186,6 +201,7 @@ class SearchTopicsResponse:
   topics_words: List[str]
   topic_scores: List[float]
   topic_nums: List[int]
+  error: Exception
 
 @dataclass
 class AddDocumentRequest:
@@ -434,10 +450,6 @@ class WhatsHappeningResponse:
 @dataclass
 class CreateUserRequest:
   user: User
-  # firstName: str
-  # lastName: str
-  # email: str
-  # firebaseAuthId: str
 
 @dataclass_json
 @dataclass
@@ -494,6 +506,7 @@ class GetRecommendedTopicsForUserRequest:
 @dataclass
 class GetRecommendedTopicsForUserResponse:
   topics: List[TopicInfo]
+  error: Exception
 
 
 ###

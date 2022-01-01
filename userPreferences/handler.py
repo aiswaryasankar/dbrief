@@ -4,7 +4,7 @@ import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from sentence_transformers import SentenceTransformer
 from logtail import LogtailHandler
-from topicModeling.handler import fetch_topic_infos_batch
+from topicModeling.handler import fetch_topic_infos_batch, search_topics
 from topicModeling.training import Top2Vec
 from rest_framework.response import Response
 import datetime
@@ -77,13 +77,68 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
     Gets a list of the recommended topics for a given user
   """
   # Queries the UserTopic database for the topics that the user currently follows
-  # currentTopics =
+  currentTopics = getTopicsYouFollow(
+    GetTopicsForUserRequest(
+      user_id=getRecommendedTopicsForUserRequest.user_id,
+    )
+  )
+  logger.info("currentTopics")
+  logger.info(currentTopics)
 
-  # Queries for topics similar to the existing topics
+  # Hydrates the topics corresponding to those topicIds from the topic database
+  fetchTopicInfoBatchResponse = fetch_topic_infos_batch(
+    FetchTopicInfoBatchRequest(
+      topicIds=currentTopics,
+    )
+  )
+  if fetchTopicInfoBatchResponse.error != None :
+    return FetchTopicInfoBatchResponse(
+      topics=[],
+      error=fetchTopicInfoBatchResponse.error,
+    )
 
+  logger.info("topicInfos")
+  logger.info(fetchTopicInfoBatchResponse.topics)
+
+  topics = []
+  for topic in fetchTopicInfoBatchResponse.topics:
+    # Queries for topics similar to the existing topics
+    searchTopicsResponse = search_topics(
+      SearchTopicsRequest(
+        keywords=[topic.TopicName],
+        num_topics=5,
+      )
+    )
+    if searchTopicsResponse.error != None:
+      logger.info("Failed to search topics")
+      continue
+
+    topics.extend(searchTopicsResponse.topics_words)
+
+  logger.info("searched topics")
+  logger.info(topics)
+
+  # Query for topicInfo given the topic words
+  # Hydrates the topics corresponding to those topicIds from the topic database
+  fetchTopicInfoBatchResponse = fetch_topic_infos_batch(
+    FetchTopicInfoBatchRequest(
+      topicNames=topics,
+    )
+  )
+  if fetchTopicInfoBatchResponse.error != None :
+    return GetRecommendedTopicsForUserResponse(
+      topics= fetchTopicInfoBatchResponse.topics,
+      error = fetchTopicInfoBatchResponse.error,
+    )
+
+  logger.info("recommended topic infos")
+  logger.info(fetchTopicInfoBatchResponse.topics)
 
   # Returns a list of the top topics returned up to num_topics, default 5
-  pass
+  return GetRecommendedTopicsForUserResponse(
+    topics= fetchTopicInfoBatchResponse.topics,
+    error = None,
+  )
 
 
 def get_topics_you_follow(getTopicsYouFollowRequest):
@@ -104,10 +159,10 @@ def get_topics_you_follow(getTopicsYouFollowRequest):
     )
   )
   if fetchTopicInfoBatchResponse.error != None :
-      return FetchTopicInfoBatchResponse(
-        topics=[],
-        error=None,
-      )
+    return FetchTopicInfoBatchResponse(
+      topics=[],
+      error=fetchTopicInfoBatchResponse.error,
+    )
 
   logger.info("topicInfos")
   logger.info(fetchTopicInfoBatchResponse.topics)

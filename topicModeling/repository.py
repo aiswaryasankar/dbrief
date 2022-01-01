@@ -57,14 +57,24 @@ def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):
   """
     Will fetch the topicInfo given the topic names.
   """
+
   topicInfos = []
-  topicIds = fetchTopicInfoBatchRequest.topicIds
+  searchParams, isIds = [], False
 
-  for topicId in topicIds:
+  if fetchTopicInfoBatchRequest.topicIds != []:
+    searchParams = fetchTopicInfoBatchRequest.topicIds
+    isIds = True
+  else:
+    searchParams = fetchTopicInfoBatchRequest.topicNames
+    isIds = False
 
+  for val in searchParams:
     try:
-      topicInfoEntity = TopicModel.objects.get(topicId=topicId)
-      print(topicInfoEntity)
+      if isIds:
+        topicInfoEntity = TopicModel.objects.get(topicId=val)
+      else:
+        topicInfoEntity = TopicModel.objects.get(topic=val)
+
       topicInfo = TopicInfo(
           TopicID=topicInfoEntity.topicId,
           TopicName=topicInfoEntity.topic,
@@ -75,10 +85,10 @@ def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):
 
     except Exception as e:
       logger.warn("Failed to fetch topic from database", extra={
-        "topicId": topicId,
+        "searchField": val,
         "error": e,
       })
-      print(e)
+      logger.info(e)
       return FetchTopicInfoBatchResponse(
         topics=topicInfos,
         error=e,
@@ -88,5 +98,4 @@ def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):
     topics=topicInfos,
     error=None,
   )
-
 
