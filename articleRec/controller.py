@@ -5,12 +5,9 @@ from newspaper import Article as ArticleAPI
 from newspaper import Config
 import feedparser
 from .models import ArticleModel
-import schedule
-import time
 import logging
 from logtail import LogtailHandler
 import logging
-import datetime
 from topicModeling.training import Top2Vec
 from .constants import *
 import idl
@@ -229,7 +226,7 @@ def hydrate_articles_batch(urls):
   articleEntities = []
 
   for url in urls:
-    articleEntities.append(hydrate_article(url))
+    articleEntities.append(hydrate_article_controller(url))
 
   return articleEntities
 

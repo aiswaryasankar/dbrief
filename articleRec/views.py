@@ -77,7 +77,6 @@ def populate_articles_batch_view(request):
     Will populate all the articles in batch and return stats on the number of articles successfully populated in the db.
   """
   res = populate_articles_batch()
-  #TODO: add response validation when converting from dataclass to JSON
   return Response(res.to_json())
 
 
@@ -87,21 +86,12 @@ def populate_article_by_url_view(request):
     Populates a single article based on the request.url
   """
   req = PopulateArticleRequestSerializer(data=request.data)
-  logger.info("request")
-  logger.info(req)
+
   if not req.is_valid():
-    logger.info("req not valid")
-    logger.info(req.errors)
     return JsonResponse(req.errors)
 
-  logger.info("req valid")
   populateArticleRequest = req.validated_data
-  logger.info(req.data)
-  logger.info(req.validated_data)
-
   res = populate_article_by_url(populateArticleRequest)
-  logger.info("res")
-  logger.info(res)
 
   return Response(res.to_json())
 
