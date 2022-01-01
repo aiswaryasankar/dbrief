@@ -163,10 +163,12 @@ def whatsHappening(whatsHappeningRequest):
   """
     This endpoint will get a list of the top x topics, select the top article per topic to include in the side bar for whatsHappening and then hydrate each of the articles into the appropriate whatsHappeningResponse struct.
   """
-  getTopicsResponse = get_topics(GetTopicsRequest(
-    num_topics=5,
-    reduced = False,
-  ))
+  getTopicsResponse = get_topics(
+    GetTopicsRequest(
+      num_topics=5,
+      reduced = False,
+    )
+  )
   if getTopicsResponse.error != None:
     return WhatsHappeningResponse(
       articles=[],
@@ -188,7 +190,7 @@ def whatsHappening(whatsHappeningRequest):
       logger.warn("Failed to get documents for topic")
       continue
 
-    articleIds.append(searchDocumentsByTopicResponse.doc_ids)
+    articleIds.extend(searchDocumentsByTopicResponse.doc_ids)
 
   # Fetch all the articles from the database
   fetchArticlesByIdResponse = fetchArticlesById(

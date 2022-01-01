@@ -60,7 +60,6 @@ class NewsletterConfig:
 class ArticleInfo:
   Id: int
   Title: str
-  Summary: str
   TopicName: str
   ImageURL: str
   TopPassage: str

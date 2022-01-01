@@ -255,7 +255,6 @@ def get_topics(getTopicsRequest):
 
   return GetTopicsResponse(
     topic_words=topic_words,
-    word_scores= None,
     topic_nums=topic_nums,
     error=error,
   )

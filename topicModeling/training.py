@@ -1448,7 +1448,6 @@ class Top2Vec:
 
         return self.hierarchy, None
 
-
     def generate_topic_parent_topic_pairs(self):
         """
             This endpoint will generate the topic<>parentTopic pairs given the hierarchy of topics in the topic model. It will be returned as a list of lists with [topic, parentTopic]
@@ -1473,7 +1472,6 @@ class Top2Vec:
         print("Topic, parent topic pairs")
         print(pairs)
         return pairs
-
 
     def hierarchical_topic_reduction(self, num_topics):
         """
@@ -2187,6 +2185,7 @@ class Top2Vec:
             returned.
         topic_nums: array of int, shape(num_topics)
             The unique number of every topic will be returned.
+        error: Exception
         """
         if keywords_neg is None:
             keywords_neg = []
