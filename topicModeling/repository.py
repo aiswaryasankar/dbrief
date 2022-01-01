@@ -53,3 +53,40 @@ def createTopics(createTopicRequest):
   return CreateTopicsResponse(ids=ids, error=None)
 
 
+def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):
+  """
+    Will fetch the topicInfo given the topic names.
+  """
+  topicInfos = []
+  topicIds = fetchTopicInfoBatchRequest.topicIds
+
+  for topicId in topicIds:
+
+    try:
+      topicInfoEntity = TopicModel.objects.get(topicId=topicId)
+      print(topicInfoEntity)
+      topicInfo = TopicInfo(
+          TopicID=topicInfoEntity.topicId,
+          TopicName=topicInfoEntity.topic,
+          ParentTopicName=topicInfoEntity.parentTopic,
+        )
+
+      topicInfos.append(topicInfo)
+
+    except Exception as e:
+      logger.warn("Failed to fetch topic from database", extra={
+        "topicId": topicId,
+        "error": e,
+      })
+      print(e)
+      return FetchTopicInfoBatchResponse(
+        topics=topicInfos,
+        error=e,
+      )
+
+  return FetchTopicInfoBatchResponse(
+    topics=topicInfos,
+    error=None,
+  )
+
+

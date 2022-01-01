@@ -27,19 +27,19 @@ def createUser(createUserRequest):
   try:
     userEntry, created = UserModel.objects.update_or_create(
       defaults={
-        'firstName': user.firstName,
-        'lastName': user.lastName,
-        'email': user.email,
-        'firebaseAuthId': user.firebaseAuthId,
+        'firstName': user.FirstName,
+        'lastName': user.LastName,
+        'email': user.Email,
+        'firebaseAuthId': user.FirebaseAuthID,
       },
     )
     if created:
       logger.info('saved user', extra={
           "item": {
-            'firstName': user.firstName,
-            'lastName': user.lastName,
-            'email': user.email,
-            'firebaseAuthId': user.firebaseAuthId,
+            'firstName': user.FirstName,
+            'lastName': user.LastName,
+            'email': user.Email,
+            'firebaseAuthId': user.FirebaseAuthID,
             "created": created,
           }
       })
@@ -53,9 +53,9 @@ def createUser(createUserRequest):
       "error": e,
     })
 
-    return CreateUserResponse(id=None, error=e, created=created)
+    return CreateUserResponse(userId=None, error=str(e))
 
-  return CreateUserResponse(id=userEntry.userId, error=None, created=created)
+  return CreateUserResponse(userId=userEntry.userId, error=None)
 
 
 def getUser(getUserRequest):
@@ -77,6 +77,10 @@ def getUser(getUserRequest):
         "error": e,
       })
       print(e)
+      return GetUserResponse(
+        user=user,
+        error=str(e),
+      )
 
   return GetUserResponse(
     user=user,
@@ -90,36 +94,25 @@ def followTopic(followTopicRequest):
   """
 
   userId = followTopicRequest.userId
-  topic = followTopicRequest.topic
+  topicId = followTopicRequest.topicId
 
   try:
-    userTopicEntry, created = UserTopicModel.objects.update_or_create(
-      defaults={
-        'userId': userId,
-        'topic': topic,
-      },
+    userTopicEntry = UserTopicModel(
+        userId= userId,
+        topicId= topicId,
     )
-    if created:
-      logger.info('saved user topic pair', extra={
-          "item": {
-            'userId': userId,
-            'topic': topic,
-            "created": created,
-          }
-      })
-      logger.info("Saved userTopic to the database: ", extra={ "user": userTopicEntry })
-    else:
-      logger.info("Updated already existing user topic")
+    userTopicEntry.save()
+    logger.info("Saved topic to the database: ", extra={ "topic": userTopicEntry })
 
   except Exception as e:
-    logger.warn("Failed to save user topic to the database", extra= {
+    logger.info("Failed to save user topic to the database", extra= {
       "user": userId,
       "error": e,
     })
 
-    return FollowTopicResponse(id=None, error=e, created=created)
+    return FollowTopicResponse(userTopicId=None, error=str(e))
 
-  return FollowTopicResponse(id=userTopicEntry.userTopicId, error=None, created=created)
+  return FollowTopicResponse(userTopicId=userTopicEntry.userTopicId, error=None)
 
 
 def unfollowTopic(unfollowTopicRequest):
@@ -128,15 +121,15 @@ def unfollowTopic(unfollowTopicRequest):
   """
 
   userId = unfollowTopicRequest.userId
-  topic = unfollowTopicRequest.topic
+  topicId = unfollowTopicRequest.topicId
 
   try:
-    numDeleted, obj = UserTopicModel.objects.filter(userId=userId, topic=topic).delete()
+    numDeleted, obj = UserTopicModel.objects.filter(userId=userId, topicId=topicId).delete()
     if numDeleted > 0:
       logger.info('deleted user topic pair', extra={
           "item": {
             'userId': userId,
-            'topic': topic,
+            'topicId': topicId,
           }
       })
       logger.info("Deleted userTopic from the database: ", extra={ "userTopic": obj })
@@ -146,11 +139,11 @@ def unfollowTopic(unfollowTopicRequest):
   except Exception as e:
     logger.warn("Failed to delete user topic from the database", extra= {
       "user": userId,
-      "topic": topic,
+      "topicId": topicId,
       "error": e,
     })
 
-    return UnfollowTopicResponse(error=e)
+    return UnfollowTopicResponse(error=str(e))
 
   return UnfollowTopicResponse(error=None)
 
@@ -160,15 +153,13 @@ def getTopicsYouFollow(getTopicsYouFollowRequest):
     Gets the topics a user follows in the UserTopic table
   """
 
+  topicList = []
   userId = getTopicsYouFollowRequest.user_id
   followedTopics = UserTopicModel.objects.filter(userId=userId)
-  topics = []
 
-  for topicEntity in followedTopics:
-    topics.append(topicEntity.topic)
+  for topic in followedTopics:
+    topicList.append(topic.topicId)
 
-  return GetTopicsForUserResponse(
-    List
-  )
+  return topicList
 
 

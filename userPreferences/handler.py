@@ -4,6 +4,7 @@ import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from sentence_transformers import SentenceTransformer
 from logtail import LogtailHandler
+from topicModeling.handler import fetch_topic_infos_batch
 from topicModeling.training import Top2Vec
 from rest_framework.response import Response
 import datetime
@@ -56,11 +57,6 @@ def follow_topic(followTopicRequest):
     Gets a user to follow a topic
   """
   followTopicRes = followTopic(followTopicRequest)
-  if followTopicRes.error != None:
-    return FollowTopicResponse(
-      user= None,
-      error= followTopicRes.error
-    )
 
   return followTopicRes
 
@@ -71,11 +67,6 @@ def unfollow_topic(unfollowTopicRequest):
     Gets a user to unfollow a topic
   """
   unfollowTopicRes = unfollowTopic(unfollowTopicRequest)
-  if unfollowTopicRes.error != None:
-    return UnfollowTopicResponse(
-      user= None,
-      error= unfollowTopicRes.error
-    )
 
   return unfollowTopicRes
 
@@ -92,7 +83,7 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
 
 
   # Returns a list of the top topics returned up to num_topics, default 5
-
+  pass
 
 
 def get_topics_you_follow(getTopicsYouFollowRequest):
@@ -100,10 +91,31 @@ def get_topics_you_follow(getTopicsYouFollowRequest):
     Gets a list of the topics a user follows
   """
   # Fetches the topics in the UserTopic database that correspond to the given user
-  # currentTopics =
+  currentTopics = getTopicsYouFollow(
+    getTopicsYouFollowRequest
+  )
+  logger.info("currentTopics")
+  logger.info(currentTopics)
 
+  # Hydrates the topics corresponding to those topicIds from the topic database
+  fetchTopicInfoBatchResponse = fetch_topic_infos_batch(
+    FetchTopicInfoBatchRequest(
+      topicIds=currentTopics,
+    )
+  )
+  if fetchTopicInfoBatchResponse.error != None :
+      return FetchTopicInfoBatchResponse(
+        topics=[],
+        error=None,
+      )
 
+  logger.info("topicInfos")
+  logger.info(fetchTopicInfoBatchResponse.topics)
 
-
+  # Returns the list of topicInfo entities
+  return FetchTopicInfoBatchResponse(
+    topics= fetchTopicInfoBatchResponse.topics,
+    error=None,
+  )
 
 

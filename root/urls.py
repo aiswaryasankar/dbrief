@@ -62,6 +62,10 @@ urlpatterns = [
 
 
     # UserPreferences endpoints
+    path('createUser/', userPreferencesView.create_user_view),
+    path('getUser/', userPreferencesView.get_user_view),
+    path('followTopic/', userPreferencesView.follow_topic_view),
+    path('unfollowTopic/', userPreferencesView.unfollow_topic_view),
     path('getRecommendedTopics/', userPreferencesView.get_recommended_topics_for_user_view),
     path('getTopicsYouFollow', userPreferencesView.get_topics_you_follow_view),
 

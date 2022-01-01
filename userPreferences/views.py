@@ -93,9 +93,9 @@ def get_recommended_topics_for_user_view(request):
     return JsonResponse(req.errors)
 
   getRecommendedTopicsForUserRequest = req.validated_data
-  res = getRecommendedTopicsForUser(getRecommendedTopicsForUserRequest)
+  res = get_recommended_topics_for_user(getRecommendedTopicsForUserRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -108,7 +108,7 @@ def get_topics_you_follow_view(request):
     return JsonResponse(req.errors)
 
   getTopicsForUserRequest = req.validated_data
-  res = getTopicsYouFollow(getTopicsForUserRequest)
+  res = get_topics_you_follow(getTopicsForUserRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 

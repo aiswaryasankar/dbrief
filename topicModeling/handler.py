@@ -251,5 +251,14 @@ def get_topics(getTopicsRequest):
   )
 
 
+def fetch_topic_infos_batch(fetchTopicInfoBatchRequest):
+  """
+    Given a list of topicIds this endpoint will return hydrated topicInfo entities
+  """
+  fetchTopicInfoBatchResponse = fetchTopicInfoBatch(fetchTopicInfoBatchRequest)
+
+  return fetchTopicInfoBatchResponse
+
+
 
 

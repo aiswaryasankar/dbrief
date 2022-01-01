@@ -29,7 +29,7 @@ class User:
   Username: str
   FirstName: str
   LastName: str
-  EmailAddress: str
+  Email: str
 
 
 class NewsletterRecurrenceType(Enum):
@@ -139,6 +139,16 @@ class CreateTopicsRequest:
 @dataclass
 class CreateTopicsResponse:
   ids: List[int]
+  error: Exception
+
+@dataclass
+class FetchTopicInfoBatchRequest:
+  topicIds: List[int]
+
+@dataclass_json
+@dataclass
+class FetchTopicInfoBatchResponse:
+  topics: List[TopicInfo]
   error: Exception
 
 @dataclass
@@ -423,15 +433,16 @@ class WhatsHappeningResponse:
 
 @dataclass
 class CreateUserRequest:
-  firstName: str
-  lastName: str
-  email: str
-  firebaseAuthId: str
+  user: User
+  # firstName: str
+  # lastName: str
+  # email: str
+  # firebaseAuthId: str
 
 @dataclass_json
 @dataclass
 class CreateUserResponse:
-  user: User
+  userId: int
   error: Exception
 
 @dataclass
@@ -447,17 +458,18 @@ class GetUserResponse:
 @dataclass
 class FollowTopicRequest:
   userId: int
-  topic: str
+  topicId: int
 
 @dataclass_json
 @dataclass
 class FollowTopicResponse:
+  userTopicId: int
   error: Exception
 
 @dataclass
 class UnfollowTopicRequest:
   userId: int
-  topic: str
+  topicId: int
 
 @dataclass_json
 @dataclass
