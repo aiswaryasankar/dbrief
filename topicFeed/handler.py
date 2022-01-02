@@ -6,8 +6,6 @@ import logging
 from articleRec.handler import *
 from topicModeling.handler import *
 from mdsModel.handler import *
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 import datetime
 import idl
 
@@ -59,6 +57,10 @@ def getTopicPage(getTopicPageByURLRequest):
     )
     if populateArticleRes.error != None:
       logger.warn("Failed to populate article in the db")
+      return GetTopicPageResponse(
+        topic_page=None,
+        error=populateArticleRes.error,
+      )
     else:
       article = hydrateArticleResponse.article
       articleId = populateArticleRes.id
