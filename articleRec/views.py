@@ -55,7 +55,7 @@ def fetch_articles_view(request):
   return Response(res.to_json())
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def hydrate_article_view(request):
   """
     Will scrape and hydrate the url passed in and return the result as an Article model object
@@ -67,6 +67,9 @@ def hydrate_article_view(request):
   hydrateArticleRequest = req.validated_data
 
   res = hydrate_article(hydrateArticleRequest)
+
+  # Setting article to None since it is of type Newspaper Article
+  res.article=None
 
   return Response(res.to_json())
 

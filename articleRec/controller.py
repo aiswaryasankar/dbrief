@@ -252,11 +252,13 @@ def hydrate_article_controller(url):
     logger.error("Failed to populate article", extra={"url":url, "error": e})
     return HydrateArticleResponse(
       article=None,
+      url=None,
       error=e,
     )
 
   return HydrateArticleResponse(
     article=article,
+    url=article.url,
     error=None,
   )
 

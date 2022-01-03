@@ -1,6 +1,7 @@
 
 
 rss_feeds = [
+	#General
 	"https://www.latimes.com/local/rss2.0.xml",
 	"http://rss.cnn.com/rss/cnn_topstories.rss",
 	"https://www.huffpost.com/section/front-page/feed?x=1",
@@ -89,4 +90,20 @@ rss_feeds = [
   "https://www.economist.com/business/rss.xml",
   "https://www.economist.com/finance-and-economics/rss.xml",
   "https://www.economist.com/science-and-technology/rss.xml",
+	# Tech
+	"https://techcrunch.com/feed/",
+	"https://www.technologyreview.com/feed/",
+	"http://feeds.arstechnica.com/arstechnica/technology-lab",
+	"http://feeds.feedburner.com/venturebeat/SZYF",
+	"https://www.vox.com/rss/recode/index.xml",
+	"https://www.wired.com/feed/rss",
+	"http://feeds.feedburner.com/IeeeSpectrumFullText",
+	"https://www.cnet.com/rss/news/",
+	"https://www.theverge.com/rss/frontpage",
+	"https://markets.businessinsider.com/rss/news",
+	"https://www.techspot.com/backend.xml",
+	"https://cdn.hackernoon.com/feed",
+	"https://appleinsider.com/rss/news/",
+	"https://thenextweb.com/topic/tech",
+	"https://www.geekwire.com/feed/"
 ]

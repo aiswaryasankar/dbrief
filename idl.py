@@ -4,9 +4,9 @@ import json
 
 from nltk import data
 
-from marshmallow import EXCLUDE, fields, pre_dump, Schema, validate
+# from marshmallow import EXCLUDE, fields, pre_dump, Schema, validate
 import requests
-import desert
+# import desert
 from enum import Enum
 from typing import List, Optional
 import time
@@ -63,6 +63,22 @@ class ArticleInfo:
   TopicName: str
   ImageURL: str
   TopPassage: str
+
+@dataclass_json
+@dataclass
+class Article:
+  id: Optional[int]
+  url: str
+  authors: Optional[List[str]] = ""
+  topic: Optional[str] = ""
+  parentTopic: Optional[str] = ""
+  text: Optional[str] = ""
+  title: Optional[str] = ""
+  date: Optional[time.time] = ""
+  imageURL: Optional[str] = ""
+  polarizationScore: Optional[float] = 0.0
+  topPassage: Optional[str]= ""
+  topFact: Optional[str] = ""
 
 @dataclass_json
 @dataclass
@@ -310,22 +326,6 @@ class PopulateArticlesResponse:
   num_articles_populated: int
   num_errors: int
 
-@dataclass_json
-@dataclass
-class Article:
-  id: Optional[int]
-  url: str
-  authors: Optional[List[str]] = ""
-  topic: Optional[str] = ""
-  parentTopic: Optional[str] = ""
-  text: Optional[str] = ""
-  title: Optional[str] = ""
-  date: Optional[time.time] = ""
-  imageURL: Optional[str] = ""
-  polarizationScore: Optional[float] = 0.0
-  topPassage: Optional[str]= ""
-  topFact: Optional[str] = ""
-
 @dataclass
 class SaveArticleRequest:
   article: Optional[Article]
@@ -349,12 +349,13 @@ class FetchArticlesResponse:
 
 @dataclass
 class HydrateArticleRequest:
-  url: List[str]
+  url: str
 
 @dataclass_json
 @dataclass
 class HydrateArticleResponse:
-  article: Article
+  article: Optional[Article]
+  url: Optional[str]
   error: Exception
 
 
