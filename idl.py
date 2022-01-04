@@ -276,15 +276,15 @@ class QueryDocumentsResponse:
 
 @dataclass
 class GetDocumentTopicRequest:
-  doc_ids: List[int]
-  reduced: bool
-  num_topics: int
+  doc_ids: List[int] = field(default_factory=list)
+  reduced: bool = False
+  num_topics: int = 1
 
 @dataclass_json
 @dataclass
 class GetDocumentTopicResponse:
   topic_num: int
-  topic_score: float
+  topic_score: int
   topic_word: str
   error: Exception
 

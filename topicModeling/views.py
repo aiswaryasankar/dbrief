@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 from .handler import *
+from idl import *
 
 """
   This file will handle the actual external facing API for the topicModeling service. This includes mapping all the httpRequest / httpResponse objects to internal dataclass objects and performing the necessary validation steps that are specified in the serializers class. If there are any issues in this mapping / validation it will return an error immediately.  This file is necessary since service to service will make calls to the handler based on the dataclass request/ response whereas the front end will make requests through http which needs to be serialized from the JSON struct that's passed in.
@@ -22,21 +23,6 @@ def retrain_topic_model_view(request):
 
 
 @api_view(['POST'])
-def get_document_topic_view(request):
-  """
-    This endpoint will query the topic model using the doc_ids, reduced, and num_topics parameters.
-  """
-  req = GetDocumentTopicRequest(data=request.data)
-  if not req.is_valid():
-    return JsonResponse(req.errors)
-
-  getDocumentTopicRequest = req.validated_data
-  res = get_document_topic(getDocumentTopicRequest)
-
-  return Response(res)
-
-
-@api_view(['POST'])
 def add_document_view(request):
   """
     This endpoint will add a one off document to the topic model.  This endpoint takes in the article text, doc_ids if provided and adds the document to the topic model so that you can fetch the topic for the article in the future.
@@ -48,7 +34,7 @@ def add_document_view(request):
   addDocumentRequest = req.validated_data
   res = add_document(addDocumentRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -63,7 +49,7 @@ def query_documents_url_view(request):
   queryDocumentsRequest = req.validated_data
   res = query_documents_url(queryDocumentsRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -78,7 +64,7 @@ def search_documents_by_topic_view(request):
   searchDocumentsByTopicRequest = req.validated_data
   res = search_documents_by_topic(searchDocumentsByTopicRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -93,7 +79,7 @@ def search_topics_view(request):
   searchTopicsRequest = req.validated_data
   res = search_topics(searchTopicsRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -113,4 +99,21 @@ def generate_topic_pairs_view(request):
   res = generate_topic_pairs()
 
   return Response()
+
+
+@api_view(['POST'])
+def get_document_topic_view(request):
+  """
+    This endpoint will query the topic model using the doc_ids, reduced, and num_topics parameters.
+  """
+
+  req = GetDocumentTopicRequestSerializer(data=request.data)
+  if not req.is_valid():
+    return JsonResponse(req.errors)
+
+  getDocumentTopicRequest = req.validated_data
+  res = get_document_topic(getDocumentTopicRequest)
+
+  return Response(res.to_json())
+
 

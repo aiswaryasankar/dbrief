@@ -8,6 +8,7 @@ from django.test import TestCase
 
 
 class ArticleRecViewTest(TestCase):
+  fixtures=["articleRec.yaml"]
 
   def test_hello_world(self):
     response = self.client.post('/home/', data={"name": "aiswarya"}, content_type="application/json")
@@ -30,5 +31,6 @@ class ArticleRecViewTest(TestCase):
   def test_fetch_articles(self):
     response = self.client.get('/fetchArticles/')
     self.assertEqual(response.status_code, 200)
+    print(response.data)
 
 

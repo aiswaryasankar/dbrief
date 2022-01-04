@@ -11,13 +11,21 @@ from idl import *
 from articleRec import handler as articleRecHandler
 from idl import *
 from .repository import *
+from bertopic import BERTopic
+from sklearn.feature_extraction.text import CountVectorizer
+from django.conf import settings
+
+
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
 logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
-topicModelFile = "./modelWeights/topicModelWeights"
+if settings.TESTING:
+  topicModelFile = "./modelWeights/topicModelWeights_test"
+else:
+  topicModelFile = "./modelWeights/topicModelWeights"
 
 
 def retrain_topic_model(request):
@@ -36,13 +44,15 @@ def retrain_topic_model(request):
     )
 
   articles = fetchAllArticlesResponse.articleList
-  logger.info("Fetched all articles from the db")
-  logger.info(len(articles))
+  print("Fetched all articles from the db")
+  print(len(articles))
   data = [article.text for article in articles]
   doc_ids = [article.id for article in articles]
 
+  # train_bert_topic(data)
+
   startTime = datetime.datetime.now()
-  model = Top2Vec(documents=data, speed="learn",embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
+  model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
   endTime = datetime.datetime.now()
 
   docIndex = Top2Vec.index_document_vectors(model)
@@ -78,10 +88,28 @@ def retrain_topic_model(request):
   savedModel = Top2Vec.save(self = model, file=topicModelFile)
   loadedModel = Top2Vec.load(topicModelFile)
 
-  # logger.info("Time to train the topic2Vec model", endTime - startTime)
+  logger.info("Time to train the topic2Vec model", endTime - startTime)
   return TrainAndIndexTopicModelResponse(
     error=None,
   )
+
+def train_bert_topic(docs):
+  """
+    Comparing the topics generated through BERTopic with the ones generated through Top2Vec
+  """
+  vectorizer_model = CountVectorizer(ngram_range=(2, 2), stop_words="english")
+  topic_model = BERTopic(
+    vectorizer_model=vectorizer_model,
+    min_topic_size=20,
+    ).fit(docs)
+  topics, probs = topic_model.fit_transform(docs)
+  logger.info(topics)
+  logger.info(probs)
+  logger.info("BERTopic topics")
+  df = topic_model.get_topic_info()
+
+  for _, row in df.iterrows():
+    logger.info(row)
 
 
 def get_document_topic(GetDocumentTopicRequest):
