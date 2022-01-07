@@ -126,7 +126,6 @@ class Top2Vec:
     workers: int (Optional)
         The amount of worker threads to be used in training the model. Larger
         amount will lead to faster training.
-
     tokenizer: callable (Optional, default None)
         Override the default tokenization method. If None then
         gensim.utils.simple_preprocess will be used.
@@ -139,7 +138,6 @@ class Top2Vec:
         Pass custom arguments to UMAP.
     hdbscan_args: dict (Optional, default None)
         Pass custom arguments to HDBSCAN.
-
     verbose: bool (Optional, default True)
         Whether to print status data during training.
     """

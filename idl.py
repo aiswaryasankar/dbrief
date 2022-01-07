@@ -142,24 +142,68 @@ class Author:
 
 ###
 #
-# TopicModel
+# TopicModelV2
 #
 ###
 
 @dataclass
-class QueryTopicsRequest:
-  query: str
-  num_topics: int
-  reduced: bool
+class TrainAndIndexTopicModelRequestV2:
+  documents: List[str]
+  embedding_model: str
+  speed: str
+  doc_ids: List[str]
+  keep_documents: bool
+
+
+@dataclass
+class GetDocumentTopicRequestV2:
+  documents: List[str]
 
 @dataclass_json
 @dataclass
-class QueryTopicsResponse:
-  topics: List[str]
-  topic_scores: List[int]
-  topic_nums: List[int]
+class GetDocumentTopicResponseV2:
+  topicInfos: List[TopicInfo]
   error: Exception
 
+@dataclass_json
+@dataclass
+class GetTopicsResponseV2:
+  topicInfos: List[TopicInfo]
+  error: Optional[Exception]
+
+# TO UPDATE - will return document text using get_representative_docs
+# For all other use cases use query_documents on Top2Vec passing in topic as a string
+@dataclass
+class SearchDocumentsByTopicRequestV2:
+  topic_num: int
+
+@dataclass_json
+@dataclass
+class SearchDocumentsByTopicResponseV2:
+  documents: List[str]
+  error: Optional[Exception]
+
+# Same using find_topics instead
+# Optionally update the response to return TopicInfo instead
+@dataclass
+class SearchTopicsRequestV2:
+  search_term: str
+  num_topics: int
+
+@dataclass_json
+@dataclass
+class SearchTopicsResponseV2:
+  topicInfos: List[TopicInfo]
+  error: Exception
+
+
+###
+#
+# TopicModel
+#
+###
+
+# Same
 @dataclass
 class CreateTopicsRequest:
   topics: List[TopicInfo]
@@ -170,6 +214,8 @@ class CreateTopicsResponse:
   ids: List[int]
   error: Exception
 
+# TopicIds are indices into the topic database
+# Same
 @dataclass
 class FetchTopicInfoBatchRequest:
   topicIds: Optional[List[int]] = field(default_factory=list)
@@ -181,6 +227,7 @@ class FetchTopicInfoBatchResponse:
   topics: List[TopicInfo]
   error: Exception
 
+# Same but optionally update response to return TopicInfo instead
 @dataclass
 class GetTopicsRequest:
   num_topics: int
@@ -193,10 +240,12 @@ class GetTopicsResponse:
   topic_nums: List[int]
   error: Optional[Exception]
 
+# TO UPDATE - will return document text using get_representative_docs
+# For all other use cases use query_documents on Top2Vec passing in topic as a string
 @dataclass
 class SearchDocumentsByTopicRequest:
   topic_num: int
-  num_docs: int
+  num_docs: Optional[int]
 
 @dataclass_json
 @dataclass
@@ -205,6 +254,8 @@ class SearchDocumentsByTopicResponse:
   doc_scores: List[int]
   error: Optional[Exception]
 
+# Same using find_topics instead
+# Optionally update the response to return TopicInfo instead
 @dataclass
 class SearchTopicsRequest:
   keywords: List[str]
@@ -218,6 +269,7 @@ class SearchTopicsResponse:
   topic_nums: List[int]
   error: Exception
 
+# Same
 @dataclass
 class AddDocumentRequest:
   documents: List[str]
@@ -230,6 +282,7 @@ class AddDocumentRequest:
 class AddDocumentResponse:
   error: Exception
 
+# Same
 @dataclass
 class QueryDocumentsRequest:
   query: str
@@ -246,6 +299,7 @@ class QueryDocumentsResponse:
   doc_ids: List[int]
   error: Exception
 
+# Will have a V2 endpoint with a few additional fields
 @dataclass
 class TrainAndIndexTopicModelRequest:
   documents: List[str]
@@ -259,21 +313,8 @@ class TrainAndIndexTopicModelRequest:
 class TrainAndIndexTopicModelResponse:
   error: Exception
 
-@dataclass
-class QueryDocumentsRequest:
-  query: str
-  num_docs: int
-  return_docs: bool
-  use_index: bool
-  ef: int
-
-@dataclass_json
-@dataclass
-class QueryDocumentsResponse:
-  doc_scores: List[int]
-  doc_ids: List[int]
-  error: Exception
-
+# Will need a V2 endpoint since you pass in the document not doc_ids, will call transform
+# Optionally update response to return a TopicInfo instead
 @dataclass
 class GetDocumentTopicRequest:
   doc_ids: List[int] = field(default_factory=list)
@@ -443,7 +484,7 @@ class WhatsHappeningResponse:
 
 ###
 #
-# User
+# UserPreferences
 #
 ###
 

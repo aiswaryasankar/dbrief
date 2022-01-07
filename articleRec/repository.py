@@ -83,6 +83,7 @@ def fetchAllArticles():
   """
 
   articleList = []
+  articleText = []
 
   for article in ArticleModel.objects.all():
     try:
@@ -110,12 +111,19 @@ def fetchAllArticles():
         a.topFact = article.top_fact
 
       articleList.append(a)
+      articleText.append(article.text.replace("\n", ""))
     except Exception as e:
       logger.warn("Failed to fetch article from database", extra={
         "article": article,
         "error": e,
       })
       print(e)
+
+  f = open("articles.txt", "w")
+
+  for elem in articleText:
+    f.write(elem+"\n")
+  f.close()
 
   return FetchArticlesResponse(
     articleList=articleList,

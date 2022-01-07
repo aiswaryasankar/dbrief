@@ -93,24 +93,6 @@ def retrain_topic_model(request):
     error=None,
   )
 
-def train_bert_topic(docs):
-  """
-    Comparing the topics generated through BERTopic with the ones generated through Top2Vec
-  """
-  vectorizer_model = CountVectorizer(ngram_range=(2, 2), stop_words="english")
-  topic_model = BERTopic(
-    vectorizer_model=vectorizer_model,
-    min_topic_size=20,
-    ).fit(docs)
-  topics, probs = topic_model.fit_transform(docs)
-  logger.info(topics)
-  logger.info(probs)
-  logger.info("BERTopic topics")
-  df = topic_model.get_topic_info()
-
-  for _, row in df.iterrows():
-    logger.info(row)
-
 
 def get_document_topic(GetDocumentTopicRequest):
   """

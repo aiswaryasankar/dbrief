@@ -10,7 +10,7 @@ from logtail import LogtailHandler
 import logging
 from topicModeling.training import Top2Vec
 from .constants import *
-import idl
+from idl import *
 from .repository import *
 from topicModeling import handler as tpHandler
 from polarityModel import handler as polarityHandler
@@ -56,7 +56,7 @@ def populate_article(populateArticleRequest):
   article=hydrateArticleResponse.article
 
   # Save to database and fetch article id
-  a = idl.Article(
+  a = Article(
     id=None,
     url=url,
     text=article.text,
@@ -71,7 +71,7 @@ def populate_article(populateArticleRequest):
     topFact=None,
   )
   saveArticleResponse = saveArticle(
-    idl.SaveArticleRequest(
+    SaveArticleRequest(
       article=a,
     )
   )
@@ -84,7 +84,7 @@ def populate_article(populateArticleRequest):
   if saveArticleResponse.created:
     # Add document to topic model with text and doc id
     addedToTopicModel = tpHandler.add_document(
-      idl.AddDocumentRequest(
+      AddDocumentRequest(
         documents=[article.text],
         doc_ids=[saveArticleResponse.id],
         tokenizer=None,
@@ -97,24 +97,24 @@ def populate_article(populateArticleRequest):
     logger.info("Added document to the topic model")
 
   # Get topic for the document from the topic model
-  getTopicResponse = tpHandler.get_document_topic(
-    idl.GetDocumentTopicRequest(
+  getDocumentTopicResponse = tpHandler.get_document_topic(
+    GetDocumentTopicRequest(
       doc_ids=[saveArticleResponse.id],
       reduced=False,
       num_topics=1,
     )
   )
-  if getTopicResponse.error != None:
-    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(getTopicResponse.error))
+  if getDocumentTopicResponse.error != None:
+    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(getDocumentTopicResponse.error))
 
   logger.info("Document topic")
-  logger.info(getTopicResponse.topic_num)
-  logger.info(getTopicResponse.topic_score)
-  logger.info(getTopicResponse.topic_word)
+  logger.info(getDocumentTopicResponse.topic_num)
+  logger.info(getDocumentTopicResponse.topic_score)
+  logger.info(getDocumentTopicResponse.topic_word)
 
   # Get the subtopic for the document from the topic model
   getSubtopicResponse = tpHandler.get_document_topic(
-    idl.GetDocumentTopicRequest(
+    GetDocumentTopicRequest(
       doc_ids=[saveArticleResponse.id],
       reduced=True,
       num_topics=1,
@@ -173,7 +173,7 @@ def populate_article(populateArticleRequest):
       logger.info("Successfully extracted the top fact")
 
   # Update the db with additional data
-  updatedArticle = idl.Article(
+  updatedArticle = Article(
     id=saveArticleResponse.id,
     topic = getTopicResponse.topic_word,
     parentTopic = getSubtopicResponse.topic_word,
@@ -191,7 +191,7 @@ def populate_article(populateArticleRequest):
 
   # Save to database and fetch article id
   updateArticleResponse = saveArticle(
-    idl.SaveArticleRequest(
+    SaveArticleRequest(
       article=updatedArticle,
     )
   )
