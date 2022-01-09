@@ -36,6 +36,7 @@ urlpatterns = [
     path('populateArticle/', articleRecView.populate_article_by_url_view),
     path('fetchArticles/', articleRecView.fetch_articles_view),
     path('hydrateArticle/', articleRecView.hydrate_article_view),
+    path('articleBackfill/', articleRecView.article_backfill_view),
 
     #TopicFeed endpoints
     path('getTopicPage/', topicFeedView.get_topic_page_view),
@@ -50,6 +51,12 @@ urlpatterns = [
     path('searchTopics/', topicModelView.search_topics_view),
     path('indexDocuments/', topicModelView.index_document_vectors_view),
     path('generateTopicPairs/', topicModelView.generate_topic_pairs_view),
+
+    # TopicModelingV2 endpoints
+    path('trainTopicModelV2/', topicModelView.retrain_topic_model_view_v2),
+    path('getDocumentTopicV2/', topicModelView.get_document_topic_view_v2),
+    path('searchTopicsV2/', topicModelView.search_topics_view_v2),
+    path('getTopicsV2/', topicModelView.get_topics_view_v2),
 
     # PolarityModel endpoints
     path('getDocumentPolarity/', polarityModelView.get_document_polarity_view),
@@ -67,7 +74,9 @@ urlpatterns = [
     path('followTopic/', userPreferencesView.follow_topic_view),
     path('unfollowTopic/', userPreferencesView.unfollow_topic_view),
     path('getRecommendedTopics/', userPreferencesView.get_recommended_topics_for_user_view),
-    path('getTopicsYouFollow', userPreferencesView.get_topics_you_follow_view),
+    path('getTopicsYouFollow/', userPreferencesView.get_topics_you_follow_view),
+
+    # Newsletter endpoints
 
 ]
 

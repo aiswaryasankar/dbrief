@@ -98,3 +98,23 @@ def populate_article_by_url_view(request):
 
   return Response(res.to_json())
 
+
+@api_view(['GET'])
+def article_backfill_view(request):
+  """
+    This endpoint will function for a few different use cases. First it will be run daily as a way to backfill any missing data in the article database. This includes all fields that are missing. Additionally it can function to update fields even if they were already populated. This would primarily be used for topic regeneration based on an updated model. Thus the request will either take in force_update, as well as a list of fields to update.  If neither are provided it will batch update all fields that are missing.
+  """
+
+  req = ArticleBackfillRequestSerializer(data=request.data)
+  if not req.is_valid():
+    return JsonResponse(req.errors)
+
+  articleBackfillRequest = req.validated_data
+
+  res = article_backfill(articleBackfillRequest)
+
+  return Response(res.to_json())
+
+
+
+

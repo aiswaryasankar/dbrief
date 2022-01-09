@@ -77,6 +77,69 @@ def saveArticle(saveArticleRequest):
   return SaveArticleResponse(id=articleEntry.articleId, error=None, created=created)
 
 
+def fetchArticles(fetchArticlesRequest):
+  """
+    Will handle fetching articles based on any filter parameters that are specified.
+  """
+  field = ""
+  filterList = []
+  articleList = []
+
+  if fetchArticlesRequest.articleIds != []:
+    field = "articleId"
+    filterList = fetchArticlesRequest.articleIds
+  elif fetchArticlesRequest.articleUrls != []:
+    field = "url"
+    filterList = fetchArticlesRequest.articleUrls
+
+  for elem in filterList:
+    if field=="articleId":
+      article = ArticleModel.objects.get(articleId=elem)
+    elif field=="url":
+      article = ArticleModel.objects.get(url=elem)
+    try:
+      a = Article(
+          id=article.articleId,
+          url=article.url,
+          authors=article.author,
+          text=article.text,
+          title=article.title,
+        )
+
+      if article.topic:
+        a.topic = article.topic
+      if article.parent_topic:
+        a.parentTopic = article.parent_topic
+      if article.publish_date:
+        a.topic = article.publish_date
+      if article.image:
+        a.imageURL = article.image
+      if article.polarization_score:
+        a.polarizationScore = article.polarization_score
+      if article.top_passage:
+        a.topPassage = article.top_passage
+      if article.top_fact:
+        a.topFact = article.top_fact
+
+      articleList.append(a)
+
+    except Exception as e:
+      logger.warn("Failed to fetch article from database", extra={
+        "article": article,
+        "error": e,
+      })
+      print(e)
+      return FetchArticlesResponse(
+        articleList=articleList,
+        error=e,
+      )
+
+  return FetchArticlesResponse(
+    articleList=articleList,
+    error=None,
+  )
+
+
 def fetchAllArticles():
   """
     Will fetch the entire list of articles from the database and return them as hydrated Article objects
@@ -230,3 +293,9 @@ def fetchArticlesByUrl(articleUrls):
     articleList=hydratedArticles,
     error=None,
   )
+
+def articleBackfill():
+  """
+
+  """
+  pass

@@ -41,3 +41,8 @@ class HydrateArticleRequestSerializer(DataclassSerializer):
   class Meta:
     dataclass = HydrateArticleRequest
 
+class ArticleBackfillRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = ArticleBackfillRequest
+

@@ -87,3 +87,17 @@ def populate_article_by_url(populateArticleByUrlRequest):
   )
   return populateArticleResponse
 
+
+def article_backfill(articleBackfillRequest):
+  """
+    This endpoint will function for a few different use cases. First it will be run daily as a way to backfill any missing data in the article database. This includes all fields that are missing. Additionally it can function to update fields even if they were already populated. This would primarily be used for topic regeneration based on an updated model. Thus the request will either take in force_update, as well as a list of fields to update.  If neither are provided it will batch update all fields that are missing.
+  """
+
+  if articleBackfillRequest.force_update:
+    pass
+  else:
+    pass
+
+
+
+
