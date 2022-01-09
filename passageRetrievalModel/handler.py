@@ -22,6 +22,8 @@ logger.setLevel(logging.INFO)
 
 module = "https://tfhub.dev/google/universal-sentence-encoder/4"
 
+
+
 def get_top_passage(getTopPassageRequest):
   """
     Get the top passage from the article and return it
@@ -35,7 +37,11 @@ def get_top_passage(getTopPassageRequest):
     )
 
   # Enforce that a paragraph has at least 2 sentences
-  facts = nltk.download("punkt")
+  try:
+    nltk.data.find('tokenizers/punkt')
+  except LookupError:
+    nltk.download('punkt')
+
   paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
 
   if len(paragraphs) == 0:
@@ -87,7 +93,12 @@ def get_facts(getFactsRequest):
     Get facts from the article and return a list of top facts
   """
   article = getFactsRequest.article_text
-  facts = nltk.download("punkt")
+
+  try:
+    nltk.data.find('tokenizers/punkt')
+  except LookupError:
+    nltk.download('punkt')
+
   facts = nltk.tokenize.sent_tokenize(article)
 
   if len(facts) == 0 or article == '':

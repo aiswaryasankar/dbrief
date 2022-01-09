@@ -1,8 +1,3 @@
-"""
-  This file will actually generate the MDS summary given the input articles.  It will use a t-5 model trained on the multiNews dataset.
-
-"""
-
 import logging
 import os
 import sys
@@ -12,6 +7,12 @@ from typing import Optional
 import nltk  # Here to have a nice missing dependency error message early on
 import numpy as np
 from datasets import load_dataset, load_metric
+
+"""
+  This file will actually generate the MDS summary given the input articles.  It will use a t-5 model trained on the multiNews dataset.
+
+"""
+
 
 # from . import transformers
 from filelock import FileLock
