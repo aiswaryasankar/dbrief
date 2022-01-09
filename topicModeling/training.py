@@ -485,7 +485,9 @@ class Top2Vec:
     def _embed_documents(self, train_corpus):
 
         self._check_import_status()
-        self._check_model_status()
+
+        # Only handled during model set up
+        # self._check_model_status()
 
         # embed documents
         batch_size = 500
@@ -508,7 +510,8 @@ class Top2Vec:
 
     def _embed_query(self, query):
         self._check_import_status()
-        self._check_model_status()
+        # Only checked during model set up
+        # self._check_model_status()
 
         return self._l2_normalize(np.array(self.embed([query])[0]))
 

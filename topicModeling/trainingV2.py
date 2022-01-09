@@ -26,15 +26,20 @@ from sklearn.preprocessing import normalize
 
 # BERTopic
 from bertopic._ctfidf import ClassTFIDF
-from bertopic._utils import MyLogger, check_documents_type, check_embeddings_shape, check_is_fitted
+from bertopic._utils import check_documents_type, check_embeddings_shape, check_is_fitted
 from bertopic._mmr import mmr
 from bertopic.backend._utils import select_backend
 from bertopic import plotting
+from logtail import LogtailHandler
+import logging
 
 # Visualization
 import plotly.graph_objects as go
 
-logger = MyLogger("WARNING")
+handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+logger = logging.getLogger(__name__)
+logger.handlers = [handler]
+logger.setLevel(logging.INFO)
 
 
 class BERTopic:

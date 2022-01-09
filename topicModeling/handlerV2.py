@@ -73,15 +73,15 @@ def retrain_topic_model_v2(request):
   doc_ids = [article.id for article in articles]
 
   # Train Top2Vec
-  startTime = datetime.datetime.now()
-  model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
-  endTime = datetime.datetime.now()
+  # startTime = datetime.datetime.now()
+  # model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
+  # endTime = datetime.datetime.now()
 
-  docIndex = Top2Vec.index_document_vectors(model)
-  wordIndex = Top2Vec.index_word_vectors(model)
+  # docIndex = Top2Vec.index_document_vectors(model)
+  # wordIndex = Top2Vec.index_word_vectors(model)
 
-  savedArticleModel = Top2Vec.save(self = model, file=articleIndexFile)
-  loadedArticleModel = Top2Vec.load(topicModelFile)
+  # savedArticleModel = Top2Vec.save(self = model, file=articleIndexFile)
+  # loadedArticleModel = Top2Vec.load(articleIndexFile)
 
 
   # Train BERTopic
@@ -93,28 +93,27 @@ def retrain_topic_model_v2(request):
     ).fit(data)
 
   _, _ = topic_model.fit_transform(data)
+
   logger.info("BERTopic topics")
   df = topic_model.get_topic_info()
-  for _, row in df.iterrows():
-    logger.info(row)
 
-    createTopicsResponse = createTopics(
-      CreateTopicsRequest(
-        topics=TopicInfo(
-          TopicID=None,
-          TopicName=row.iloc["Name"].split("_")[1],
-          ParentTopicName=row.iloc["Name"].split("_")[2],
-        )
-      )
+  createTopicsResponse = createTopics(
+    CreateTopicsRequest(
+      topics=[TopicInfo(
+        TopicID=None,
+        TopicName=row["Name"].split("_")[1],
+        ParentTopicName=row["Name"].split("_")[2],
+      ) for _, row in df.iterrows()]
     )
-    if createTopicsResponse.error != None:
-      logger.info("Failed to store the topics in the database")
+  )
+  if createTopicsResponse.error != None:
+    logger.info("Failed to store the topics in the database")
 
-    # Print out the topic hierarchy
-    logger.info("Parent Topic")
-    logger.info(row.iloc["Name"].split("_")[2])
-    logger.info("Topic")
-    logger.info(row.iloc["Name"].split("_")[1])
+  # Print out the topic hierarchy
+  logger.info("Topics")
+  logger.info([row["Name"].split("_")[1] for _, row in df.iterrows()])
+  logger.info("Parent Topics")
+  logger.info([row["Name"].split("_")[2] for _, row in df.iterrows()])
 
   # Save the topic model
   savedTopicModel = topic_model.save(path=topicModelFile)
@@ -228,8 +227,12 @@ def get_topics_v2(getTopicsV2Request):
 
   # This returns topics as a tuple of ([topicIds], [scores]) will only need the topicIds
   all_topics = topicModel.get_topics()
+  logger.info("All topics")
+  logger.info(all_topics)
 
   topicList = [all_topics[topicId][0][0] for topicId in all_topics]
+  logger.info("Topic list")
+  logger.info(topicList)
 
   # Fetch the corresponding topic from the topic database
   fetchTopicInfoBatchResponse = fetchTopicInfoBatch(
@@ -247,6 +250,21 @@ def get_topics_v2(getTopicsV2Request):
       topicInfos=fetchTopicInfoBatchResponse.topics,
       error = None,
     )
+
+def topic_rule_engine(topicRuleEngineRequest):
+  """
+    Given a list of the top 5 words for all possible topics, this will apply the following rules and select the best word to represent each topic.
+
+      1. Don't allow acronyms
+      2. Don't allow duplicate topic names
+      3. Don't allow verbs
+      4. Don't allow acronyms
+  """
+  pass
+
+
+
+
 
 
 

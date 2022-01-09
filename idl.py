@@ -37,6 +37,11 @@ class NewsletterRecurrenceType(Enum):
   WEEKLY = 2
   MONTHLY = 3
 
+class TimeOfDay(Enum):
+  MORNING = 1
+  AFTERNOON = 2
+  EVENING = 3
+
 class Day(Enum):
   MONDAY = 1
   TUESDAY = 2
@@ -48,7 +53,24 @@ class Day(Enum):
 
 @dataclass_json
 @dataclass
-class NewsletterConfig:
+class TopicInfo:
+  TopicID: Optional[int]
+  TopicName: str
+  ParentTopicName: str
+
+@dataclass_json
+@dataclass
+class NewsletterConfigV1:
+  NewsletterConfigId: int
+  UserID: int
+  DeliveryTime: TimeOfDay
+  RecurrenceType: NewsletterRecurrenceType
+  IsEnabled: bool
+  TopicsFollowed: List[TopicInfo]
+
+@dataclass_json
+@dataclass
+class NewsletterConfigV2:
   DeliveryTime: time.time
   DeliveryDays: List[Day]
   RecurrenceAmount: int
@@ -79,13 +101,6 @@ class Article:
   polarizationScore: Optional[float] = 0.0
   topPassage: Optional[str]= ""
   topFact: Optional[str] = ""
-
-@dataclass_json
-@dataclass
-class TopicInfo:
-  TopicID: Optional[int]
-  TopicName: str
-  ParentTopicName: str
 
 @dataclass_json
 @dataclass
@@ -381,6 +396,7 @@ class SaveArticleResponse:
 @dataclass
 class FetchArticlesRequest:
   articleIds: Optional[List[int]] = field(default_factory=list)
+  articleUrls: Optional[List[str]] = field(default_factory=str)
 
 @dataclass_json
 @dataclass
@@ -397,6 +413,17 @@ class HydrateArticleRequest:
 class HydrateArticleResponse:
   article: Optional[Article]
   url: Optional[str]
+  error: Exception
+
+@dataclass
+class ArticleBackfillRequest:
+  force_update: bool
+  fields: Optional[List[str]]
+
+@dataclass_json
+@dataclass
+class ArticleBackfillResponse:
+  num_updates: int
   error: Exception
 
 
@@ -580,5 +607,59 @@ class GetMDSSummaryResponse:
 # Newsletter
 #
 ###
+
+@dataclass
+class CreateNewsletterConfigForUserRequest:
+  newsletterConfig: NewsletterConfigV1
+
+@dataclass_json
+@dataclass
+class CreateNewsletterConfigForUserResponse:
+  error: Exception
+
+@dataclass
+class GetNewsletterConfigForUserRequest:
+  userId: int
+
+@dataclass_json
+@dataclass
+class GetNewsletterConfigForUserResponse:
+  newsletterConfig: NewsletterConfigV1
+  error: Exception
+
+@dataclass
+class UpdateNewsletterConfigForUserRequest:
+  error: Exception
+
+@dataclass
+class SendNewslettersBatchRequest:
+  timeOfDay: TimeOfDay
+  day: Day
+
+@dataclass_json
+@dataclass
+class SendNewslettersBatchResponse:
+  newsletters_success: List[str]
+  newsletters_failed: List[str]
+
+@dataclass
+class SendNewsletterRequest:
+  userId: int
+  userEmail: Optional[str]
+
+@dataclass_json
+@dataclass
+class SendNewsletterResponse:
+  error: Exception
+
+@dataclass
+class HydrateNewsletterRequest:
+  newsletterConfigId: int
+
+@dataclass_json
+@dataclass
+class HydrateNewsletterResponse:
+  error: Exception
+
 
 

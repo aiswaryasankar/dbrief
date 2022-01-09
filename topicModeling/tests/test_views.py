@@ -45,5 +45,25 @@ class TopicModelingViewTest(TestCase):
     response = self.client.post('/generateTopicPairs/')
     self.assertEqual(response.status_code, 200)
 
+  def test_get_topics(self):
+    response = self.client.get('/getTopics/')
+    self.assertEqual(response.status_code, 200)
 
+
+  ### Topic Model V2 Tests
+  def test_retrain_topic_model_v2(self):
+    response = self.client.get('/trainTopicModelV2/')
+    self.assertEqual(response.status_code, 200)
+
+  def test_get_document_topic_v2(self):
+    response = self.client.post('/getDocumentTopicV2/', data={"document":"China is going to take over the world"}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+
+  def test_search_topics_v2(self):
+    response = self.client.post('/searchTopicsV2', content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+
+  def test_get_topics_v2(self):
+    response = self.client.get('/getTopicsV2', content_type="application/json")
+    self.assertEqual(response.status_code, 200)
 
