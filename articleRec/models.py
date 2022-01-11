@@ -19,3 +19,4 @@ class ArticleModel (models.Model):
     return self.url
 
 
+

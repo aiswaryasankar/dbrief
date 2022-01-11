@@ -25,6 +25,7 @@ class UserTopicModel (models.Model):
   userTopicId = models.AutoField(primary_key=True)
   userId = models.IntegerField("UserId", null=True)
   topicId = models.IntegerField("TopicId", null=True)
+  forNewsletter = models.BooleanField("For Newsletter", default=False)
 
   def __str__(self):
     return str(self.userId) + " " + str(self.topicId)

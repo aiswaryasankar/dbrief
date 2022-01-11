@@ -22,14 +22,16 @@ def create_newsletter_config_for_user_view(request):
   """
     Create a newsletter config for a user
   """
-  req = CreateNewsletterConfigForUserRequest(data=request.data)
+  req = CreateNewsletterConfigForUserRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    print(req.errors)
+    return Response(req.errors)
 
+  print(req.validated_data)
   createNewsletterConfigForUserRequest = req.validated_data
   res = create_newsletter_config_for_user(createNewsletterConfigForUserRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -37,14 +39,14 @@ def update_newsletter_config_for_user_view(request):
   """
     Update a newsletter config for a user
   """
-  req = UpdateNewsletterConfigForUserRequest(data=request.data)
+  req = UpdateNewsletterConfigForUserRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   updateNewsletterConfigForUserRequest = req.validated_data
   res = update_newsletter_config_for_user(updateNewsletterConfigForUserRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -52,14 +54,14 @@ def get_newsletter_config_for_user_view(request):
   """
     Get a newsletter config for a user
   """
-  req = GetNewsletterConfigForUserRequest(data=request.data)
+  req = GetNewsletterConfigForUserRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getNewsletterConfigForUserRequest = req.validated_data
   res = get_newsletter_config_for_user(getNewsletterConfigForUserRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -67,14 +69,14 @@ def send_newsletters_batch_view(request):
   """
     Send a batch of newsletters that match the current time
   """
-  req = SendNewslettersBatchRequest(data=request.data)
+  req = SendNewslettersBatchRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   sendNewslettersBatchRequest = req.validated_data
   res = send_newsletters_batch(sendNewslettersBatchRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -82,14 +84,14 @@ def send_newsletter_view(request):
   """
    Send a newsletter to the specified user
   """
-  req = SendNewsletterRequest(data=request.data)
+  req = SendNewsletterRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   sendNewsletterRequest = req.validated_data
   res = send_newsletter(sendNewsletterRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -97,13 +99,13 @@ def hydrate_newsletter_view(request):
   """
     Hydrate a newsletter for a user
   """
-  req = HydrateNewsletterRequest(data=request.data)
+  req = HydrateNewsletterRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   hydrateNewsletterRequest = req.validated_data
   res = hydrate_newsletter(hydrateNewsletterRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 

@@ -11,6 +11,7 @@ from enum import Enum
 from typing import List, Optional
 import time
 from dataclasses_json import dataclass_json
+import typing
 
 """
   This file is a bit unconventional, but it will store all of the entity definitions across each of the services. Thus there will be one source of truth / common location for all the request, response, api definitions to work with.
@@ -32,24 +33,24 @@ class User:
   Email: str
 
 
-class NewsletterRecurrenceType(Enum):
-  DAILY = 1
-  WEEKLY = 2
-  MONTHLY = 3
+# class NewsletterRecurrenceType(ChoiceEnum):
+#   DAILY = 1
+#   WEEKLY = 2
+#   MONTHLY = 3
 
-class TimeOfDay(Enum):
-  MORNING = 1
-  AFTERNOON = 2
-  EVENING = 3
+# class TimeOfDay(ChoiceEnum):
+#   MORNING = 1
+#   AFTERNOON = 2
+#   EVENING = 3
 
-class Day(Enum):
-  MONDAY = 1
-  TUESDAY = 2
-  WEDNESDAY = 3
-  THURSDAY = 4
-  FRIDAY = 5
-  SATURDAY = 6
-  SUNDAY = 7
+# class Day(ChoiceEnum):
+#   MONDAY = 1
+#   TUESDAY = 2
+#   WEDNESDAY = 3
+#   THURSDAY = 4
+#   FRIDAY = 5
+#   SATURDAY = 6
+#   SUNDAY = 7
 
 @dataclass_json
 @dataclass
@@ -61,21 +62,21 @@ class TopicInfo:
 @dataclass_json
 @dataclass
 class NewsletterConfigV1:
-  NewsletterConfigId: int
+  NewsletterConfigId: Optional[int]
   UserID: int
-  DeliveryTime: TimeOfDay
-  RecurrenceType: NewsletterRecurrenceType
+  DeliveryTime: typing.Literal['MORNING', 'AFTERNOON', 'EVENING']
+  RecurrenceType: typing.Literal['DAILY', 'WEEKLY', 'MONTHLY']
   IsEnabled: bool
-  TopicsFollowed: List[TopicInfo]
+  TopicsFollowed: List[int]
 
 @dataclass_json
 @dataclass
 class NewsletterConfigV2:
   DeliveryTime: time.time
-  DeliveryDays: List[Day]
-  RecurrenceAmount: int
-  RecurrenceType: NewsletterRecurrenceType
+  DeliveryDays: List[typing.Literal['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']]
+  RecurrenceType: typing.Literal['DAILY', 'WEEKLY', 'MONTHLY']
   IsEnabled: bool
+  TopicsFollowed: List[int]
 
 @dataclass_json
 @dataclass
@@ -539,6 +540,7 @@ class GetUserResponse:
 class FollowTopicRequest:
   userId: int
   topicId: int
+  forNewsletter: Optional[bool] = False
 
 @dataclass_json
 @dataclass
@@ -615,6 +617,7 @@ class CreateNewsletterConfigForUserRequest:
 @dataclass_json
 @dataclass
 class CreateNewsletterConfigForUserResponse:
+  newsletterId: int
   error: Exception
 
 @dataclass
@@ -629,12 +632,17 @@ class GetNewsletterConfigForUserResponse:
 
 @dataclass
 class UpdateNewsletterConfigForUserRequest:
+  newsletterConfig: NewsletterConfigV1
+
+@dataclass_json
+@dataclass
+class UpdateNewsletterConfigForUserResponse:
   error: Exception
 
 @dataclass
 class SendNewslettersBatchRequest:
-  timeOfDay: TimeOfDay
-  day: Day
+  timeOfDay: typing.Literal['MORNING', 'AFTERNOON', 'EVENING']
+  day: typing.Literal['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
 
 @dataclass_json
 @dataclass
@@ -660,6 +668,5 @@ class HydrateNewsletterRequest:
 @dataclass
 class HydrateNewsletterResponse:
   error: Exception
-
 
 

@@ -12,6 +12,7 @@ cssselect==1.1.0
 Cython==0.29.24
 Django==3.2.9
 django-background-tasks==1.2.5
+django-enumchoicefield==2.0.0
 django-compat==1.0.15
 django-crontab==0.7.1
 djangorestframework==3.12.4
@@ -44,6 +45,7 @@ Markdown==3.3.6
 msgpack==1.0.3
 mysqlclient==2.1.0
 marshmallow==3.14.1
+mailchimp-transactional==1.0.46
 dataclasses-json==0.5.6
 marshmallow-enum==1.5.1
 mock==4.0.3

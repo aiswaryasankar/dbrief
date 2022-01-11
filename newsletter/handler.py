@@ -3,7 +3,12 @@ from rest_framework.response import Response
 import logging
 from .repository import *
 from .serializers import *
+from userPreferences.handler import *
 from logtail import LogtailHandler
+import mailchimp_transactional as MailchimpTransactional
+from mailchimp_transactional.api_client import ApiClientError
+
+
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -12,27 +17,38 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 
-def hello_world(helloWorldRequest):
-  """
-    Demo function for testing purposes
-  """
-  logger.info(helloWorldRequest)
-  logger.info(helloWorldRequest.name)
-  return HelloWorldResponse(
-    name=helloWorldRequest.name
-  )
-
 
 def create_newsletter_config_for_user(createNewsletterConfigRequest):
   """
     Create a newsletter config for a user
   """
   # Write the newsletter config settings in the newsletter config database
+  createNewsletterConfigForUserResponse = updateNewsletterConfig(createNewsletterConfigRequest)
+  if createNewsletterConfigForUserResponse.error != None:
+    return createNewsletterConfigForUserResponse
 
-
+  print("writing topics")
   # Write the user topics in the UserTopic database
+  newsletterConfig = createNewsletterConfigRequest.newsletterConfig
+  for topic in newsletterConfig.TopicsFollowed:
+    followTopicResponse = follow_topic(
+      FollowTopicRequest(
+        userId= newsletterConfig.UserID,
+        topicId=topic,
+        forNewsletter=True,
+      )
+    )
+    if followTopicResponse.error != None:
+      print("Failed to follow topic for newsletter")
+      print(followTopicResponse.error)
+      return CreateNewsletterConfigForUserResponse(
+        newsletterId=createNewsletterConfigForUserResponse.newsletterId,
+        error=followTopicResponse.error,
+      )
+    else:
+      print("Successfully followed topic")
 
-  pass
+  return createNewsletterConfigForUserResponse
 
 
 def update_newsletter_config_for_user(updateNewsletterConfigRequest):
@@ -75,9 +91,24 @@ def send_newsletter(sendNewsletterRequest):
 
   # Will call hydrate_newsletter to populate the information into the newsletter template
 
-  # Will handle sending out the email through mailchimp
+  mailchimp = MailchimpTransactional.Client('IbRJVT9R9C9JBt6gUA-E3g')
+  message = {
+      "from_email": "aiswarya@aiswaryas.com",
+      "subject": "Hello world",
+      "text": "Demo email!",
+      "to": [
+        {
+          "email": "aiswarya@aiswaryas.com",
+          "type": "to"
+        }
+      ]
+  }
 
-  pass
+  try:
+    response = mailchimp.messages.send({"message":message})
+    print('API called successfully: {}'.format(response))
+  except ApiClientError as error:
+    print('An exception occurred: {}'.format(error.text))
 
 
 def hydrate_newsletter(hydrateNewsletterRequest):
@@ -89,7 +120,4 @@ def hydrate_newsletter(hydrateNewsletterRequest):
   # Response type for this function is not yet known entirely
 
   pass
-
-
-
 

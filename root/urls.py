@@ -77,7 +77,13 @@ urlpatterns = [
     path('getTopicsYouFollow/', userPreferencesView.get_topics_you_follow_view),
 
     # Newsletter endpoints
-
+    path('createNewsletterConfig/', newsletterView.create_newsletter_config_for_user_view),
+    path('updateNewsletterConfig/', newsletterView.update_newsletter_config_for_user_view),
+    path('getNewsletterConfig/', newsletterView.get_newsletter_config_for_user_view),
+    path('sendNewsletter/', newsletterView.send_newsletter_view),
+    path('sendNewslettersBatch/', newsletterView.send_newsletters_batch_view),
 ]
+
+
 
 

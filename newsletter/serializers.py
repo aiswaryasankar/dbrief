@@ -27,3 +27,13 @@ class HydrateNewsletterRequestSerializer(DataclassSerializer):
   parser_classes = JSONParser
   class Meta:
     dataclass = HydrateNewsletterRequest
+
+class SendNewsletterRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = SendNewsletterRequest
+
+class SendNewslettersBatchRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = SendNewslettersBatchRequest

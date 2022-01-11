@@ -95,11 +95,13 @@ def followTopic(followTopicRequest):
 
   userId = followTopicRequest.userId
   topicId = followTopicRequest.topicId
+  forNewsletter = followTopicRequest.forNewsletter
 
   try:
     userTopicEntry = UserTopicModel(
         userId= userId,
         topicId= topicId,
+        forNewsletter = forNewsletter,
     )
     userTopicEntry.save()
     logger.info("Saved topic to the database: ", extra={ "topic": userTopicEntry })

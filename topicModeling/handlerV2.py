@@ -251,6 +251,7 @@ def get_topics_v2(getTopicsV2Request):
       error = None,
     )
 
+
 def topic_rule_engine(topicRuleEngineRequest):
   """
     Given a list of the top 5 words for all possible topics, this will apply the following rules and select the best word to represent each topic.
