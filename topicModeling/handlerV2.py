@@ -1,33 +1,33 @@
-import logging
-import numpy as np
-import pandas as pd
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from sentence_transformers import SentenceTransformer
-from logtail import LogtailHandler
-from topicModeling.training import Top2Vec
-from rest_framework.response import Response
-import datetime
-from idl import *
-from articleRec import handler as articleRecHandler
-from idl import *
-from .repository import *
-from topicModeling.trainingV2 import BERTopic
-from sklearn.feature_extraction.text import CountVectorizer
-from django.conf import settings
+# import logging
+# import numpy as np
+# import pandas as pd
+# from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+# from sentence_transformers import SentenceTransformer
+# from logtail import LogtailHandler
+# from topicModeling.training import Top2Vec
+# from rest_framework.response import Response
+# import datetime
+# from idl import *
+# from articleRec import handler as articleRecHandler
+# from idl import *
+# from .repository import *
+# from topicModeling.trainingV2 import BERTopic
+# from sklearn.feature_extraction.text import CountVectorizer
+# from django.conf import settings
 
 
 
-handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
-logger = logging.getLogger(__name__)
-logger.handlers = [handler]
-logger.setLevel(logging.INFO)
+# handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
+# logger = logging.getLogger(__name__)
+# logger.handlers = [handler]
+# logger.setLevel(logging.INFO)
 
-if settings.TESTING:
-  topicModelFile = "./modelWeights/BERTopicWeights_test"
-  articleIndexFile  = "./modelWeights/Top2VecWeights_test"
-else:
-  topicModelFile = "./modelWeights/BERTopicWeights"
-  articleIndexFile  = "./modelWeights/Top2VecWeights"
+# if settings.TESTING:
+#   topicModelFile = "./modelWeights/BERTopicWeights_test"
+#   articleIndexFile  = "./modelWeights/Top2VecWeights_test"
+# else:
+#   topicModelFile = "./modelWeights/BERTopicWeights"
+#   articleIndexFile  = "./modelWeights/Top2VecWeights"
 
 
 # def train_bert_topic(docs):

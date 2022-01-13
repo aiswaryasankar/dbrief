@@ -142,55 +142,55 @@ class Author:
 #
 ###
 
-@dataclass
-class TrainAndIndexTopicModelRequestV2:
-  documents: List[str]
-  embedding_model: str
-  speed: str
-  doc_ids: List[str]
-  keep_documents: bool
+# @dataclass
+# class TrainAndIndexTopicModelRequestV2:
+#   documents: List[str]
+#   embedding_model: str
+#   speed: str
+#   doc_ids: List[str]
+#   keep_documents: bool
 
 
-@dataclass
-class GetDocumentTopicRequestV2:
-  documents: List[str]
+# @dataclass
+# class GetDocumentTopicRequestV2:
+#   documents: List[str]
 
-@dataclass_json
-@dataclass
-class GetDocumentTopicResponseV2:
-  topicInfos: List[TopicInfo]
-  error: Exception
+# @dataclass_json
+# @dataclass
+# class GetDocumentTopicResponseV2:
+#   topicInfos: List[TopicInfo]
+#   error: Exception
 
-@dataclass_json
-@dataclass
-class GetTopicsResponseV2:
-  topicInfos: List[TopicInfo]
-  error: Optional[Exception]
+# @dataclass_json
+# @dataclass
+# class GetTopicsResponseV2:
+#   topicInfos: List[TopicInfo]
+#   error: Optional[Exception]
 
-# TO UPDATE - will return document text using get_representative_docs
-# For all other use cases use query_documents on Top2Vec passing in topic as a string
-@dataclass
-class SearchDocumentsByTopicRequestV2:
-  topic_num: int
+# # TO UPDATE - will return document text using get_representative_docs
+# # For all other use cases use query_documents on Top2Vec passing in topic as a string
+# @dataclass
+# class SearchDocumentsByTopicRequestV2:
+#   topic_num: int
 
-@dataclass_json
-@dataclass
-class SearchDocumentsByTopicResponseV2:
-  documents: List[str]
-  error: Optional[Exception]
+# @dataclass_json
+# @dataclass
+# class SearchDocumentsByTopicResponseV2:
+#   documents: List[str]
+#   error: Optional[Exception]
 
-# Same using find_topics instead
-# Optionally update the response to return TopicInfo instead
-@dataclass
-class SearchTopicsRequestV2:
-  search_term: str
-  num_topics: int
+# # Same using find_topics instead
+# # Optionally update the response to return TopicInfo instead
+# @dataclass
+# class SearchTopicsRequestV2:
+#   search_term: str
+#   num_topics: int
 
-@dataclass_json
-@dataclass
-class SearchTopicsResponseV2:
-  topicInfos: List[TopicInfo]
-  error: Exception
+# @dataclass_json
+# @dataclass
+# class SearchTopicsResponseV2:
+#   topicInfos: List[TopicInfo]
+#   error: Exception
 
 
 ###

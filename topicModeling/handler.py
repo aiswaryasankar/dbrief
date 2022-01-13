@@ -11,8 +11,8 @@ from idl import *
 from articleRec import handler as articleRecHandler
 from idl import *
 from .repository import *
-from bertopic import BERTopic
-from sklearn.feature_extraction.text import CountVectorizer
+# from bertopic import BERTopic
+# from sklearn.feature_extraction.text import CountVectorizer
 from django.conf import settings
 
 
