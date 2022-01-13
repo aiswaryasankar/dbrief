@@ -17,7 +17,7 @@ def get_topic_page_view(request):
   """
   req = GetTopicPageByURLRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getTopicPageByURLRequest = req.validated_data
   res = getTopicPage(getTopicPageByURLRequest)
@@ -33,7 +33,7 @@ def whats_happening_view(request):
   """
   req = WhatsHappeningRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   whatsHappeningRequest = req.validated_data
   res = whatsHappening(whatsHappeningRequest)

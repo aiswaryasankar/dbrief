@@ -30,7 +30,7 @@ def create_user(createUserRequest):
   createUserRes = createUser(createUserRequest)
   if createUserRes.error != None:
     return CreateUserResponse(
-      user= None,
+      userId= None,
       error= createUserRes.error
     )
 

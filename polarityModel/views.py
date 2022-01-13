@@ -16,7 +16,7 @@ def get_document_polarity_view(request):
   """
   req = GetDocumentPolarityRequest(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getDocumentPolarityRequest = req.validated_data
   res = get_document_polarity(getDocumentPolarityRequest)

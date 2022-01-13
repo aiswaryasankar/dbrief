@@ -1,3 +1,16 @@
 from django.test import TestCase
 
-# Create your tests here.
+"""
+CreateUser
+{
+   "user":{
+      "FirebaseAuthID":"1",
+      "Username":"jerry",
+      "FirstName":"Jerry",
+      "LastName":"Zhao",
+      "Email":"jc@gmail.com"
+   }
+}
+
+
+"""

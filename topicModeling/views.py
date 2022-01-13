@@ -30,7 +30,7 @@ def add_document_view(request):
   """
   req = AddDocumentRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   addDocumentRequest = req.validated_data
   res = add_document(addDocumentRequest)
@@ -45,7 +45,7 @@ def query_documents_url_view(request):
   """
   req = QueryDocumentsRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   queryDocumentsRequest = req.validated_data
   res = query_documents_url(queryDocumentsRequest)
@@ -60,7 +60,7 @@ def search_documents_by_topic_view(request):
   """
   req = SearchDocumentsByTopicRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   searchDocumentsByTopicRequest = req.validated_data
   res = search_documents_by_topic(searchDocumentsByTopicRequest)
@@ -75,7 +75,7 @@ def search_topics_view(request):
   """
   req = SearchTopicsRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   searchTopicsRequest = req.validated_data
   res = search_topics(searchTopicsRequest)
@@ -110,7 +110,7 @@ def get_document_topic_view(request):
 
   req = GetDocumentTopicRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getDocumentTopicRequest = req.validated_data
   res = get_document_topic(getDocumentTopicRequest)
@@ -140,7 +140,7 @@ def get_document_topic_view_v2(request):
   """
   req = GetDocumentTopicRequestV2Serializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getDocumentTopicRequestV2 = req.validated_data
   res = get_document_topic_v2(getDocumentTopicRequestV2)
@@ -164,7 +164,7 @@ def search_topics_view_v2(request):
   """
   req = SearchTopicsRequestV2Serializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getTopicsRequestV2 = req.validated_data
   res = get_topics_v2(getTopicsRequestV2)

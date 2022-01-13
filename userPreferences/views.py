@@ -27,7 +27,7 @@ def create_user_view(request):
   req = CreateUserRequestSerializer(data=request.data)
 
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   createUserRequest = req.validated_data
   res = create_user(createUserRequest)
@@ -43,7 +43,7 @@ def get_user_view(request):
   req = GetUserRequestSerializer(data=request.data)
 
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getUserRequest = req.validated_data
   res = get_user(getUserRequest)
@@ -59,7 +59,7 @@ def follow_topic_view(request):
   req = FollowTopicRequestSerializer(data=request.data)
 
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   followTopicRequest = req.validated_data
   res = follow_topic(followTopicRequest)
@@ -75,7 +75,7 @@ def unfollow_topic_view(request):
   req = UnfollowTopicRequestSerializer(data=request.data)
 
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   unfollowTopicRequest = req.validated_data
   res = unfollow_topic(unfollowTopicRequest)
@@ -90,7 +90,7 @@ def get_recommended_topics_for_user_view(request):
   """
   req = GetRecommendedTopicsForUserRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getRecommendedTopicsForUserRequest = req.validated_data
   res = get_recommended_topics_for_user(getRecommendedTopicsForUserRequest)
@@ -105,7 +105,7 @@ def get_topics_you_follow_view(request):
   """
   req = GetTopicsForUserRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getTopicsForUserRequest = req.validated_data
   res = get_topics_you_follow(getTopicsForUserRequest)

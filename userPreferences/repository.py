@@ -25,31 +25,18 @@ def createUser(createUserRequest):
   user = createUserRequest.user
 
   try:
-    userEntry, created = UserModel.objects.update_or_create(
-      defaults={
-        'firstName': user.FirstName,
-        'lastName': user.LastName,
-        'email': user.Email,
-        'firebaseAuthId': user.FirebaseAuthID,
-      },
+    userEntry = UserModel(
+      firstName= user.FirstName,
+      lastName= user.LastName,
+      email= user.Email,
+      firebaseAuthId= user.FirebaseAuthID,
     )
-    if created:
-      logger.info('saved user', extra={
-          "item": {
-            'firstName': user.FirstName,
-            'lastName': user.LastName,
-            'email': user.Email,
-            'firebaseAuthId': user.FirebaseAuthID,
-            "created": created,
-          }
-      })
-      logger.info("Saved user to the database: ", extra={ "user": userEntry })
-    else:
-      logger.info("Updated already existing user")
+    userEntry.save()
+    logger.info("Saved user to the database: ", extra={ "user": userEntry })
 
   except Exception as e:
-    logger.warn("Failed to save user to the database", extra= {
-      "user": user,
+    logger.info("Failed to save user topic to the database", extra= {
+      "user": userEntry.userId,
       "error": e,
     })
 

@@ -26,31 +26,11 @@ import typing
 @dataclass_json
 @dataclass
 class User:
-  FirebaseAuthID: int
+  FirebaseAuthID: str
   Username: str
   FirstName: str
   LastName: str
   Email: str
-
-
-# class NewsletterRecurrenceType(ChoiceEnum):
-#   DAILY = 1
-#   WEEKLY = 2
-#   MONTHLY = 3
-
-# class TimeOfDay(ChoiceEnum):
-#   MORNING = 1
-#   AFTERNOON = 2
-#   EVENING = 3
-
-# class Day(ChoiceEnum):
-#   MONDAY = 1
-#   TUESDAY = 2
-#   WEDNESDAY = 3
-#   THURSDAY = 4
-#   FRIDAY = 5
-#   SATURDAY = 6
-#   SUNDAY = 7
 
 @dataclass_json
 @dataclass
