@@ -16,7 +16,7 @@ def get_top_passage_view(request):
   """
   req = GetTopPassageRequest(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getTopPassageRequest = req.validated_data
   res = get_top_passage(getTopPassageRequest)
@@ -32,7 +32,7 @@ def get_facts_view(request):
 
   req = GetFactsRequest(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   getFactsRequest = req.validated_data
   res = get_facts(getFactsRequest)

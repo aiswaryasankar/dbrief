@@ -53,10 +53,10 @@ urlpatterns = [
     path('generateTopicPairs/', topicModelView.generate_topic_pairs_view),
 
     # TopicModelingV2 endpoints
-    path('trainTopicModelV2/', topicModelView.retrain_topic_model_view_v2),
-    path('getDocumentTopicV2/', topicModelView.get_document_topic_view_v2),
-    path('searchTopicsV2/', topicModelView.search_topics_view_v2),
-    path('getTopicsV2/', topicModelView.get_topics_view_v2),
+    # path('trainTopicModelV2/', topicModelView.retrain_topic_model_view_v2),
+    # path('getDocumentTopicV2/', topicModelView.get_document_topic_view_v2),
+    # path('searchTopicsV2/', topicModelView.search_topics_view_v2),
+    # path('getTopicsV2/', topicModelView.get_topics_view_v2),
 
     # PolarityModel endpoints
     path('getDocumentPolarity/', polarityModelView.get_document_polarity_view),
