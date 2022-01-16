@@ -17,6 +17,7 @@ django-background-tasks==1.2.5
 django-enumchoicefield==2.0.0
 django-compat==1.0.15
 django-crontab==0.7.1
+django-cors-headers==3.11.0
 djangorestframework==3.12.4
 djangorestframework-dataclasses==1.0.0
 feedfinder2==0.0.4
