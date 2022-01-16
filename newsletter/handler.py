@@ -27,7 +27,6 @@ def create_newsletter_config_for_user(createNewsletterConfigRequest):
   if createNewsletterConfigForUserResponse.error != None:
     return createNewsletterConfigForUserResponse
 
-  print("writing topics")
   # Write the user topics in the UserTopic database
   newsletterConfig = createNewsletterConfigRequest.newsletterConfig
   for topic in newsletterConfig.TopicsFollowed:
@@ -39,14 +38,12 @@ def create_newsletter_config_for_user(createNewsletterConfigRequest):
       )
     )
     if followTopicResponse.error != None:
-      print("Failed to follow topic for newsletter")
-      print(followTopicResponse.error)
       return CreateNewsletterConfigForUserResponse(
         newsletterId=createNewsletterConfigForUserResponse.newsletterId,
         error=followTopicResponse.error,
       )
     else:
-      print("Successfully followed topic")
+      logger.info("Successfully followed topic")
 
   return createNewsletterConfigForUserResponse
 

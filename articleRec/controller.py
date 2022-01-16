@@ -175,7 +175,7 @@ def populate_article(populateArticleRequest):
   # Update the db with additional data
   updatedArticle = Article(
     id=saveArticleResponse.id,
-    topic = getTopicResponse.topic_word,
+    topic = getDocumentTopicResponse.topic_word,
     parentTopic = getSubtopicResponse.topic_word,
     url=url,
     text=article.text,
