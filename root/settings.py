@@ -71,9 +71,8 @@ INSTALLED_APPS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://debrief-ai.web.app/",
-    'http://localhost:3001/',
-    ""
+    "https://debrief-ai.web.app",
+    'http://localhost:3001',
 ]
 
 CRONJOBS = [
