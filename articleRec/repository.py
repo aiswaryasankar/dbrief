@@ -61,16 +61,13 @@ def saveArticle(saveArticleRequest):
               "created": created,
           }
       })
-      logger.info("Saved article to the database: ", extra={ "article": articleEntry })
+      logger.info("Saved article to the database: ")
     else:
       logger.info("Updated already existing article")
 
   except Exception as e:
-    logger.warn("Failed to save article to the database", extra= {
-      "article": a,
-      "error": e,
-    })
-    print(e)
+    logger.warn("Failed to save article to the database")
+    logger.warn(e)
 
     return SaveArticleResponse(id=None, error=e, created=created)
 
@@ -230,10 +227,7 @@ def fetchArticlesById(fetchArticlesRequest):
       hydratedArticles.append(a)
 
     except Exception as e:
-      logger.warn("Failed to fetch article from database", extra={
-        "article": article,
-        "error": e,
-      })
+      logger.warn("Failed to fetch article from database")
       return FetchArticlesResponse(
         articleList=hydratedArticles,
         error=e,

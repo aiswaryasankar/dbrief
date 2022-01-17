@@ -15,6 +15,7 @@ from .repository import *
 from topicModeling import handler as tpHandler
 from polarityModel import handler as polarityHandler
 from passageRetrievalModel import handler as passageRetrievalHandler
+import multiprocessing as mp
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -46,6 +47,9 @@ def populate_article(populateArticleRequest):
       7. Get the primary passage of the article
       8. Update db with the additional data
   """
+
+  print("Number of processors: ", mp.cpu_count())
+  pool = mp.Pool(mp.cpu_count())
 
   # Hydrate article
   url = populateArticleRequest.url
@@ -187,7 +191,6 @@ def populate_article(populateArticleRequest):
     topPassage=topPassage,
     topFact=topFact,
   )
-  logger.info("Successfully updated the article")
 
   # Save to database and fetch article id
   updateArticleResponse = saveArticle(
@@ -198,6 +201,7 @@ def populate_article(populateArticleRequest):
   if updateArticleResponse.error != None:
     return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(updateArticleResponse.error))
 
+  logger.info("Successfully updated the article")
   return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=None)
 
 
