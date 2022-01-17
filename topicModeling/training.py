@@ -487,7 +487,7 @@ class Top2Vec:
         self._check_import_status()
 
         # Only handled during model set up
-        # self._check_model_status()
+        self._check_model_status()
 
         # embed documents
         batch_size = 500
@@ -935,7 +935,7 @@ class Top2Vec:
             return ValueError("Document ids need to be unique.")
 
         if len(set(document_ids).intersection(self.document_ids)) > 0:
-            print(self.document_ids)
+            logger.info(self.document_ids)
             return ValueError("Some document ids already exist in model.")
 
         if self.doc_id_type == np.str_:
