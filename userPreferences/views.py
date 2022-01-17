@@ -24,13 +24,23 @@ def create_user_view(request):
   """
     Creates a user in the database
   """
+  logger.info("Request")
+  logger.info(request)
   req = CreateUserRequestSerializer(data=request.data)
+  logger.info("Serialized request")
+  logger.info(req)
 
   if not req.is_valid():
+    logger.info("req is not valid")
+    logger.info(req.errors)
     return Response(req.errors)
 
+  logger.info("req is valid")
   createUserRequest = req.validated_data
+  logger.info(req.validated_data)
   res = create_user(createUserRequest)
+  logger.info("res from create_user")
+  logger.info(res)
 
   return Response(res.to_json())
 
