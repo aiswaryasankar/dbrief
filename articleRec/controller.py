@@ -48,7 +48,7 @@ def populate_article(populateArticleRequest):
       8. Update db with the additional data
   """
 
-  print("Number of processors: ", mp.cpu_count())
+  logger.info("Number of processors: ", mp.cpu_count())
   pool = mp.Pool(mp.cpu_count())
 
   # Hydrate article

@@ -55,8 +55,8 @@ def retrain_topic_model(request):
   model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
   endTime = datetime.datetime.now()
 
-  docIndex = Top2Vec.index_document_vectors(model)
-  wordIndex = Top2Vec.index_word_vectors(model)
+  docIndex = model.index_document_vectors()
+  wordIndex = model.index_word_vectors()
   topicPairs, error = model.hierarchical_topic_reduction(num_topics=20)
   if error != None:
     return TrainAndIndexTopicModelResponse(

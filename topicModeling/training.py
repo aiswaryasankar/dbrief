@@ -987,8 +987,10 @@ class Top2Vec:
         self._check_hnswlib_status()
 
         document_vectors = self._get_document_vectors()
+        logger.info("Number of documents in the model")
         vec_dim = document_vectors.shape[1]
         num_vecs = document_vectors.shape[0]
+        logger.info(document_vectors.shape[0])
 
         index_ids = list(range(0, len(self.document_ids)))
 
@@ -998,6 +1000,7 @@ class Top2Vec:
         self.document_index = hnswlib.Index(space='ip', dim=vec_dim)
         self.document_index.init_index(max_elements=num_vecs, ef_construction=ef_construction, M=M)
         self.document_index.add_items(document_vectors, index_ids)
+        logger.info(self.document_index)
         self.documents_indexed = True
 
     def index_word_vectors(self, ef_construction=200, M=64):
