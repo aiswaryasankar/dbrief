@@ -16,6 +16,7 @@ from topicModeling import handler as tpHandler
 from polarityModel import handler as polarityHandler
 from passageRetrievalModel import handler as passageRetrievalHandler
 import multiprocessing as mp
+from datetime import datetime
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -47,9 +48,6 @@ def populate_article(populateArticleRequest):
       7. Get the primary passage of the article
       8. Update db with the additional data
   """
-
-  logger.info("Number of processors: ", mp.cpu_count())
-  pool = mp.Pool(mp.cpu_count())
 
   # Hydrate article
   url = populateArticleRequest.url
@@ -87,6 +85,7 @@ def populate_article(populateArticleRequest):
   # If the article is already in the database, its already added to the topic model and thus should not be readded
   if saveArticleResponse.created:
     # Add document to topic model with text and doc id
+    beforeAddDocument = datetime.now()
     addedToTopicModel = tpHandler.add_document(
       AddDocumentRequest(
         documents=[article.text],
@@ -99,7 +98,10 @@ def populate_article(populateArticleRequest):
       return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(addedToTopicModel.error))
 
     logger.info("Added document to the topic model")
+    timeAfterAddDocument = datetime.now()
+    logger.info("Time to add document to model %s", timeAfterAddDocument - beforeAddDocument)
 
+  beforeGetTopic = datetime.now()
   # Get topic for the document from the topic model
   getDocumentTopicResponse = tpHandler.get_document_topic(
     GetDocumentTopicRequest(
@@ -115,7 +117,10 @@ def populate_article(populateArticleRequest):
   logger.info(getDocumentTopicResponse.topic_num)
   logger.info(getDocumentTopicResponse.topic_score)
   logger.info(getDocumentTopicResponse.topic_word)
+  afterGetTopic = datetime.now()
+  logger.info("Time to get topic %s", afterGetTopic-beforeGetTopic)
 
+  beforeGetSubtopic = datetime.now()
   # Get the subtopic for the document from the topic model
   getSubtopicResponse = tpHandler.get_document_topic(
     GetDocumentTopicRequest(
@@ -131,7 +136,11 @@ def populate_article(populateArticleRequest):
   logger.info(getSubtopicResponse.topic_num)
   logger.info(getSubtopicResponse.topic_score)
   logger.info(getSubtopicResponse.topic_word)
+  afterGetSubTopic = datetime.now()
+  logger.info("Time to get subtopic %s", afterGetSubTopic-beforeGetSubtopic)
 
+
+  beforeGetPolarity = datetime.now()
   # Get the polarity of the document from the topic model
   getDocumentPolarityResponse = polarityHandler.get_document_polarity(
     GetDocumentPolarityRequest(
@@ -141,6 +150,8 @@ def populate_article(populateArticleRequest):
   )
   logger.info("Successfully fetched the polarity")
   logger.info(getDocumentPolarityResponse.polarity_score)
+  afterGetPolarity = datetime.now()
+  logger.info("Time to get polarity %s", afterGetPolarity-beforeGetPolarity)
 
   isOpinion = False
   if getDocumentPolarityResponse.polarity_score < 0.25 or getDocumentPolarityResponse.polarity_score > 0.75:
@@ -148,6 +159,7 @@ def populate_article(populateArticleRequest):
 
   topPassage, topFact = "", ""
   if isOpinion:
+    timeBeforeGetPassage = datetime.now()
     # Get the top passage from the document
     getTopPassageResponse = passageRetrievalHandler.get_top_passage(
       GetTopPassageRequest(
@@ -160,10 +172,13 @@ def populate_article(populateArticleRequest):
     else:
       topPassage=getTopPassageResponse.passage
       logger.info("Successfully extracted the topic passage")
+    afterGetPassage = datetime.now()
+    logger.info("Time to get passage %s", afterGetPassage-timeBeforeGetPassage)
 
   else:
     # Get the facts from the document
     # Get the top passage from the document
+    timeBeforeGetFact = datetime.now()
     getFactsResponse = passageRetrievalHandler.get_facts(
       GetFactsRequest(
         article_text = article.text,
@@ -175,6 +190,8 @@ def populate_article(populateArticleRequest):
     else:
       topFact = getFactsResponse.facts[0]
       logger.info("Successfully extracted the top fact")
+    timeAfterGetFact = datetime.now()
+    logger.info("Time to get fact %s", timeAfterGetFact-timeBeforeGetFact)
 
   # Update the db with additional data
   updatedArticle = Article(
@@ -265,5 +282,86 @@ def hydrate_article_controller(url):
     url=article.url,
     error=None,
   )
+
+
+def article_backfill_controller(articleBackfillRequest):
+  """
+    This endpoint will function for a few different use cases. First it will be run daily as a way to backfill any missing data in the article database. This includes all fields that are missing. Additionally it can function to update fields even if they were already populated. This would primarily be used for topic regeneration based on an updated model. Thus the request will either take in force_update, as well as a list of fields to update.  If neither are provided it will batch update all fields that are missing.
+  """
+
+  articlesToUpdate = []
+
+  if articleBackfillRequest.force_update:
+    # Updates the fields in the database for the appropriate values
+    fetchAllArticlesRes = fetchAllArticles()
+    if fetchAllArticlesRes.error != None:
+      logger.error("Failed to fetch all articles for article backfill")
+      logger.error(str(fetchAllArticlesRes.error))
+      return ArticleBackfillResponse(
+        num_updates=0,
+        error=fetchAllArticlesRes.error,
+      )
+    else:
+      articlesToUpdate = fetchAllArticlesRes.articleList
+
+  else:
+    # Query only the rows that are missing values for the requested fields
+    for field in articleBackfillRequest.fields:
+      queryArticleResponse = queryArticles(
+        QueryArticleRequest(
+          field=field,
+        )
+      )
+      if queryArticleResponse.error != None:
+        logger.error("Failed to fetch articles for article backfill")
+        logger.error(str(queryArticleResponse.error))
+        return ArticleBackfillResponse(
+          num_updates=0,
+          error=queryArticleResponse.error,
+        )
+      else:
+        articlesToUpdate = queryArticleResponse.articles
+
+    # Based on the field that is requested, it will call the appropriate method
+    # Should operate in batch to get the appropriate values back
+    if "topic" in articleBackfillRequest.fields:
+      getDocumentTopicResponse = tpHandler.get_document_topic(
+        GetDocumentTopicRequest(
+          doc_ids=[article.articleId for article in articlesToUpdate],
+          reduced = False,
+          num_topics=1,
+        )
+      )
+      if getDocumentTopicResponse.error != None:
+        logger.warn("Failed to get topics for batch request")
+
+      getDocumentTopicResponse = tpHandler.get_document_topic(
+        GetDocumentTopicRequest(
+          doc_ids=[article.articleId for article in articlesToUpdate],
+          reduced = True,
+          num_topics=1,
+        )
+      )
+      if getDocumentTopicResponse.error != None:
+        logger.warn("Failed to get parent topics for batch request")
+
+    if "polarity" in articleBackfillRequest.fields:
+      getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
+        GetDocumentPolarityBatchRequest(
+          queryList=[article.text for article in articlesToUpdate],
+          source=None,
+        )
+      )
+      if getDocumentPolarityBatchResponse.error != None:
+        logger.warn("Failed to get polarity for batch request")
+
+    if "fact" in articleBackfillRequest.fields:
+      pass
+
+
+    if "passage" in articleBackfillRequest.fields:
+      pass
+
+    # Populate the new fields into the db with an upsert operation
 
 

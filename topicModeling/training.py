@@ -1,4 +1,5 @@
 import logging
+import os
 import numpy as np
 import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
@@ -17,6 +18,9 @@ from sentence_transformers import SentenceTransformer
 import logging
 from logtail import LogtailHandler
 
+
+embeddingModelPath = "./modelWeights/tfhub_cache"
+
 try:
   import hnswlib
   _HAVE_HNSWLIB = True
@@ -27,6 +31,7 @@ try:
     import tensorflow as tf
     import tensorflow_hub as hub
     import tensorflow_text
+    # os.environ["TFHUB_CACHE_DIR"] = "./modelWeights/tfhub_cache"
 
     _HAVE_TENSORFLOW = True
 except ImportError:
@@ -813,7 +818,12 @@ class Top2Vec:
                 else:
                     logger.info(f'Loading {self.embedding_model} model at {self.embedding_model_path}')
                     module = self.embedding_model_path
-                self.embed = hub.load(module)
+
+                try:
+                    self.embed = hub.load(repo_or_dir=embeddingModelPath, source="local")
+                except:
+                    logger.warn("Unable to load embedding model from cache")
+                    self.embed = hub.load(module)
 
             else:
                 if self.embedding_model_path is None:

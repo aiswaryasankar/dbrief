@@ -67,3 +67,4 @@ class TopicModelingViewTest(TestCase):
     response = self.client.get('/getTopicsV2', content_type="application/json")
     self.assertEqual(response.status_code, 200)
 
+

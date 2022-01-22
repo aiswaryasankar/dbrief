@@ -199,42 +199,62 @@ def fetchArticlesById(fetchArticlesRequest):
   articleIds = fetchArticlesRequest.articleIds
 
   for id in articleIds:
-    article = ArticleModel.objects.get(articleId=id)
     try:
-      a = Article(
-          id=article.articleId,
-          url=article.url,
-          authors=article.author,
-          text=article.text,
-          title=article.title,
-        )
+      article = ArticleModel.objects.get(articleId=id)
+      fetchRes = articleResToModel(article)
 
-      if article.topic:
-        a.topic = article.topic
-      if article.parent_topic:
-        a.parentTopic = article.parent_topic
-      if article.publish_date:
-        a.topic = article.publish_date
-      if article.image:
-        a.imageURL = article.image
-      if article.polarization_score:
-        a.polarizationScore = article.polarization_score
-      if article.top_passage:
-        a.topPassage = article.top_passage
-      if article.top_fact:
-        a.topFact = article.top_fact
-
-      hydratedArticles.append(a)
-
-    except Exception as e:
-      logger.warn("Failed to fetch article from database")
-      return FetchArticlesResponse(
-        articleList=hydratedArticles,
-        error=e,
-      )
+      if fetchRes.error != None:
+        logger.warn("Failed to fetch article with id")
+        logger.warn(fetchRes.error)
+        continue
+      else:
+        hydratedArticles.extend(fetchRes.articleList)
+    except:
+      logger.warn("Failed to fetch article with id")
 
   return FetchArticlesResponse(
     articleList=hydratedArticles,
+    error=None,
+  )
+
+def articleResToModel(article):
+  """
+    Will map a db article to the Article IDL to return
+  """
+  try:
+    a = Article(
+      id=article.articleId,
+      url=article.url,
+      authors=article.author,
+      text=article.text,
+      title=article.title,
+    )
+
+    if article.topic:
+      a.topic = article.topic
+    if article.parent_topic:
+      a.parentTopic = article.parent_topic
+    if article.publish_date:
+      a.topic = article.publish_date
+    if article.image:
+       a.imageURL = article.image
+    if article.polarization_score:
+      a.polarizationScore = article.polarization_score
+    if article.top_passage:
+      a.topPassage = article.top_passage
+    if article.top_fact:
+      a.topFact = article.top_fact
+
+
+  except Exception as e:
+    logger.warn("Failed to fetch article from database")
+    return FetchArticlesResponse(
+      articleList=[],
+      error=e,
+    )
+
+  return FetchArticlesResponse(
+    articleList=[a],
     error=None,
   )
 
@@ -248,40 +268,16 @@ def fetchArticlesByUrl(articleUrls):
   for url in articleUrls:
     try:
       article = ArticleModel.objects.get(url=url)
-      a = Article(
-          id=article.articleId,
-          url=article.url,
-          authors=article.author,
-          text=article.text,
-          title=article.title,
-        )
+      fetchRes = articleResToModel(article)
 
-      if article.topic:
-        a.topic = article.topic
-      if article.parent_topic:
-        a.parentTopic = article.parent_topic
-      if article.publish_date:
-        a.topic = article.publish_date
-      if article.image:
-        a.imageURL = article.image
-      if article.polarization_score:
-        a.polarizationScore = article.polarization_score
-      if article.top_passage:
-        a.topPassage = article.top_passage
-      if article.top_fact:
-        a.topFact = article.top_fact
-
-      hydratedArticles.append(a)
-
-    except Exception as e:
-      logger.warn("Failed to fetch article from database", extra={
-        "url": url,
-        "error": e,
-      })
-      return FetchArticlesResponse(
-        articleList=[],
-        error=e,
-      )
+      if fetchRes.error != None:
+        logger.warn("Failed to fetch article with id")
+        logger.warn(fetchRes.error)
+        continue
+      else:
+        hydratedArticles.extend(fetchRes.articleList)
+    except:
+      logger.warn("Failed to fetch article with id")
 
   return FetchArticlesResponse(
     articleList=hydratedArticles,
@@ -294,5 +290,35 @@ def articleBackfill():
 
   """
   pass
+
+
+def queryArticles(queryArticleRequest):
+  """
+    Will query the article database using the queryArticleRequest and search for all rows where the given field is missing.
+  """
+  field = queryArticleRequest.field
+
+  # Query for all records where the field is empty
+  articles = ArticleModel.objects.filter(field="")
+
+  articleModels = []
+  for article in articles:
+    try:
+      fetchRes = articleResToModel(article)
+
+      if fetchRes.error != None:
+        logger.warn("Failed to fetch article with id")
+        logger.warn(fetchRes.error)
+        continue
+      else:
+        articleModels.extend(fetchRes.articleList)
+    except:
+      logger.warn("Failed to fetch article with id")
+
+  return QueryArticleResponse(
+    articles=articleModels,
+    error=None,
+  )
+
 
 

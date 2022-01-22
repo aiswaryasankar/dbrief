@@ -407,6 +407,16 @@ class ArticleBackfillResponse:
   num_updates: int
   error: Exception
 
+@dataclass
+class QueryArticleRequest:
+  field: str
+
+@dataclass_json
+@dataclass
+class QueryArticleResponse:
+  articles: List[Article]
+  error: Exception
+
 
 ###
 #
@@ -423,6 +433,17 @@ class GetDocumentPolarityRequest:
 @dataclass
 class GetDocumentPolarityResponse:
   polarity_score: Optional[float]
+  error: Exception
+
+@dataclass
+class GetDocumentPolarityBatchRequest:
+  queryList: Optional[List[str]]
+  source: Optional[str]
+
+@dataclass_json
+@dataclass
+class GetDocumentPolarityBatchResponse:
+  polarity_score: Optional[List[float]]
   error: Exception
 
 ###

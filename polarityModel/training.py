@@ -87,6 +87,34 @@ class XLNetPredict(torch.nn.Module):
 
     return model
 
+  def batch_predict(self, text_list):
+    """
+      Return the polarization scores for the entire list of articles as evaluated by the model
+    """
+    encoded_text = self.tokenizer.encode_plus(
+      text_list,
+      max_length=MAX_LEN,
+      add_special_tokens=True,
+      return_token_type_ids=False,
+      pad_to_max_length=False,
+      return_attention_mask=True,
+      return_tensors='pt',
+    )
+
+    model = self.load_model(polarizationWeightsFile)
+
+    outputs = model(input_ids=torch.tensor(encoded_text["input_ids"]), attention_mask=torch.tensor(encoded_text["attention_mask"]))
+    logits = outputs.sigmoid().detach().cpu().numpy()
+    logger.info(logits)
+
+    # Round each of the values in the logits returned
+    polarizationLogits = []
+    for logit in logits:
+      logger.info(round(logit[0][0]))
+      polarizationLogits.append(logit[0][0])
+
+    return polarizationLogits
+
 
   def predict(self, text):
     """

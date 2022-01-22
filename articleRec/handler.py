@@ -5,6 +5,7 @@ from  .controller import *
 from .repository import *
 from .serializers import *
 from logtail import LogtailHandler
+from datetime import datetime
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -57,12 +58,15 @@ def populate_articles_batch():
 
   for url in urlList:
 
+    timeBeforePopulateArticle = datetime.now()
     populateArticleResponse = populate_article(
       PopulateArticleRequest(
         url=url,
       )
     )
+    timeAfterPopulateArticle = datetime.now()
     logger.info(populateArticleResponse)
+    logger.info("Time to populate article %s", timeAfterPopulateArticle-timeBeforePopulateArticle)
 
     if populateArticleResponse.error != None:
       numErrors+=1
@@ -93,11 +97,7 @@ def article_backfill(articleBackfillRequest):
     This endpoint will function for a few different use cases. First it will be run daily as a way to backfill any missing data in the article database. This includes all fields that are missing. Additionally it can function to update fields even if they were already populated. This would primarily be used for topic regeneration based on an updated model. Thus the request will either take in force_update, as well as a list of fields to update.  If neither are provided it will batch update all fields that are missing.
   """
 
-  if articleBackfillRequest.force_update:
-    pass
-  else:
-    pass
-
+  return article_backfill_controller(articleBackfillRequest)
 
 
 

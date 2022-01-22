@@ -3,7 +3,7 @@ from rest_framework.response import Response
 import datetime
 import idl
 import logging
-from idl import GetDocumentPolarityRequest, GetDocumentPolarityResponse
+from idl import *
 from .training import *
 from logtail import LogtailHandler
 
@@ -41,5 +41,30 @@ def get_document_polarity(GetDocumentPolarityRequest):
     error = None,
   )
 
+
+def get_document_polarity_batch(getDocumentPolarityBatchRequest):
+  """
+    Given the article text and source, it will return the polarity_score and error.
+
+    class GetDocumentPolarityBatchRequest:
+      queryList: Optional[List[str]]
+      source: Optional[str]
+
+    class GetDocumentPolarityBatchResponse:
+      polarity_score: Optional[List[float]]
+      error: Exception
+  """
+    # Initialize the polarity model
+  xlNetPolarityModel = XLNetPredict()
+
+  # Pass in the source and query
+  polarity_scores = xlNetPolarityModel.batch_predict(getDocumentPolarityBatchRequest.queryList)
+  logger.info("Polarity scores")
+  logger.info(polarity_scores)
+
+  return GetDocumentPolarityBatchResponse(
+    polarity_score = polarity_scores,
+    error = None,
+  )
 
 
