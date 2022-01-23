@@ -217,6 +217,7 @@ def fetchArticlesById(fetchArticlesRequest):
     error=None,
   )
 
+
 def articleResToModel(article):
   """
     Will map a db article to the Article IDL to return

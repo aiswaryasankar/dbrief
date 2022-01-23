@@ -44,8 +44,7 @@ def createTopics(createTopicRequest):
     except Exception as e:
       logger.warn("Failed to save topic to the database %s", topicEntity.TopicName)
       logger.warn(e)
-
-      return CreateTopicsResponse(ids=None, error=e)
+      continue
 
   return CreateTopicsResponse(ids=ids, error=None)
 
