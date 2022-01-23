@@ -70,10 +70,12 @@ INSTALLED_APPS = [
     'logtail',
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://debrief-ai.web.app",
-    'http://localhost:3001',
-]
+CORS_ALLOW_ALL_ORIGINS = True
+
+# CORS_ALLOWED_ORIGINS = [
+#     "https://debrief-ai.web.app",
+#     'http://localhost:3001',
+# ]
 
 CRONJOBS = [
     ('*/5 * * * *', 'articleRec.management.commands.populateArticles.py ')
