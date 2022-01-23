@@ -9,16 +9,13 @@ logger.handlers = []
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
+
 class Command(BaseCommand):
 
   def handle(self, *args, **options):
 
-    print("Started cron job")
-    logging.info("Started cron job")
+    logger.info("Started cron job")
     self.stdout.write("Started the cron job", ending='')
     res = populate_articles_batch()
-    logging.info(res.num_articles_populated)
-
-
-
+    logger.info(res.num_articles_populated)
 
