@@ -38,15 +38,12 @@ def createTopics(createTopicRequest):
           parentTopic= topicEntity.ParentTopicName,
       )
       topicEntry.save()
-      logger.info("Saved topic to the database: ", extra={ "topic": topicEntry })
+      logger.info("Saved topic to the database %s", topicEntity.TopicName)
       ids.append(topicEntry.topicId)
 
     except Exception as e:
-      logger.warn("Failed to save topic to the database", extra= {
-        "topic": topicEntity.TopicName,
-        "error": e,
-      })
-      print(e)
+      logger.warn("Failed to save topic to the database %s", topicEntity.TopicName)
+      logger.warn(e)
 
       return CreateTopicsResponse(ids=None, error=e)
 

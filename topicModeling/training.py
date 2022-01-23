@@ -997,10 +997,9 @@ class Top2Vec:
         self._check_hnswlib_status()
 
         document_vectors = self._get_document_vectors()
-        logger.info("Number of documents in the model")
         vec_dim = document_vectors.shape[1]
         num_vecs = document_vectors.shape[0]
-        logger.info(document_vectors.shape[0])
+        logger.info("Number of documents in the model %s", num_vecs)
 
         index_ids = list(range(0, len(self.document_ids)))
 
@@ -1011,6 +1010,8 @@ class Top2Vec:
         self.document_index.init_index(max_elements=num_vecs, ef_construction=ef_construction, M=M)
         self.document_index.add_items(document_vectors, index_ids)
         logger.info(self.document_index)
+        document_vectors = self._get_document_vectors()
+        logger.info("Number of documents in the model")
         self.documents_indexed = True
 
     def index_word_vectors(self, ef_construction=200, M=64):
@@ -1246,6 +1247,7 @@ class Top2Vec:
             self._assign_documents_to_topic(document_vectors, hierarchy=True)
 
         logger.info("Added document with id: " + str(doc_ids))
+        logger.info("Length of topic model doc index: %s", len(self.index_id2doc_id))
         return None
 
     def delete_documents(self, doc_ids):

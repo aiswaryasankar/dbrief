@@ -44,8 +44,7 @@ def retrain_topic_model(request):
     )
 
   articles = fetchAllArticlesResponse.articleList
-  print("Fetched all articles from the db")
-  print(len(articles))
+  logger.info("Number of articles to index %s", len(articles))
   data = [article.text for article in articles]
   doc_ids = [article.id for article in articles]
 
