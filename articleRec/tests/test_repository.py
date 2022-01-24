@@ -105,10 +105,10 @@ class ArticleRecRepoTest(TestCase):
     """
       Test out force updating all the topics in the database right now
     """
-    pass
 
 
-  def test_article_backfill_force(self):
+
+  def test_article_backfill(self):
     """
       Test out backfilling only empty values in the database
     """

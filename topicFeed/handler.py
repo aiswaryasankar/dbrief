@@ -73,6 +73,8 @@ def getTopicPage(getTopicPageByURLRequest):
   logger.info(article)
   logger.info("Article ID")
   logger.info(articleId)
+  logger.info("Article text")
+  logger.info(article.text)
 
   # Query for top documents based on the article text
   queryDocumentsResponse = query_documents_url(
@@ -82,6 +84,7 @@ def getTopicPage(getTopicPageByURLRequest):
       return_docs=False,
       use_index=True,
       ef=200,
+
     )
   )
   if queryDocumentsResponse.error != None:
@@ -100,8 +103,11 @@ def getTopicPage(getTopicPageByURLRequest):
 
   # GetMDS to get the MDS for the articles
   articles = ""
+  topImageUrl = ""
   for a in fetchArticlesResponse.articleList:
     articles += a.text
+    if a.imageURL != "":
+      topImageUrl = a.imageURL
 
   getMDSSummaryResponse = get_mds_summary_handler(
     GetMDSSummaryRequest(
@@ -116,12 +122,18 @@ def getTopicPage(getTopicPageByURLRequest):
   passages = []
 
   for article in fetchArticlesResponse.articleList:
+    if article.authors is not None and len(article.authors) > 0:
+      author = article.authors[0]
+    else:
+      author = ""
+
     if article.topFact != None:
       facts.append(
         Fact(
           Quote= Quote(
             Text=article.topFact,
             SourceName="source",
+            Author=author,
             SourceURL=article.url,
             ArticleID=article.id,
             Polarization=0,
@@ -137,6 +149,7 @@ def getTopicPage(getTopicPageByURLRequest):
           Quote= Quote(
             Text=article.topPassage,
             SourceName="source",
+            Author=author,
             SourceURL=article.url,
             ArticleID=article.id,
             Polarization=article.polarizationScore,
@@ -154,6 +167,7 @@ def getTopicPage(getTopicPageByURLRequest):
     TopArticleID = articleId,
     TopicID = None,
     Timeline = None,
+    ImageURL = topImageUrl,
   )
   return GetTopicPageResponse(
     topic_page=topic_page,

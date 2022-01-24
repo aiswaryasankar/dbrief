@@ -87,6 +87,7 @@ class Article:
 @dataclass
 class Quote:
   Text: str
+  Author: str
   SourceName: str
   SourceURL: str
   ImageURL: str
@@ -113,6 +114,7 @@ class Opinion:
 @dataclass
 class TopicPage:
   Title: str
+  ImageURL: str
   MDSSummary: str
   Facts: List[Fact]
   Opinions: List[Opinion]
@@ -286,7 +288,6 @@ class QueryDocumentsRequest:
   return_docs: bool
   use_index: bool
   ef: int
-  tokenizer: str
 
 @dataclass_json
 @dataclass
@@ -324,6 +325,24 @@ class GetDocumentTopicResponse:
   topic_score: int
   topic_word: str
   error: Exception
+
+@dataclass
+class GetDocumentTopicBatchRequest:
+  doc_ids: List[int] = field(default_factory=list)
+  num_topics: int = 1
+
+@dataclass
+class DocumentTopicInfo:
+  doc_id: int
+  topicInfo: TopicInfo
+
+
+@dataclass_json
+@dataclass
+class GetDocumentTopicBatchResponse:
+  documentTopicInfos: List[DocumentTopicInfo]
+  error: Exception
+
 
 @dataclass_json
 @dataclass

@@ -93,15 +93,26 @@ def retrain_topic_model(request):
   )
 
 
-def get_document_topic(GetDocumentTopicRequest):
+def get_document_topic_batch(getDocumentTopicBatchRequest):
+  """
+    This endpoint will return the topic and subtopic for a list of doc_ids.
+  """
+  top2vecModel = Top2Vec.load(topicModelFile)
+  topic_num, topic_score, topic_word, _, error = top2vecModel.get_documents_topics(
+    getDocumentTopicBatchRequest.doc_ids,
+    getDocumentTopicBatchRequest.num_topics,
+    reduced=True,
+  )
+
+def get_document_topic(getDocumentTopicRequest):
   """
     This endpoint will query the topic model using the doc_ids, reduced, and num_topics parameters.
   """
   top2vecModel = Top2Vec.load(topicModelFile)
   topic_num, topic_score, topic_word, _, error = top2vecModel.get_documents_topics(
-    GetDocumentTopicRequest.doc_ids,
-    GetDocumentTopicRequest.reduced,
-    GetDocumentTopicRequest.num_topics,
+    getDocumentTopicRequest.doc_ids,
+    getDocumentTopicRequest.reduced,
+    getDocumentTopicRequest.num_topics,
   )
   return GetDocumentTopicResponse(
     topic_num = topic_num,
@@ -111,7 +122,7 @@ def get_document_topic(GetDocumentTopicRequest):
   )
 
 
-def add_document(AddDocumentRequest):
+def add_document(addDocumentRequest):
   """
     Req:
       documents: List of str
@@ -124,7 +135,7 @@ def add_document(AddDocumentRequest):
     Add a one off document to the topic model.  This endpoint takes in the article text, doc_ids if provided and adds the document to the topic model so that you can fetch the topic for the article in the future.
   """
   top2vecModel = Top2Vec.load(topicModelFile)
-  err = top2vecModel.add_documents(AddDocumentRequest.documents, AddDocumentRequest.doc_ids)
+  err = top2vecModel.add_documents(addDocumentRequest.documents, addDocumentRequest.doc_ids)
   if err != None:
     return AddDocumentResponse(error=err)
 

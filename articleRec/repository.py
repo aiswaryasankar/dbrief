@@ -286,13 +286,6 @@ def fetchArticlesByUrl(articleUrls):
   )
 
 
-def articleBackfill():
-  """
-
-  """
-  pass
-
-
 def queryArticles(queryArticleRequest):
   """
     Will query the article database using the queryArticleRequest and search for all rows where the given field is missing.

@@ -345,6 +345,7 @@ def article_backfill_controller(articleBackfillRequest):
       if getDocumentTopicResponse.error != None:
         logger.warn("Failed to get parent topics for batch request")
 
+
     if "polarity" in articleBackfillRequest.fields:
       getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
         GetDocumentPolarityBatchRequest(

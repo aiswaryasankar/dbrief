@@ -516,7 +516,7 @@ class Top2Vec:
     def _embed_query(self, query):
         self._check_import_status()
         # Only checked during model set up
-        # self._check_model_status()
+        self._check_model_status()
 
         return self._l2_normalize(np.array(self.embed([query])[0]))
 
