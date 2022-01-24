@@ -188,7 +188,7 @@ def whatsHappening(whatsHappeningRequest):
   if getTopicsResponse.error != None:
     return WhatsHappeningResponse(
       articles=[],
-      error=getTopicsResponse.error
+      error=str(getTopicsResponse.error)
     )
 
   articleIds = []
@@ -217,7 +217,7 @@ def whatsHappening(whatsHappeningRequest):
   if fetchArticlesByIdResponse.error != None:
     return WhatsHappeningResponse(
       articles=[],
-      error=fetchArticlesByIdResponse.error
+      error=str(fetchArticlesByIdResponse.error)
     )
 
   articleInfo = []
