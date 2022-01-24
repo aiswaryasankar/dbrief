@@ -70,8 +70,8 @@ class ArticleInfo:
 @dataclass_json
 @dataclass
 class Article:
-  id: Optional[int]
   url: str
+  id: Optional[int] = ""
   authors: Optional[List[str]] = ""
   topic: Optional[str] = ""
   parentTopic: Optional[str] = ""
