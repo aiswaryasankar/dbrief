@@ -60,6 +60,7 @@ urlpatterns = [
 
     # PolarityModel endpoints
     path('getDocumentPolarity/', polarityModelView.get_document_polarity_view),
+    path('getDocumentPolarityBatch/', polarityModelView.get_document_polarity_batch_view),
 
     # PassageRetrievalModel endpoints
     path('getTopPassage/', passageRetrievalModelView.get_top_passage_view),

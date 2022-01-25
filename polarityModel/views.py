@@ -21,4 +21,20 @@ def get_document_polarity_view(request):
   getDocumentPolarityRequest = req.validated_data
   res = get_document_polarity(getDocumentPolarityRequest)
 
-  return Response(res)
+  return Response(res.to_json())
+
+
+@api_view(['GET'])
+def get_document_polarity_batch_view(request):
+  """
+    Get the polarity score of a batch of articles and return it
+  """
+  req = GetDocumentPolarityBatchRequest(data=request.data)
+  if not req.is_valid():
+    return Response(req.errors)
+
+  getDocumentPolarityBatchRequest = req.validated_data
+  res = get_document_polarity_batch(getDocumentPolarityBatchRequest)
+
+  return Response(res.to_json())
+
