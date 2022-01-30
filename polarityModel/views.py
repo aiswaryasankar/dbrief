@@ -9,12 +9,12 @@ from .handler import *
   This file will handle the actual external facing API for the passageRetrieval service. This includes mapping all the httpRequest / httpResponse objects to internal dataclass objects and performing the necessary validation steps that are specified in the serializers class. If there are any issues in this mapping / validation it will return an error immediately.  This file is necessary since service to service will make calls to the handler based on the dataclass request/ response whereas the front end will make requests through http which needs to be serialized from the JSON struct that's passed in.
 """
 
-@api_view(['GET'])
+@api_view(['POST'])
 def get_document_polarity_view(request):
   """
     Get the polarity score of an article and return it
   """
-  req = GetDocumentPolarityRequest(data=request.data)
+  req = GetDocumentPolarityRequestSerializer(data=request.data)
   if not req.is_valid():
     return Response(req.errors)
 
@@ -24,12 +24,12 @@ def get_document_polarity_view(request):
   return Response(res.to_json())
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def get_document_polarity_batch_view(request):
   """
     Get the polarity score of a batch of articles and return it
   """
-  req = GetDocumentPolarityBatchRequest(data=request.data)
+  req = GetDocumentPolarityBatchRequestSerializer(data=request.data)
   if not req.is_valid():
     return Response(req.errors)
 

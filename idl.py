@@ -6,7 +6,7 @@ from nltk import data
 
 # from marshmallow import EXCLUDE, fields, pre_dump, Schema, validate
 import requests
-# import desert
+import desert
 from enum import Enum
 from typing import List, Optional
 import time
@@ -498,20 +498,19 @@ class GetTopPassageResponse:
 ###
 
 @dataclass
-class GetTopicPageByURLRequest:
-  source: str
+class GetTopicPageRequest:
+  url: str = ""
+  articleId: int = 0
+  text: str = ""
+  topicName: str = ""
 
-@dataclass
-class GetTopicPageByArticleIDRequest:
-  source: str
-
-@dataclass
-class GetTopicPageBySearchStringRequest:
-  source: str
-
-@dataclass
-class GetTopicPageByTopicIDRequest:
-  source: str
+  # def __post_init__(self):
+  #   """
+  #     Escape the double quotes from the text input to pass validation
+  #   """
+  #   print(self.text)
+  #   if self.text and self.text != "":
+  #     self.text = self.text.replace('"','\\"')
 
 @dataclass_json
 @dataclass

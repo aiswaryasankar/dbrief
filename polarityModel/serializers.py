@@ -12,3 +12,9 @@ class GetDocumentPolarityRequestSerializer(DataclassSerializer):
   class Meta:
     dataclass = GetDocumentPolarityRequest
 
+
+class GetDocumentPolarityBatchRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = GetDocumentPolarityBatchRequest
+

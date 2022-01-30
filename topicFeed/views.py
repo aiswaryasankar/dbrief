@@ -15,12 +15,12 @@ def get_topic_page_view(request):
   """
     This function will map the request params of url, articleID, topic string or search string to the appropriate field and pass it to the controller to hydrate the page appropriately. It will execute the following in order to hydrate the TopicPage struct:
   """
-  req = GetTopicPageByURLRequestSerializer(data=request.data)
+  req = GetTopicPageRequestSerializer(data=request.data)
   if not req.is_valid():
     return Response(req.errors)
 
-  getTopicPageByURLRequest = req.validated_data
-  res = getTopicPage(getTopicPageByURLRequest)
+  getTopicPageRequest = req.validated_data
+  res = getTopicPage(getTopicPageRequest)
 
   return Response(res.to_json())
 

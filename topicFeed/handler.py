@@ -15,8 +15,14 @@ logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 
+def getTopicPageHydrated(text):
+  """
+    This helper function will take in article text and return the GetTopicPageResponse
+  """
+  pass
 
-def getTopicPage(getTopicPageByURLRequest):
+
+def getTopicPage(getTopicPageRequest):
   """
     This function will map the request params of url, articleID, topic string or search string to the appropriate field and pass it to the controller to hydrate the page appropriately. It will execute the following in order to hydrate the TopicPage struct:
 
@@ -30,44 +36,150 @@ def getTopicPage(getTopicPageByURLRequest):
     Determine whether or not to display a timeline or the opinion format.
   """
 
-  # Try to fetch the article if already in db
-  articleId = -1
-  fetchArticlesResponse = fetchArticlesByUrl(
-    [getTopicPageByURLRequest.source],
-  )
-
-  if fetchArticlesResponse.error != None or len(fetchArticlesResponse.articleList) == 0:
-    # Hydrate the article if not in db and rewrite
-    hydrateArticleResponse = hydrate_article(
-      HydrateArticleRequest(
-        url=getTopicPageByURLRequest.source
-      )
+  if getTopicPageRequest.url != "":
+    # Try to fetch the article if already in db
+    articleId = -1
+    fetchArticlesResponse = fetchArticlesByUrl(
+      [getTopicPageRequest.url],
     )
-    if hydrateArticleResponse.error != None:
-      return GetTopicPageResponse(
-        topic_page=None,
-        error=hydrateArticleResponse.error,
-      )
 
-    # Populate the article
-    populateArticleRes = populate_article_by_url(
-      PopulateArticleRequest(
-        url = getTopicPageByURLRequest.source,
+    if fetchArticlesResponse.error != None or len(fetchArticlesResponse.articleList) == 0:
+      # Hydrate the article if not in db and rewrite
+      hydrateArticleResponse = hydrate_article(
+        HydrateArticleRequest(
+          url=getTopicPageRequest.url
+        )
       )
-    )
-    if populateArticleRes.error != None:
-      logger.warn("Failed to populate article in the db")
-      return GetTopicPageResponse(
-        topic_page=None,
-        error=populateArticleRes.error,
+      if hydrateArticleResponse.error != None:
+        return GetTopicPageResponse(
+          topic_page=None,
+          error=str(hydrateArticleResponse.error),
+        )
+
+      # Populate the article
+      populateArticleRes = populate_article_by_url(
+        PopulateArticleRequest(
+          url = getTopicPageRequest.url,
+        )
       )
+      if populateArticleRes.error != None:
+        logger.warn("Failed to populate article in the db")
+        return GetTopicPageResponse(
+          topic_page=None,
+          error=str(populateArticleRes.error),
+        )
+      else:
+        article = hydrateArticleResponse.article
+        articleId = populateArticleRes.id
+        text = hydrateArticleResponse.article.text
+
     else:
-      article = hydrateArticleResponse.article
-      articleId = populateArticleRes.id
+      article = fetchArticlesResponse.articleList[0]
+      articleId = fetchArticlesResponse.articleList[0].id
+      text = article.text
 
-  else:
+
+  if getTopicPageRequest.text and getTopicPageRequest.text != "":
+    article = None
+    articleId = -1
+    text = getTopicPageRequest.text.replace('"','\\"')
+
+    # Get the top article based on that text
+    queryDocumentsResponse = tpHandler.query_documents(
+      QueryDocumentsRequest(
+        query=text,
+        num_docs=1,
+        return_docs=False,
+        ef=200,
+        use_index=True,
+      )
+    )
+    if queryDocumentsResponse.error != None or len(queryDocumentsResponse.doc_ids) < 1:
+      return GetTopicPageResponse(
+        topic_page=None,
+        error=str(queryDocumentsResponse.error)
+      )
+
+    articleId = queryDocumentsResponse.doc_ids[0]
+    fetchArticlesResponse = fetchArticles(
+      fetchArticlesRequest= FetchArticlesRequest(
+        articleIds=[articleId],
+      )
+    )
+    if fetchArticlesResponse.error != None or len(fetchArticlesResponse.articleList) == 0:
+      # Hydrate the article if not in db and rewrite
+        return GetTopicPageResponse(
+          topic_page=None,
+          error=str(fetchArticlesResponse.error),
+        )
+    text = fetchArticlesResponse.articleList[0].text
     article = fetchArticlesResponse.articleList[0]
-    articleId = fetchArticlesResponse.articleList[0].id
+
+
+  if getTopicPageRequest.topicName != "":
+    # Get top article for the topic id
+    # First query the database for the topic and then use the topic string to query the articles
+    fetchTopicInfoBatchResponse = tpHandler.fetch_topic_infos_batch(
+      FetchTopicInfoBatchRequest(
+        topicNames = [getTopicPageRequest.topicName]
+      )
+    )
+    if fetchTopicInfoBatchResponse.error != None or len(fetchTopicInfoBatchResponse.topics) < 1:
+      return GetTopicPageResponse(
+        topic_page=None,
+        error= str(fetchTopicInfoBatchResponse.error)
+      )
+
+    logger.info("Topics fetched")
+    logger.info(fetchTopicInfoBatchResponse.topics)
+    queryDocumentsResponse = tpHandler.query_documents(
+      QueryDocumentsRequest(
+        query=fetchTopicInfoBatchResponse.topics[0].TopicName,
+        num_docs=1,
+        return_docs=False,
+        ef=200,
+        use_index=True,
+      )
+    )
+    if queryDocumentsResponse.error != None or len(queryDocumentsResponse.doc_ids) < 1:
+      return GetTopicPageResponse(
+        topic_page=None,
+        error=str(queryDocumentsResponse.error)
+      )
+    articleId = queryDocumentsResponse.doc_ids[0]
+    fetchArticlesResponse = fetchArticles(
+      fetchArticlesRequest= FetchArticlesRequest(
+        articleIds=[articleId],
+      )
+    )
+    if fetchArticlesResponse.error != None or len(fetchArticlesResponse.articleList) == 0:
+      # Hydrate the article if not in db and rewrite
+        return GetTopicPageResponse(
+          topic_page=None,
+          error=str(fetchArticlesResponse.error),
+        )
+    text = fetchArticlesResponse.articleList[0].text
+    article = fetchArticlesResponse.articleList[0]
+
+
+  if getTopicPageRequest.articleId != 0:
+    fetchArticlesResponse = fetchArticles(
+      fetchArticlesRequest= FetchArticlesRequest(
+        articleIds=[getTopicPageRequest.articleId],
+      )
+    )
+    if fetchArticlesResponse.error != None or len(fetchArticlesResponse.articleList) == 0:
+      # Hydrate the article if not in db and rewrite
+        return GetTopicPageResponse(
+          topic_page=None,
+          error=str(fetchArticlesResponse.error),
+        )
+
+    else:
+      article = fetchArticlesResponse.articleList[0]
+      articleId = fetchArticlesResponse.articleList[0].id
+      text = article.text
+
 
   logger.info("Article")
   logger.info(article)
@@ -77,19 +189,20 @@ def getTopicPage(getTopicPageByURLRequest):
   logger.info(article.text)
 
   # Query for top documents based on the article text
-  queryDocumentsResponse = query_documents_url(
+  queryDocumentsResponse = query_documents(
     QueryDocumentsRequest(
-      query=article.text,
+      query=text,
       num_docs=10,
       return_docs=False,
       use_index=True,
       ef=200,
-
     )
   )
   if queryDocumentsResponse.error != None:
     return GetTopicPageResponse(topic_page=None, error=str(queryDocumentsResponse.error))
 
+  logger.info("query doc response")
+  logger.info(queryDocumentsResponse)
   # Fetch the related articles from the database
   fetchArticlesResponse = fetchArticlesById(
     FetchArticlesRequest(
@@ -117,6 +230,7 @@ def getTopicPage(getTopicPageByURLRequest):
   if getMDSSummaryResponse.error != None:
     return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponse.error))
 
+  logger.info("MDS SUMMARY")
   # Aggregate the list of facts for the page
   facts = []
   passages = []
@@ -164,11 +278,14 @@ def getTopicPage(getTopicPageByURLRequest):
     MDSSummary = getMDSSummaryResponse.summary,
     Facts = facts,
     Opinions = passages,
-    TopArticleID = articleId,
+    TopArticleID = int(articleId),
     TopicID = None,
     Timeline = None,
     ImageURL = topImageUrl,
   )
+  logger.info("TOPIC PAGE")
+  logger.info(topic_page)
+
   return GetTopicPageResponse(
     topic_page=topic_page,
     error= None,
@@ -190,7 +307,8 @@ def whatsHappening(whatsHappeningRequest):
       articles=[],
       error=str(getTopicsResponse.error)
     )
-
+  logger.info("Topics")
+  logger.info(getTopicsResponse.topic_words)
   articleIds = []
 
   # For each topic returned, get the top article for the topic
@@ -236,5 +354,6 @@ def whatsHappening(whatsHappeningRequest):
     articles=articleInfo,
     error = None,
   )
+
 
 

@@ -104,6 +104,7 @@ def get_document_topic_batch(getDocumentTopicBatchRequest):
     reduced=True,
   )
 
+
 def get_document_topic(getDocumentTopicRequest):
   """
     This endpoint will query the topic model using the doc_ids, reduced, and num_topics parameters.
@@ -143,7 +144,7 @@ def add_document(addDocumentRequest):
   return AddDocumentResponse(error=None)
 
 
-def query_documents_url(queryDocumentsRequest):
+def query_documents(queryDocumentsRequest):
   """
   Req: {
     Query: string - article body of text

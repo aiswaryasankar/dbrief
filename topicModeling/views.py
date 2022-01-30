@@ -48,7 +48,7 @@ def query_documents_url_view(request):
     return Response(req.errors)
 
   queryDocumentsRequest = req.validated_data
-  res = query_documents_url(queryDocumentsRequest)
+  res = query_documents(queryDocumentsRequest)
 
   return Response(res.to_json())
 
