@@ -585,6 +585,13 @@ class GetTopicsForUserRequest:
 @dataclass
 class GetTopicsForUserResponse:
   topics: List[TopicInfo]
+  error: Exception
+
+@dataclass_json
+@dataclass
+class GetTopicsYouFollowResponse:
+  topics: List[str]
+  error: Exception
 
 @dataclass
 class GetRecommendedTopicsForUserRequest:

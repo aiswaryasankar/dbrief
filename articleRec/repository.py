@@ -90,11 +90,12 @@ def fetchArticles(fetchArticlesRequest):
     filterList = fetchArticlesRequest.articleUrls
 
   for elem in filterList:
-    if field=="articleId":
-      article = ArticleModel.objects.get(articleId=elem)
-    elif field=="url":
-      article = ArticleModel.objects.get(url=elem)
     try:
+      if field=="articleId":
+        article = ArticleModel.objects.get(articleId=elem)
+      elif field=="url":
+        article = ArticleModel.objects.get(url=elem)
+
       a = Article(
           id=article.articleId,
           url=article.url,
@@ -121,10 +122,7 @@ def fetchArticles(fetchArticlesRequest):
       articleList.append(a)
 
     except Exception as e:
-      logger.warn("Failed to fetch article from database", extra={
-        "article": article,
-        "error": e,
-      })
+      logger.warn("Failed to fetch article from database with attribute %s", elem)
       print(e)
       return FetchArticlesResponse(
         articleList=articleList,
@@ -291,9 +289,24 @@ def queryArticles(queryArticleRequest):
     Will query the article database using the queryArticleRequest and search for all rows where the given field is missing.
   """
   field = queryArticleRequest.field
+  logger.info("Searching for rows with %s field empty", field)
+  print("Searching for rows with %s field empty", field)
 
   # Query for all records where the field is empty
-  articles = ArticleModel.objects.filter(field="")
+  if field == "topic":
+    articles = ArticleModel.objects.filter(topic="")
+    print("searching for topic")
+    print(len([a for a in articles]))
+    allArticles = ArticleModel.objects.all()
+    print(len([a for a in allArticles]))
+    logger.info("Searching for empty topics")
+
+  elif field == "parent_topic":
+    articles = ArticleModel.objects.filter(parent_topic="")
+  elif field == "top_fact":
+    articles = ArticleModel.objects.filter(top_fact="")
+  elif field == "top_passage":
+    articles = ArticleModel.objects.filter(top_passage="")
 
   articleModels = []
   for article in articles:

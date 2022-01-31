@@ -12,7 +12,7 @@ from datetime import datetime
 
 class ArticleRecRepoTest(TestCase):
 
-  def test_save_article_create(self):
+  def test_save_and_update_article(self):
     """
       Tests saving and updating an article.
       All validates using incorrect datatypes.
@@ -33,13 +33,12 @@ class ArticleRecRepoTest(TestCase):
     req = SaveArticleRequest(
       article = a1,
     )
-    res = saveArticle(req)
-    self.assertIsNone(res.error)
-    self.assertEqual(res.id, 2)
-    self.assertTrue(res.created)
+    res1 = saveArticle(req)
+    self.assertIsNone(res1.error)
+    self.assertTrue(res1.created)
 
     a2 = Article(
-      id = 2,
+      id = res1.id,
       url = "testUrl",
       title = "testTitle_updated",
       text = "testText_updated",
@@ -56,15 +55,15 @@ class ArticleRecRepoTest(TestCase):
       article = a2,
     )
 
-    res = saveArticle(req)
-    self.assertIsNone(res.error)
-    self.assertEqual(res.id, 2)
-    self.assertFalse(res.created)
+    res2 = saveArticle(req)
+    self.assertIsNone(res2.error)
+    self.assertEqual(res2.id, res1.id)
+    self.assertFalse(res2.created)
 
     # Fetch the article from the database and check it has been updated appropriately
     fetchedArticleRes = fetchArticlesById(
       FetchArticlesRequest(
-        articleIds=[2]
+        articleIds=[res2.id]
       )
     )
     self.assertIsNone(fetchedArticleRes.error)
@@ -101,24 +100,54 @@ class ArticleRecRepoTest(TestCase):
 
 
 
-  def test_article_backfill_force(self):
+  def test_query_articles(self):
     """
-      Test out force updating all the topics in the database right now
+      Tests out the functionality of retrieving all rows where a specified field is empty.
     """
+    a1 = Article(
+      url = "testUrl",
+      title = "testTitle",
+      text = "testText",
+      authors = ["testAuthor"],
+      date = datetime.now(),
+      topic = "",
+      parentTopic = "",
+      topPassage = "testPassage",
+      topFact = "testFact",
+      imageURL = "testURL",
+      polarizationScore = 0.0,
+    )
+    req = SaveArticleRequest(
+      article = a1,
+    )
+    res = saveArticle(req)
+    self.assertIsNone(res.error)
 
+    a2 = Article(
+      url = "testUrl_2",
+      title = "testTitle",
+      text = "testText",
+      authors = ["testAuthor"],
+      date = datetime.now(),
+      topic = "testTopic",
+      parentTopic = "testParentTopic",
+      topPassage = "testPassage",
+      topFact = "testFact",
+      imageURL = "testURL",
+      polarizationScore = 0.0,
+    )
+    req = SaveArticleRequest(
+      article = a2,
+    )
+    res = saveArticle(req)
+    self.assertIsNone(res.error)
 
-
-  def test_article_backfill(self):
-    """
-      Test out backfilling only empty values in the database
-    """
-    # Populate 2 articles in the database, one without a topic and one with a topic
-
-
-    # Pass in a request for topic with force_update set to false
-
-
-    # Update all values
-    pass
+    queryArticlesRes = queryArticles(
+      queryArticleRequest=QueryArticleRequest(
+        field="topic"
+      )
+    )
+    self.assertIsNone(queryArticlesRes.error)
+    self.assertEqual(len(queryArticlesRes.articles), 1)
 
 

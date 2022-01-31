@@ -24,6 +24,9 @@ def get_mds_summary_handler(getMDSSummaryRequest):
   """
   articles = getMDSSummaryRequest.articles
 
+  # TODO: Actually implement your model here!!!
+  # This is just a placeholder for initial launch ease
+
   prompt = articles[:2000] + "\n\ntl;dr"
   summary = openai.Completion.create(
     engine="davinci",

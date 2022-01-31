@@ -50,24 +50,32 @@ def getUser(getUserRequest):
     Will get the user from the db
   """
 
-  for user in UserModel.objects.get(userId=id):
-    try:
-      user = User(
-          FirstName=user.firstName,
-          LastName=user.lastName,
-          EmailAddress=user.email,
-          UserID=user.id,
+  try:
+    users = UserModel.objects.get(userId=getUserRequest.userId)
+    for user in users:
+      try:
+        user = User(
+            FirstName=user.firstName,
+            LastName=user.lastName,
+            EmailAddress=user.email,
+            UserID=user.id,
+          )
+      except Exception as e:
+        logger.warn("Failed to fetch user from database", extra={
+          "user": user,
+          "error": e,
+        })
+        print(e)
+        return GetUserResponse(
+          user=None,
+          error=str(e),
         )
-    except Exception as e:
-      logger.warn("Failed to fetch user from database", extra={
-        "user": user,
-        "error": e,
-      })
-      print(e)
-      return GetUserResponse(
-        user=user,
-        error=str(e),
-      )
+
+  except Exception as e:
+    return GetUserResponse(
+      user=None,
+      error=str(e),
+    )
 
   return GetUserResponse(
     user=user,
@@ -144,11 +152,23 @@ def getTopicsYouFollow(getTopicsYouFollowRequest):
 
   topicList = []
   userId = getTopicsYouFollowRequest.user_id
-  followedTopics = UserTopicModel.objects.filter(userId=userId)
+
+  try:
+    followedTopics = UserTopicModel.objects.filter(userId=userId)
+
+  except Exception as e:
+    logger.warn("Failed to get topics for user %s", userId)
+    return GetTopicsYouFollowResponse(
+      topics=None,
+      error=str(e)
+    )
 
   for topic in followedTopics:
     topicList.append(topic.topicId)
 
-  return topicList
+  return GetTopicsYouFollowResponse(
+    topics=topicList,
+    error=None
+  )
 
 

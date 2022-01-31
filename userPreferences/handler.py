@@ -77,11 +77,17 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
     Gets a list of the recommended topics for a given user
   """
   # Queries the UserTopic database for the topics that the user currently follows
-  currentTopics = getTopicsYouFollow(
+  getTopicsYouFollowRes = getTopicsYouFollow(
     GetTopicsForUserRequest(
       user_id=getRecommendedTopicsForUserRequest.user_id,
     )
   )
+  if getTopicsYouFollowRes.error != None:
+    return GetRecommendedTopicsForUserResponse(
+      topics= None,
+      error = str(getTopicsYouFollowRes.error),
+    )
+  currentTopics = getTopicsYouFollowRes.topics
   logger.info("currentTopics")
   logger.info(currentTopics)
 
@@ -92,9 +98,9 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
     )
   )
   if fetchTopicInfoBatchResponse.error != None :
-    return FetchTopicInfoBatchResponse(
-      topics=[],
-      error=fetchTopicInfoBatchResponse.error,
+    return GetRecommendedTopicsForUserResponse(
+      topics= None,
+      error = str(fetchTopicInfoBatchResponse.error),
     )
 
   logger.info("topicInfos")
@@ -146,9 +152,15 @@ def get_topics_you_follow(getTopicsYouFollowRequest):
     Gets a list of the topics a user follows
   """
   # Fetches the topics in the UserTopic database that correspond to the given user
-  currentTopics = getTopicsYouFollow(
+  getTopicsYouFollowRes = getTopicsYouFollow(
     getTopicsYouFollowRequest
   )
+  if getTopicsYouFollowRes.error != None:
+    return GetTopicsForUserResponse(
+      topics= None,
+      error= str(getTopicsYouFollowRes.error),
+    )
+  currentTopics = getTopicsYouFollowRes.topics
   logger.info("currentTopics")
   logger.info(currentTopics)
 
@@ -159,7 +171,7 @@ def get_topics_you_follow(getTopicsYouFollowRequest):
     )
   )
   if fetchTopicInfoBatchResponse.error != None :
-    return FetchTopicInfoBatchResponse(
+    return GetTopicsForUserResponse(
       topics=[],
       error=fetchTopicInfoBatchResponse.error,
     )
@@ -168,9 +180,10 @@ def get_topics_you_follow(getTopicsYouFollowRequest):
   logger.info(fetchTopicInfoBatchResponse.topics)
 
   # Returns the list of topicInfo entities
-  return FetchTopicInfoBatchResponse(
+  return GetTopicsForUserResponse(
     topics= fetchTopicInfoBatchResponse.topics,
     error=None,
   )
+
 
 
