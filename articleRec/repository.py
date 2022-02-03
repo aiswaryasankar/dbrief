@@ -290,17 +290,11 @@ def queryArticles(queryArticleRequest):
   """
   field = queryArticleRequest.field
   logger.info("Searching for rows with %s field empty", field)
-  print("Searching for rows with %s field empty", field)
 
   # Query for all records where the field is empty
+  articles = []
   if field == "topic":
     articles = ArticleModel.objects.filter(topic="")
-    print("searching for topic")
-    print(len([a for a in articles]))
-    allArticles = ArticleModel.objects.all()
-    print(len([a for a in allArticles]))
-    logger.info("Searching for empty topics")
-
   elif field == "parent_topic":
     articles = ArticleModel.objects.filter(parent_topic="")
   elif field == "top_fact":

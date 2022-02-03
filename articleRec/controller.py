@@ -101,44 +101,21 @@ def populate_article(populateArticleRequest):
     timeAfterAddDocument = datetime.now()
     logger.info("Time to add document to model %s", timeAfterAddDocument - beforeAddDocument)
 
-  beforeGetTopic = datetime.now()
-  # Get topic for the document from the topic model
-  getDocumentTopicResponse = tpHandler.get_document_topic(
-    GetDocumentTopicRequest(
+  # Get_document_topic batch will return both the topic and the subtopic together
+  getDocumentTopicBatchResponse = tpHandler.get_document_topic_batch(
+    GetDocumentTopicBatchRequest(
       doc_ids=[saveArticleResponse.id],
-      reduced=False,
       num_topics=1,
     )
   )
-  if getDocumentTopicResponse.error != None:
-    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(getDocumentTopicResponse.error))
+  if getDocumentTopicBatchResponse.error != None:
+    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(getDocumentTopicBatchResponse.error))
 
-  logger.info("Document topic")
-  logger.info(getDocumentTopicResponse.topic_num)
-  logger.info(getDocumentTopicResponse.topic_score)
-  logger.info(getDocumentTopicResponse.topic_word)
-  afterGetTopic = datetime.now()
-  logger.info("Time to get topic %s", afterGetTopic-beforeGetTopic)
-
-  beforeGetSubtopic = datetime.now()
-  # Get the subtopic for the document from the topic model
-  getSubtopicResponse = tpHandler.get_document_topic(
-    GetDocumentTopicRequest(
-      doc_ids=[saveArticleResponse.id],
-      reduced=True,
-      num_topics=1,
-    )
-  )
-  if getSubtopicResponse.error != None:
-    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(getSubtopicResponse.error))
-
-  logger.info("Document parent topic")
-  logger.info(getSubtopicResponse.topic_num)
-  logger.info(getSubtopicResponse.topic_score)
-  logger.info(getSubtopicResponse.topic_word)
-  afterGetSubTopic = datetime.now()
-  logger.info("Time to get subtopic %s", afterGetSubTopic-beforeGetSubtopic)
-
+  topic = getDocumentTopicBatchResponse.documentTopicInfos[0].topic
+  parentTopic = getDocumentTopicBatchResponse.documentTopicInfos[0].parentTopic
+  logger.info("Document topics")
+  logger.info(topic)
+  logger.info(parentTopic)
 
   beforeGetPolarity = datetime.now()
   # Get the polarity of the document from the topic model
@@ -196,8 +173,8 @@ def populate_article(populateArticleRequest):
   # Update the db with additional data
   updatedArticle = Article(
     id=saveArticleResponse.id,
-    topic = getDocumentTopicResponse.topic_word,
-    parentTopic = getSubtopicResponse.topic_word,
+    topic = topic,
+    parentTopic = parentTopic,
     url=url,
     text=article.text,
     title=article.title,
@@ -320,50 +297,61 @@ def article_backfill_controller(articleBackfillRequest):
           error=queryArticleResponse.error,
         )
       else:
-        articlesToUpdate = queryArticleResponse.articles
+        logger.info("Number of articles to update %s", len(queryArticleResponse.articles))
+        articlesToUpdate.extend(queryArticleResponse.articles)
 
-    # Based on the field that is requested, it will call the appropriate method
-    # Should operate in batch to get the appropriate values back
-    if "topic" in articleBackfillRequest.fields:
-      getDocumentTopicResponse = tpHandler.get_document_topic(
-        GetDocumentTopicRequest(
-          doc_ids=[article.articleId for article in articlesToUpdate],
-          reduced = False,
-          num_topics=1,
-        )
+  logger.info("Articles to update %s", len(articlesToUpdate))
+
+  # Based on the field that is requested, it will call the appropriate method
+  # Should operate in batch to get the appropriate values back
+  if "topic" in articleBackfillRequest.fields or "parent_topic" in articleBackfillRequest.fields:
+    getDocumentTopicBatchResponse = tpHandler.get_document_topic_batch(
+      GetDocumentTopicRequest(
+        doc_ids=[article.id for article in articlesToUpdate],
+        num_topics=1,
       )
-      if getDocumentTopicResponse.error != None:
-        logger.warn("Failed to get topics for batch request")
+    )
+    if getDocumentTopicBatchResponse.error != None:
+      logger.warn("Failed to get topics for batch request")
 
-      getDocumentTopicResponse = tpHandler.get_document_topic(
-        GetDocumentTopicRequest(
-          doc_ids=[article.articleId for article in articlesToUpdate],
-          reduced = True,
-          num_topics=1,
-        )
-      )
-      if getDocumentTopicResponse.error != None:
-        logger.warn("Failed to get parent topics for batch request")
+  # TODO: Implement batch polarity, topic and fact backfill
+  # if "polarity" in articleBackfillRequest.fields:
+  #   getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
+  #     GetDocumentPolarityBatchRequest(
+  #       queryList=[article.text for article in articlesToUpdate],
+  #       source=None,
+  #     )
+  #   )
+  #   if getDocumentPolarityBatchResponse.error != None:
+  #     logger.warn("Failed to get polarity for batch request")
 
-
-    if "polarity" in articleBackfillRequest.fields:
-      getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
-        GetDocumentPolarityBatchRequest(
-          queryList=[article.text for article in articlesToUpdate],
-          source=None,
-        )
-      )
-      if getDocumentPolarityBatchResponse.error != None:
-        logger.warn("Failed to get polarity for batch request")
-
-    if "fact" in articleBackfillRequest.fields:
-      pass
+  # if "fact" in articleBackfillRequest.fields:
+  #   pass
 
 
-    if "passage" in articleBackfillRequest.fields:
-      pass
+  # if "passage" in articleBackfillRequest.fields:
+  #   pass
 
-    # Populate the new fields into the db with an upsert operation
+  # Populate the new fields into the db with an upsert operation
+  # This should call the create_or_update article repo function and update the fields that are new
+  # You need to make sure that it doesn't erase fields that you haven't passed in this time
+
+  updatedArticles = [ArticleModel(articleId=a.doc_id, topic=a.topic, parent_topic=a.parentTopic) for a in getDocumentTopicBatchResponse.documentTopicInfos]
+  logger.info("Number of articles to update %s", len(updatedArticles))
+
+  # TODO: Move this into a repository function
+  res = ArticleModel.objects.bulk_update(updatedArticles, ['topic', 'parent_topic'])
+
+  return ArticleBackfillResponse(
+    num_updates=len(getDocumentTopicBatchResponse.documentTopicInfos),
+    error=None,
+  )
+
+
+
+
+
+
 
 
 

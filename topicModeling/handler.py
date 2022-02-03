@@ -98,11 +98,11 @@ def get_document_topic_batch(getDocumentTopicBatchRequest):
     This endpoint will return the topic and subtopic for a list of doc_ids.
   """
   top2vecModel = Top2Vec.load(topicModelFile)
-  topic_num, topic_score, topic_word, _, error = top2vecModel.get_documents_topics(
+  getDocumentTopicBatchResponse = top2vecModel.get_documents_topics(
     getDocumentTopicBatchRequest.doc_ids,
     getDocumentTopicBatchRequest.num_topics,
-    reduced=True,
   )
+  return getDocumentTopicBatchResponse
 
 
 def get_document_topic(getDocumentTopicRequest):

@@ -326,6 +326,7 @@ class GetDocumentTopicResponse:
   topic_word: str
   error: Exception
 
+
 @dataclass
 class GetDocumentTopicBatchRequest:
   doc_ids: List[int] = field(default_factory=list)
@@ -334,8 +335,8 @@ class GetDocumentTopicBatchRequest:
 @dataclass
 class DocumentTopicInfo:
   doc_id: int
-  topicInfo: TopicInfo
-
+  topic: str
+  parentTopic: str
 
 @dataclass_json
 @dataclass

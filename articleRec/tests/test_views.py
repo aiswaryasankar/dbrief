@@ -34,3 +34,18 @@ class ArticleRecViewTest(TestCase):
     print(response.data)
 
 
+  def test_article_backfill_force_update(self):
+    response = self.client.post('/articleBackfill/', data={"force_update": False, "fields": ["topic"]}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+
+
+  def test_article_backfill_fill_empty(self):
+    response = self.client.post('/articleBackfill/', data={"force_update": True, "fields": ["topic"]}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+
+
+  def test_article_backfill_parent_topic(self):
+    response = self.client.post('/articleBackfill/', data={"force_update": False, "fields": ["parent_topic"]}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+
+
