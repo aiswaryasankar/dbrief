@@ -1111,12 +1111,18 @@ class Top2Vec:
         if reduced:
             err = self._validate_hierarchical_reduction()
             if err != None:
-                return None, None, None, None, err
+                return GetDocumentTopicBatchResponse(
+                    documentTopicInfos=None,
+                    error=err,
+                )
 
         # make sure documents exist
         err = self._validate_doc_ids(doc_ids, doc_ids_neg=[])
         if err != None:
-            return None, None, None, None, err
+            return GetDocumentTopicBatchResponse(
+                documentTopicInfos=None,
+                error=err,
+            )
 
         # get document indexes from ids
         doc_indexes = self._get_document_indexes(doc_ids)
