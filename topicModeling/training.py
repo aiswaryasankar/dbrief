@@ -1134,6 +1134,8 @@ class Top2Vec:
 
         # get document indexes from ids
         doc_indexes = self._get_document_indexes(doc_ids)
+        logger.info("doc_indexes")
+        logger.info(doc_indexes)
 
         if num_topics == 1:
             parent_doc_topics = self.doc_top_reduced[doc_indexes]
@@ -1158,6 +1160,11 @@ class Top2Vec:
 
         # Hydrate the response as type DocumentTopicInfo
         # In the future instead of just choosing the first word in the list, it will choose the 'best' word in the list of possible topic words using the topic rule engine
+        logger.info("Topic_words")
+        logger.info(topic_words)
+        logger.info("Parent topic words")
+        logger.info(parent_topic_words)
+
         docTopicInfoList = []
         for i in range(len(doc_ids)):
             docTopicInfo = DocumentTopicInfo(
