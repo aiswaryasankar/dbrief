@@ -312,7 +312,7 @@ def article_backfill_controller(articleBackfillRequest):
       )
     )
     if getDocumentTopicBatchResponse.error != None:
-      logger.warn("Failed to get topics for batch request")
+      logger.warn("Failed to get topics for batch request %s", str(getDocumentTopicBatchResponse.error))
       return ArticleBackfillResponse(
         num_updates=0,
         error=getDocumentTopicBatchResponse.error,
