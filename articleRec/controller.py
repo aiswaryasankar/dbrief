@@ -313,6 +313,10 @@ def article_backfill_controller(articleBackfillRequest):
     )
     if getDocumentTopicBatchResponse.error != None:
       logger.warn("Failed to get topics for batch request")
+      return ArticleBackfillResponse(
+        num_updates=0,
+        error=getDocumentTopicBatchResponse.error,
+      )
 
   # TODO: Implement batch polarity, topic and fact backfill
   # if "polarity" in articleBackfillRequest.fields:
