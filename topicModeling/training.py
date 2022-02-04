@@ -1117,6 +1117,7 @@ class Top2Vec:
         if reduced:
             err = self._validate_hierarchical_reduction()
             if err != None:
+                logger.warn("Failed to validate hierarchical reduction")
                 return GetDocumentTopicBatchResponse(
                     documentTopicInfos=None,
                     error=err,
@@ -1125,6 +1126,7 @@ class Top2Vec:
         # make sure documents exist
         err = self._validate_doc_ids(doc_ids, doc_ids_neg=[])
         if err != None:
+            logger.warn("Failed to validate doc ids")
             return GetDocumentTopicBatchResponse(
                 documentTopicInfos=None,
                 error=err,
@@ -1165,7 +1167,6 @@ class Top2Vec:
             )
             docTopicInfoList.append(docTopicInfo)
 
-        #return doc_topics[0], doc_dist[0], topic_words[0][0], topic_word_scores[0][0], None
         return GetDocumentTopicBatchResponse(
             documentTopicInfos=docTopicInfoList,
             error=None,
