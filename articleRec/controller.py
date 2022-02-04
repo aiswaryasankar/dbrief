@@ -254,6 +254,13 @@ def hydrate_article_controller(url):
       error=e,
     )
 
+  if article.text == "" or len(article.text) < 25:
+    return HydrateArticleResponse(
+      article=None,
+      url=None,
+      error=("Article doesn't have valid text"),
+    )
+
   return HydrateArticleResponse(
     article=article,
     url=article.url,
@@ -333,7 +340,7 @@ def article_backfill_controller(articleBackfillRequest):
   #   if getDocumentPolarityBatchResponse.error != None:
   #     logger.warn("Failed to get polarity for batch request")
 
-  if "passage" in articleBackfillRequest.fields:
+  if "top_passage" in articleBackfillRequest.fields:
     getTopPassageBatchResponse = passageRetrievalHandler.get_top_passage_batch(
       GetTopPassageBatchRequest(
         articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate]
@@ -346,15 +353,15 @@ def article_backfill_controller(articleBackfillRequest):
         error=getTopPassageBatchResponse.error,
       )
     else:
-      updatedArticles = [ArticleModel(articleId=a.article_id, fact=a.passage) for a in getTopPassageBatchResponse.articlePassages]
-      logger.info("Number of articles to update %s", len(updatedArticles))
+      updatedArticles = [ArticleModel(articleId=a.article_id, top_passage=a.passage) for a in getTopPassageBatchResponse.articlePassages]
+      logger.info("Number of articles to update passage %s", len(updatedArticles))
       totalUpdates += len(updatedArticles)
 
       # TODO: Move this into a repository function
       res = ArticleModel.objects.bulk_update(updatedArticles, ["top_passage"])
 
 
-  if "fact" in articleBackfillRequest.fields:
+  if "top_fact" in articleBackfillRequest.fields:
     getTopFactsBatchResponse = passageRetrievalHandler.get_top_facts_batch(
       GetFactsBatchRequest(
         articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate]
@@ -363,8 +370,8 @@ def article_backfill_controller(articleBackfillRequest):
     if getTopFactsBatchResponse.error != None:
       logger.warn("Failed to get topics for batch request %s", str(getDocumentTopicBatchResponse.error))
     else:
-      updatedArticles = [ArticleModel(articleId=a.article_id, fact=a.facts[0]) for a in getTopFactsBatchResponse.articleFacts]
-      logger.info("Number of articles to update %s", len(updatedArticles))
+      updatedArticles = [ArticleModel(articleId=a.article_id, top_fact=a.facts[0]) for a in getTopFactsBatchResponse.articleFacts]
+      logger.info("Number of articles to update fact %s", len(updatedArticles))
 
       # TODO: Move this into a repository function
       res = ArticleModel.objects.bulk_update(updatedArticles, ["top_fact"])

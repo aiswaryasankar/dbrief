@@ -107,7 +107,7 @@ def article_backfill_view(request):
 
   req = ArticleBackfillRequestSerializer(data=request.data)
   if not req.is_valid():
-    return JsonResponse(req.errors)
+    return Response(req.errors)
 
   articleBackfillRequest = req.validated_data
 

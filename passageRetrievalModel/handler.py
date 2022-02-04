@@ -38,25 +38,26 @@ def get_top_passage_batch(getTopPassageBatchRequest):
   topPassages = []
 
   for a in getTopPassageBatchRequest.articleList:
-    article = a.article_text
+    article = a.text
     paragraphs = article.split("\n")
     if article == "" or len(paragraphs) == 0:
-      logger.warn("Failed to generate top passage for article %s", a.article_id)
+      logger.warn("Article text empty for article %s", a.id)
       continue
 
     paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
 
     if len(paragraphs) == 0:
-      logger.warn("Failed to generate top passage for article %s", a.article_id)
+      logger.warn("No paragraphs for article %s", a.id)
       continue
 
     if len(paragraphs) <= 1:
-       topPassages.append(
-         ArticlePassage(
-          article_id = a.article_id,
+      topPassages.append(
+        ArticlePassage(
+          article_id = a.id,
           passage = paragraphs[0],
         )
       )
+      continue
 
     embeddedParagraphs = []
     for paragraph in paragraphs:
@@ -73,7 +74,7 @@ def get_top_passage_batch(getTopPassageBatchRequest):
     top_passage = paragraphs[top_passage_index]
     topPassages.append(
       ArticlePassage(
-        article_id = a.article_id,
+        article_id = a.id,
         passage = top_passage,
       )
     )
@@ -97,25 +98,28 @@ def get_top_facts_batch(getTopFactsBatchRequest):
   topFacts = []
 
   for a in getTopFactsBatchRequest.articleList:
-    article = a.article_text
-    paragraphs = article.split("\n")
-    if article == "" or len(paragraphs) == 0:
-      logger.warn("Failed to generate top fact for article %s", a.article_id)
+    article = a.text
+    facts = article.split("\n")
+    if article == "" or len(facts) == 0:
+      logger.warn("Article text is empty for article %s", a.id)
+      logger.info(a.text)
       continue
 
     facts = nltk.tokenize.sent_tokenize(article)
 
     if len(facts) == 0:
-      logger.warn("Failed to generate top fact for article %s", a.article_id)
+      logger.warn("No sentences %s", a.id)
+      logger.info(a.text)
       continue
 
     if len(facts) <= 1:
-       topFacts.append(
-         ArticleFact(
-          article_id = a.article_id,
+      topFacts.append(
+        ArticleFact(
+          article_id = a.id,
           facts = [facts[0]],
         )
       )
+      continue
 
     embeddedFacts = []
     for fact in facts:
@@ -129,16 +133,16 @@ def get_top_facts_batch(getTopFactsBatchRequest):
     dot_product_sum = sum(dot_products)
     top_fact_index = np.argmax(dot_product_sum)
     # Top fact
-    top_fact = paragraphs[top_fact_index]
+    top_fact = facts[top_fact_index]
     topFacts.append(
       ArticleFact(
-        article_id = a.article_id,
+        article_id = a.id,
         facts = [top_fact],
       )
     )
 
   return GetFactsBatchResponse(
-    articlePassages=topFacts,
+    articleFacts=topFacts,
     error= None,
   )
 

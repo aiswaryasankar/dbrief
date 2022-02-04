@@ -70,7 +70,7 @@ class ArticleInfo:
 @dataclass_json
 @dataclass
 class Article:
-  url: str
+  url: Optional[str] = ""
   id: Optional[int] = ""
   authors: Optional[List[str]] = ""
   topic: Optional[str] = ""
