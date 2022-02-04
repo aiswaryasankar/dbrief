@@ -492,6 +492,36 @@ class GetTopPassageResponse:
   passage: str
   error: Exception
 
+@dataclass
+class ArticleFact:
+  article_id: int
+  facts: List[str]
+
+@dataclass
+class ArticlePassage:
+  article_id: int
+  passage: str
+
+@dataclass
+class GetFactsBatchRequest:
+  articleList: List[Article] = field(default_factory=list)
+
+@dataclass_json
+@dataclass
+class GetFactsBatchResponse:
+  articleFacts : List[ArticleFact]
+  error: Exception
+
+@dataclass
+class GetTopPassageBatchRequest:
+  articleList: List[Article] = field(default_factory=list)
+
+@dataclass_json
+@dataclass
+class GetTopPassageBatchResponse:
+  articlePassages: List[ArticlePassage]
+  error: Exception
+
 ###
 #
 # TopicFeed

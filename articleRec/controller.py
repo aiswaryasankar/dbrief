@@ -267,6 +267,7 @@ def article_backfill_controller(articleBackfillRequest):
   """
 
   articlesToUpdate = []
+  totalUpdates = 0
 
   if articleBackfillRequest.force_update:
     # Updates the fields in the database for the appropriate values
@@ -313,10 +314,13 @@ def article_backfill_controller(articleBackfillRequest):
     )
     if getDocumentTopicBatchResponse.error != None:
       logger.warn("Failed to get topics for batch request %s", str(getDocumentTopicBatchResponse.error))
-      return ArticleBackfillResponse(
-        num_updates=0,
-        error=getDocumentTopicBatchResponse.error,
-      )
+    else:
+      updatedArticles = [ArticleModel(articleId=a.doc_id, topic=a.topic, parent_topic=a.parentTopic) for a in getDocumentTopicBatchResponse.documentTopicInfos]
+      logger.info("Number of articles to update %s", len(updatedArticles))
+
+      # TODO: Move this into a repository function
+      res = ArticleModel.objects.bulk_update(updatedArticles, ["topic", "parent_topic"])
+      totalUpdates += len(updatedArticles)
 
   # TODO: Implement batch polarity, topic and fact backfill
   # if "polarity" in articleBackfillRequest.fields:
@@ -329,31 +333,51 @@ def article_backfill_controller(articleBackfillRequest):
   #   if getDocumentPolarityBatchResponse.error != None:
   #     logger.warn("Failed to get polarity for batch request")
 
-  # if "fact" in articleBackfillRequest.fields:
-  #   pass
+  if "passage" in articleBackfillRequest.fields:
+    getTopPassageBatchResponse = passageRetrievalHandler.get_top_passage_batch(
+      GetTopPassageBatchRequest(
+        articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate]
+      )
+    )
+    if getTopPassageBatchResponse.error != None:
+      logger.warn("Failed to get passage for batch request %s", str(getDocumentTopicBatchResponse.error))
+      return ArticleBackfillResponse(
+        num_updates=0,
+        error=getTopPassageBatchResponse.error,
+      )
+    else:
+      updatedArticles = [ArticleModel(articleId=a.article_id, fact=a.passage) for a in getTopPassageBatchResponse.articlePassages]
+      logger.info("Number of articles to update %s", len(updatedArticles))
+      totalUpdates += len(updatedArticles)
+
+      # TODO: Move this into a repository function
+      res = ArticleModel.objects.bulk_update(updatedArticles, ["top_passage"])
 
 
-  # if "passage" in articleBackfillRequest.fields:
-  #   pass
+  if "fact" in articleBackfillRequest.fields:
+    getTopFactsBatchResponse = passageRetrievalHandler.get_top_facts_batch(
+      GetFactsBatchRequest(
+        articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate]
+      )
+    )
+    if getTopFactsBatchResponse.error != None:
+      logger.warn("Failed to get topics for batch request %s", str(getDocumentTopicBatchResponse.error))
+    else:
+      updatedArticles = [ArticleModel(articleId=a.article_id, fact=a.facts[0]) for a in getTopFactsBatchResponse.articleFacts]
+      logger.info("Number of articles to update %s", len(updatedArticles))
+
+      # TODO: Move this into a repository function
+      res = ArticleModel.objects.bulk_update(updatedArticles, ["top_fact"])
+      totalUpdates += len(updatedArticles)
+
 
   # Populate the new fields into the db with an upsert operation
   # This should call the create_or_update article repo function and update the fields that are new
   # You need to make sure that it doesn't erase fields that you haven't passed in this time
-
-  updatedArticles = [ArticleModel(articleId=a.doc_id, topic=a.topic, parent_topic=a.parentTopic) for a in getDocumentTopicBatchResponse.documentTopicInfos]
-  logger.info("Number of articles to update %s", len(updatedArticles))
-
-  # TODO: Move this into a repository function
-  res = ArticleModel.objects.bulk_update(updatedArticles, ['topic', 'parent_topic'])
-
   return ArticleBackfillResponse(
-    num_updates=len(getDocumentTopicBatchResponse.documentTopicInfos),
+    num_updates=totalUpdates,
     error=None,
   )
-
-
-
-
 
 
 

@@ -23,6 +23,124 @@ logger.setLevel(logging.INFO)
 module = "https://tfhub.dev/google/universal-sentence-encoder/4"
 
 
+def get_top_passage_batch(getTopPassageBatchRequest):
+  """
+    Gets the top passage for all the articles passed in
+  """
+
+  # Enforce that a paragraph has at least 2 sentences
+  try:
+    nltk.data.find('tokenizers/punkt')
+  except LookupError:
+    nltk.download('punkt')
+
+  embeddingModel = hub.load(module)
+  topPassages = []
+
+  for a in getTopPassageBatchRequest.articleList:
+    article = a.article_text
+    paragraphs = article.split("\n")
+    if article == "" or len(paragraphs) == 0:
+      logger.warn("Failed to generate top passage for article %s", a.article_id)
+      continue
+
+    paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
+
+    if len(paragraphs) == 0:
+      logger.warn("Failed to generate top passage for article %s", a.article_id)
+      continue
+
+    if len(paragraphs) <= 1:
+       topPassages.append(
+         ArticlePassage(
+          article_id = a.article_id,
+          passage = paragraphs[0],
+        )
+      )
+
+    embeddedParagraphs = []
+    for paragraph in paragraphs:
+      if paragraph != '':
+        embeddedParagraphs.append(embeddingModel([paragraph]))
+    embeddedParagraphs = np.squeeze(embeddedParagraphs)
+
+    # Create a matrix of paragraphs and compute the dot product between the matrices
+    dot_products = np.dot(embeddedParagraphs, embeddedParagraphs.T)
+    # Return the top row as the result
+    dot_product_sum = sum(dot_products)
+    top_passage_index = np.argmax(dot_product_sum)
+    # Top passage
+    top_passage = paragraphs[top_passage_index]
+    topPassages.append(
+      ArticlePassage(
+        article_id = a.article_id,
+        passage = top_passage,
+      )
+    )
+
+  return GetTopPassageBatchResponse(
+    articlePassages=topPassages,
+    error= None,
+  )
+
+
+def get_top_facts_batch(getTopFactsBatchRequest):
+  """
+    Gets the top facts for all the articles passed in
+  """
+  try:
+    nltk.data.find('tokenizers/punkt')
+  except LookupError:
+    nltk.download('punkt')
+
+  embeddingModel = hub.load(module)
+  topFacts = []
+
+  for a in getTopFactsBatchRequest.articleList:
+    article = a.article_text
+    paragraphs = article.split("\n")
+    if article == "" or len(paragraphs) == 0:
+      logger.warn("Failed to generate top fact for article %s", a.article_id)
+      continue
+
+    facts = nltk.tokenize.sent_tokenize(article)
+
+    if len(facts) == 0:
+      logger.warn("Failed to generate top fact for article %s", a.article_id)
+      continue
+
+    if len(facts) <= 1:
+       topFacts.append(
+         ArticleFact(
+          article_id = a.article_id,
+          facts = [facts[0]],
+        )
+      )
+
+    embeddedFacts = []
+    for fact in facts:
+      if fact != '':
+        embeddedFacts.append(embeddingModel([fact]))
+    embeddedFacts = np.squeeze(embeddedFacts)
+
+    # Create a matrix of facts and compute the dot product between the matrices
+    dot_products = np.dot(embeddedFacts, embeddedFacts.T)
+    # Return the top row as the result
+    dot_product_sum = sum(dot_products)
+    top_fact_index = np.argmax(dot_product_sum)
+    # Top fact
+    top_fact = paragraphs[top_fact_index]
+    topFacts.append(
+      ArticleFact(
+        article_id = a.article_id,
+        facts = [top_fact],
+      )
+    )
+
+  return GetFactsBatchResponse(
+    articlePassages=topFacts,
+    error= None,
+  )
 
 def get_top_passage(getTopPassageRequest):
   """
