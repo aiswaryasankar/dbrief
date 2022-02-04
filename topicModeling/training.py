@@ -938,6 +938,7 @@ class Top2Vec:
         return keywords_lower, keywords_neg_lower
 
     def _validate_document_ids_add_doc(self, documents, document_ids):
+        ## If this ever fails the easiest solution is to reindex the documents in the model
         if document_ids is None:
             return ValueError("Document ids need to be provided.")
         if len(documents) != len(document_ids):
@@ -946,8 +947,13 @@ class Top2Vec:
             return ValueError("Document ids need to be unique.")
 
         if len(set(document_ids).intersection(self.document_ids)) > 0:
-            logger.info(self.document_ids)
-            return ValueError("Some document ids already exist in model.")
+            logger.info("Document ids provided " + str(document_ids))
+            logger.info("Document ids in index " + str(self.document_ids))
+            logger.warn("Document ids and index didn't match reindexing")
+            self.index_document_vectors()
+            if len(set(document_ids).intersection(self.document_ids)) > 0:
+                logger.warn("Reindex didn't complete successfully")
+                return ValueError("Some document ids already exist in model.")
 
         if self.doc_id_type == np.str_:
             if not all((isinstance(doc_id, str) or isinstance(doc_id, np.str_)) for doc_id in document_ids):
@@ -1010,7 +1016,7 @@ class Top2Vec:
         self.document_index = hnswlib.Index(space='ip', dim=vec_dim)
         self.document_index.init_index(max_elements=num_vecs, ef_construction=ef_construction, M=M)
         self.document_index.add_items(document_vectors, index_ids)
-        logger.info(self.document_index)
+        logger.info(self.document_ids)
         document_vectors = self._get_document_vectors()
         logger.info("Number of documents in the model")
         self.documents_indexed = True
