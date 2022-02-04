@@ -910,7 +910,12 @@ class Top2Vec:
         if self.document_ids is not None:
             for doc_id in doc_ids_all:
                 if doc_id not in self.doc_id2index:
-                    return ValueError(f"{doc_id} is not a valid document id.")
+                    logger.warn("%s is not a valid document id.", doc_id)
+                    self.index_document_vectors()
+                    logger.info("Reindexed the document vectors")
+                    if doc_id not in self.doc_id2index:
+                        logger.warn("Reindex failed to resolve the problem.")
+                        return ValueError(f"{doc_id} is not a valid document id.")
         elif min(doc_ids) < 0:
             return ValueError(f"{min(doc_ids)} is not a valid document id.")
         elif max(doc_ids) > len(self.doc_top) - 1:
@@ -1120,7 +1125,7 @@ class Top2Vec:
                 logger.warn("Failed to validate hierarchical reduction")
                 return GetDocumentTopicBatchResponse(
                     documentTopicInfos=None,
-                    error=err,
+                    error=str(err),
                 )
 
         # make sure documents exist
@@ -1129,7 +1134,7 @@ class Top2Vec:
             logger.warn("Failed to validate doc ids")
             return GetDocumentTopicBatchResponse(
                 documentTopicInfos=None,
-                error=err,
+                error=str(err),
             )
 
         # get document indexes from ids
@@ -1233,7 +1238,7 @@ class Top2Vec:
             self.document_ids = np.append(self.document_ids, doc_ids)
             self.doc_id2index.update(dict(zip(doc_ids, list(range(doc_ids_len, doc_ids_len + len(doc_ids))))))
         else:
-            return ValueError("doc_ids cannot be used because they were not provided to model during training.")
+            return str(ValueError("doc_ids cannot be used because they were not provided to model during training."))
 
         if self.embedding_model == "doc2vec":
             docs_processed = [tokenizer(doc) for doc in documents]
