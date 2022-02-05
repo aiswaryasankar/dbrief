@@ -13,10 +13,12 @@ from .constants import *
 from idl import *
 from .repository import *
 from topicModeling import handler as tpHandler
+from topicFeed import handler as topicFeedHandler
 from polarityModel import handler as polarityHandler
 from passageRetrievalModel import handler as passageRetrievalHandler
 import multiprocessing as mp
 from datetime import datetime
+from newspaper.utils import BeautifulSoup
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -29,10 +31,13 @@ def fetch_articles_controller(fetchArticlesRequest):
   """
     This function will fetch all the articles from the articleId list provided or fetch all articles in the db if no articleIds are provided.
   """
-  if fetchArticlesRequest.articleIds == None or len(fetchArticlesRequest.articleIds) == 0:
+  if fetchArticlesRequest.articleIds == None or len(fetchArticlesRequest.articleIds) == 0 or fetchArticlesRequest.articleUrls == None or len(fetchArticlesRequest.articleUrls) == 0:
     return fetchAllArticles()
 
-  return fetchArticlesById(fetchArticlesRequest.articleIds)
+  if fetchArticlesRequest.articleIds != None:
+    return fetchArticlesById(fetchArticlesRequest.articleIds)
+
+  return fetchArticlesByUrl(fetchArticlesRequest.articleUrls)
 
 
 def populate_article(populateArticleRequest):
@@ -82,7 +87,7 @@ def populate_article(populateArticleRequest):
   if saveArticleResponse.error != None:
     return PopulateArticleResponse(url=url, id=None, error=str(ValueError("Failed to save article to database")))
 
-  # If the article is already in the database, its already added to the topic model and thus should not be readded
+  # If the article is already in the database, its already added to the topic model and thus should not be re-added
   if saveArticleResponse.created:
     # Add document to topic model with text and doc id
     beforeAddDocument = datetime.now()
@@ -170,6 +175,15 @@ def populate_article(populateArticleRequest):
     timeAfterGetFact = datetime.now()
     logger.info("Time to get fact %s", timeAfterGetFact-timeBeforeGetFact)
 
+  # Hydrate the article date
+  if article.publish_date == "" or article.publish_date is None:
+    logger.info("Article doesn't have date info using current date %s", datetime.date())
+    article.publish_date = datetime.now()
+
+  # Hydrate article author
+  if article.authors == []:
+    article.authors = [topicFeedHandler.parseSource(url)]
+
   # Update the db with additional data
   updatedArticle = Article(
     id=saveArticleResponse.id,
@@ -203,18 +217,22 @@ def process_rss_feed():
   """
     Will return a list of article urls
   """
-  urlList = []
+  urlMap = []
 
   for entry in rss_feeds:
-    feed = feedparser.parse(entry)
+
+    url = entry["url"]
+    source = entry["source"]
+    category = entry["category"]
+    feed = feedparser.parse(url)
     for article in feed.entries:
       try:
-        urlList.append(article.links[0].href)
+        urlMap.append({"url":article.links[0].href, "source":source, "category":category})
       except Exception as e:
-        logger.error("Failed to parse url", extra={"error":e})
+        logger.error("Failed to parse url %s", str(e))
         continue
 
-  return urlList
+  return urlMap
 
 
 def hydrate_articles_batch(urls):
@@ -241,10 +259,20 @@ def hydrate_article_controller(url):
 
   logger.info(url)
   article = ArticleAPI(url, config=config)
-  article.download()
 
   try:
+    article.download()
     article.parse()
+    soup = BeautifulSoup(article.html, 'html.parser')
+    dictionary = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
+    date_published = [value for (key, value) in dictionary.items() if key == 'datePublished']
+    article_author = [value for (key, value) in dictionary.items() if key == 'author']
+    print(article_author)
+
+    # another method to extract the title
+    article_title = [value for (key, value) in dictionary.items() if key == 'headline']
+    print(article_title)
+
 
   except Exception as e:
     logger.error("Failed to populate article", extra={"url":url, "error": e})

@@ -118,9 +118,9 @@ class TopicPage:
   MDSSummary: str
   Facts: List[Fact]
   Opinions: List[Opinion]
-  Timeline: List[TimelineSegment]
   TopArticleID: int
   TopicID: int
+  IsTimeline: bool
 
 @dataclass_json
 @dataclass
@@ -369,6 +369,8 @@ class HelloWorldResponse:
 @dataclass
 class PopulateArticleRequest:
   url: Optional[str]
+  source: Optional[str] = ""
+  category: Optional[str] = ""
 
 @dataclass_json
 @dataclass
