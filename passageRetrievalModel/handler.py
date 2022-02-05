@@ -146,6 +146,7 @@ def get_top_facts_batch(getTopFactsBatchRequest):
     error= None,
   )
 
+
 def get_top_passage(getTopPassageRequest):
   """
     Get the top passage from the article and return it

@@ -49,3 +49,12 @@ class ArticleRecViewTest(TestCase):
     self.assertEqual(response.status_code, 200)
 
 
+  def test_article_backfill_passage(self):
+    response = self.client.post('/articleBackfill/', data={"force_update": False, "fields": ["top_passage"]}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+
+
+  def test_article_backfill_fact(self):
+    response = self.client.post('/articleBackfill/', data={"force_update": False, "fields": ["top_fact"]}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+
