@@ -661,6 +661,15 @@ class GetMDSSummaryResponse:
 #
 ###
 
+@dataclass
+class HydrateHomePageRequest:
+  userId: int
+
+@dataclass_json
+@dataclass
+class HydrateHomePageResponse:
+  topicPages: List[TopicPage]
+  error: Exception
 
 
 ###

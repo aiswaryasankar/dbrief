@@ -8,6 +8,7 @@ from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
 import idl
+import asyncio
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ def getTopicPage(getTopicPageRequest):
 
     Determine whether or not to display a timeline or the opinion format.
   """
-
+  startTime = datetime.now()
   if getTopicPageRequest.url != "":
     # Try to fetch the article if already in db
     articleId = -1
@@ -57,24 +58,33 @@ def getTopicPage(getTopicPageRequest):
           topic_page=None,
           error=str(hydrateArticleResponse.error),
         )
-
-      print("Populating the article")
-      # Populate the article
-      populateArticleRes = articleRecHandler.populate_article_by_url(
-        PopulateArticleRequest(
-          url = getTopicPageRequest.url,
-        )
-      )
-      if populateArticleRes.error != None:
-        logger.warn("Failed to populate article in the db")
-        return GetTopicPageResponse(
-          topic_page=None,
-          error=str(populateArticleRes.error),
-        )
       else:
         article = hydrateArticleResponse.article
-        articleId = populateArticleRes.id
+        articleId = -1
         text = hydrateArticleResponse.article.text
+        getTopicPageRequest.text = hydrateArticleResponse.article.text
+
+      # TODO: Figure out how to make this async
+      # Populate the article
+      # populateArticleTask = asyncio.create_task(
+      #   articleRecHandler.populate_article_by_url(
+      #     PopulateArticleRequest(
+      #       url = getTopicPageRequest.url,
+      #     )
+      #   )
+      # await populateArticleTask
+        # populateArticleRes =
+        # if populateArticleRes.error != None:
+        #   logger.warn("Failed to populate article in the db")
+        #   return GetTopicPageResponse(
+        #     topic_page=None,
+        #     error=str(populateArticleRes.error),
+        #   )
+        # else:
+        #   article = hydrateArticleResponse.article
+        #   articleId = populateArticleRes.id
+        #   text = hydrateArticleResponse.article.text
+        # )
 
     else:
       article = fetchArticlesResponse.articleList[0]
@@ -297,6 +307,8 @@ def getTopicPage(getTopicPageRequest):
   )
   logger.info("TOPIC PAGE")
   logger.info(topic_page)
+  endTime = datetime.now()
+  logger.info("Time to populate topic page %s", endTime - startTime)
 
   return GetTopicPageResponse(
     topic_page=topic_page,

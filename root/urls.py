@@ -68,7 +68,7 @@ urlpatterns = [
     path('getFacts/', passageRetrievalModelView.get_facts_view),
 
     # HomeFeed endpoints
-
+    path('hydrateHomePage/', homeFeedView.hydrate_home_page_view),
 
     # UserPreferences endpoints
     path('createUser/', userPreferencesView.create_user_view),

@@ -223,11 +223,11 @@ def process_rss_feed():
 
     url = entry["url"]
     source = entry["source"]
-    category = entry["category"]
+
     feed = feedparser.parse(url)
     for article in feed.entries:
       try:
-        urlMap.append({"url":article.links[0].href, "source":source, "category":category})
+        urlMap.append({"url":article.links[0].href})
       except Exception as e:
         logger.error("Failed to parse url %s", str(e))
         continue

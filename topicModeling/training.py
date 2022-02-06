@@ -20,7 +20,7 @@ import logging
 from logtail import LogtailHandler
 
 
-embeddingModelPath = "./modelWeights/tfhub_cache"
+embeddingModelPath = "./modelWeights/tfhub_cache/063d866c06683311b44b4992fd46003be952409c"
 
 try:
   import hnswlib
@@ -32,7 +32,7 @@ try:
     import tensorflow as tf
     import tensorflow_hub as hub
     import tensorflow_text
-    # os.environ["TFHUB_CACHE_DIR"] = "./modelWeights/tfhub_cache"
+    os.environ["TFHUB_CACHE_DIR"] = "./modelWeights/tfhub_cache"
 
     _HAVE_TENSORFLOW = True
 except ImportError:
@@ -208,7 +208,7 @@ class Top2Vec:
                                        "universal-sentence-encoder",
                                        "distiluse-base-multilingual-cased"]
 
-        self.embedding_model_path = embedding_model_path
+        self.embedding_model_path = embeddingModelPath
 
         if embedding_model == 'doc2vec':
 
@@ -821,7 +821,8 @@ class Top2Vec:
                     module = self.embedding_model_path
 
                 try:
-                    self.embed = hub.load(repo_or_dir=embeddingModelPath, source="local")
+                    self.embed = hub.load(embeddingModelPath)
+                    logger.info("Successfully loaded embedding model from cache")
                 except:
                     logger.warn("Unable to load embedding model from cache")
                     self.embed = hub.load(module)

@@ -59,12 +59,10 @@ def populate_articles_batch():
   for urlEntry in urlMap:
 
     url = urlEntry["url"]
-    source= urlEntry["source"]
     timeBeforePopulateArticle = datetime.now()
     populateArticleResponse = populate_article(
       PopulateArticleRequest(
         url=url,
-        source=source,
       )
     )
     timeAfterPopulateArticle = datetime.now()

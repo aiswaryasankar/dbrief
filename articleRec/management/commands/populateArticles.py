@@ -15,7 +15,6 @@ class Command(BaseCommand):
   def handle(self, *args, **options):
 
     logger.info("Started cron job")
-    self.stdout.write("Started the cron job", ending='')
     res = populate_articles_batch()
     logger.info(res.num_articles_populated)
 

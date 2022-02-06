@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
+embeddingModelPath = "./modelWeights/tfhub_cache"
 if settings.TESTING:
   topicModelFile = "./modelWeights/topicModelWeights_test"
 else:
@@ -51,7 +52,7 @@ def retrain_topic_model(request):
   # train_bert_topic(data)
 
   startTime = datetime.datetime.now()
-  model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
+  model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids, embedding_model_path=embeddingModelPath)
   endTime = datetime.datetime.now()
 
   docIndex = model.index_document_vectors()
