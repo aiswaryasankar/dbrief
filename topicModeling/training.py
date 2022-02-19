@@ -57,6 +57,8 @@ def default_tokenizer(doc):
     return simple_preprocess(strip_tags(doc), deacc=True)
 
 
+embedding_model = None
+
 class Top2Vec:
     """
     Top2Vec
@@ -301,6 +303,10 @@ class Top2Vec:
             self.vocab = [words[ind] for ind in vocab_inds]
 
             self._check_model_status()
+            if embedding_model == None:
+                print("global embedding_model is still none")
+            if embedding_model != None:
+                print("after training embedding_model is not None")
 
             logger.info('Creating joint document/word embedding')
 
@@ -395,9 +401,11 @@ class Top2Vec:
 
         document_index_temp = None
         word_index_temp = None
+        embed_temp = None
 
         # do not save sentence encoders and sentence transformers
         if self.embedding_model != "doc2vec":
+            embed_temp = self.embed
             self.embed = None
 
         # serialize document index so that it can be saved
@@ -420,8 +428,12 @@ class Top2Vec:
 
         dump(self, file)
 
+        self.embed = embed_temp
+        if self.embed == None:
+            print("Self.embed is still none after saving ")
         self.document_index = document_index_temp
         self.word_index = word_index_temp
+        return embed_temp
 
     #@classmethod
     def load(file):
@@ -478,6 +490,10 @@ class Top2Vec:
             temp.close()
             top2vec_model.serialized_word_index = None
 
+        global embedding_model
+        if embedding_model == None:
+            print("embedding model None after load")
+
         return top2vec_model
 
     @staticmethod
@@ -514,12 +530,17 @@ class Top2Vec:
 
         return document_vectors
 
-    def _embed_query(self, query):
+    def _embed_query(self, query, embedding_model):
         self._check_import_status()
         # Only checked during model set up
         # self._check_model_status()
+        # global embedding_model
+        # if self.embed == None:
+        #     print("self.embed is None")
+        # if embedding_model == None:
+        #     print("global embedding model is None")
 
-        return self._l2_normalize(np.array(self.embed([query])[0]))
+        return self._l2_normalize(np.array(embedding_model([query])[0]))
 
     def _set_document_vectors(self, document_vectors):
         if self.embedding_model == 'doc2vec':
@@ -838,6 +859,7 @@ class Top2Vec:
                 model = SentenceTransformer(module)
                 self.embed = model.encode
 
+        embedding_model = self.embed
         # if self.verbose is False:
         #     logger.setLevel(logging.WARNING)
 
@@ -1650,7 +1672,7 @@ class Top2Vec:
 
         return self.generate_topic_parent_topic_pairs(), None
 
-    def query_documents(self, query, num_docs, return_documents=True, use_index=False, ef=None, tokenizer=None):
+    def query_documents(self, query, num_docs, return_documents=True, use_index=False, ef=None, tokenizer=None, embedding_model=None):
         """
         Semantic search of documents using a text query.
         The most semantically similar documents to the query will be returned.
@@ -1690,7 +1712,6 @@ class Top2Vec:
             index of the document in the model will be returned.
         error: Exception
         """
-
         logger.info("Calling query documents")
         err = self._validate_query(query)
         if err != None:
@@ -1701,7 +1722,7 @@ class Top2Vec:
             return [], [], [], err
 
         if self.embedding_model != "doc2vec":
-            query_vec = self._embed_query(query)
+            query_vec = self._embed_query(query, embedding_model)
 
         else:
 
@@ -1719,7 +1740,7 @@ class Top2Vec:
         return self.search_documents_by_vector(query_vec, num_docs, return_documents=return_documents,
                                                use_index=use_index, ef=ef)
 
-    def query_topics(self, query, num_topics, reduced=False, tokenizer=None):
+    def query_topics(self, query, num_topics, reduced=False, tokenizer=None, embedding_model=None):
         """
         Semantic search of topics using text query.
         These are the topics closest to the vector. Topics are ordered by
@@ -1768,7 +1789,7 @@ class Top2Vec:
             return [], [], [], [], err
 
         if self.embedding_model != "doc2vec":
-            query_vec = self._embed_query(query)
+            query_vec = self._embed_query(query, embedding_model)
 
         else:
 

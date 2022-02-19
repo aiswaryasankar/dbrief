@@ -29,6 +29,8 @@ else:
   topicModelFile = "./modelWeights/topicModelWeights"
 
 
+embedding_model = None
+
 def retrain_topic_model(request):
   """
     This endpoint will first fetch all the documents from the database and keep it in memory
@@ -85,7 +87,8 @@ def retrain_topic_model(request):
   logger.info(topics)
 
   # Save and reload the model for validation purposes
-  savedModel = Top2Vec.save(self = model, file=topicModelFile)
+  global embedding_model
+  embedding_model = Top2Vec.save(self = model, file=topicModelFile)
   loadedModel = Top2Vec.load(topicModelFile)
 
   logger.info("Time to train the topic2Vec model", str(endTime - startTime))
@@ -162,6 +165,10 @@ def query_documents(queryDocumentsRequest):
 
     Gets the similar documents to a given document
   """
+  global embedding_model
+  if embedding_model == None:
+    print("Embedding model is none in query documents")
+
   top2vecModel = Top2Vec.load(topicModelFile)
 
   _, doc_scores, doc_ids, error = Top2Vec.query_documents(
@@ -171,6 +178,7 @@ def query_documents(queryDocumentsRequest):
     return_documents=queryDocumentsRequest.return_docs,
     use_index=queryDocumentsRequest.use_index,
     ef=queryDocumentsRequest.ef,
+    embedding_model = embedding_model,
   )
   logger.info("Documents returned")
   logger.info(doc_ids)
