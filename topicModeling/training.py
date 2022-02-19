@@ -208,7 +208,7 @@ class Top2Vec:
                                        "universal-sentence-encoder",
                                        "distiluse-base-multilingual-cased"]
 
-        self.embedding_model_path = embeddingModelPath
+        self.embedding_model_path = embedding_model_path
 
         if embedding_model == 'doc2vec':
 
@@ -493,7 +493,7 @@ class Top2Vec:
         self._check_import_status()
 
         # Only handled during model set up
-        self._check_model_status()
+        # self._check_model_status()
 
         # embed documents
         batch_size = 500
@@ -517,7 +517,7 @@ class Top2Vec:
     def _embed_query(self, query):
         self._check_import_status()
         # Only checked during model set up
-        self._check_model_status()
+        # self._check_model_status()
 
         return self._l2_normalize(np.array(self.embed([query])[0]))
 
@@ -823,8 +823,9 @@ class Top2Vec:
                 try:
                     self.embed = hub.load(embeddingModelPath)
                     logger.info("Successfully loaded embedding model from cache")
-                except:
+                except OSError as err:
                     logger.warn("Unable to load embedding model from cache")
+                    logger.warn(err)
                     self.embed = hub.load(module)
 
             else:

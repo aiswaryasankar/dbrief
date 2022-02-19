@@ -52,7 +52,7 @@ def retrain_topic_model(request):
   # train_bert_topic(data)
 
   startTime = datetime.datetime.now()
-  model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids, embedding_model_path=embeddingModelPath)
+  model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
   endTime = datetime.datetime.now()
 
   docIndex = model.index_document_vectors()
@@ -88,7 +88,7 @@ def retrain_topic_model(request):
   savedModel = Top2Vec.save(self = model, file=topicModelFile)
   loadedModel = Top2Vec.load(topicModelFile)
 
-  logger.info("Time to train the topic2Vec model", endTime - startTime)
+  logger.info("Time to train the topic2Vec model", str(endTime - startTime))
   return TrainAndIndexTopicModelResponse(
     error=None,
   )
