@@ -6,6 +6,7 @@ import logging
 from idl import *
 from .training import *
 from logtail import LogtailHandler
+import pandas as pd
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -14,8 +15,7 @@ logger.setLevel(logging.INFO)
 
 topicModelFile = "./modelWeights/polarityModelWeights.bin"
 
-
-def get_document_polarity(GetDocumentPolarityRequest):
+def get_document_polarity(getDocumentPolarityRequest):
   """
     Given the article text and source, it will return the polarity_score and error.
 
@@ -32,7 +32,7 @@ def get_document_polarity(GetDocumentPolarityRequest):
   xlNetPolarityModel = XLNetPredict()
 
   # Pass in the source and query
-  polarity_score = xlNetPolarityModel.predict(GetDocumentPolarityRequest.query)
+  polarity_score = xlNetPolarityModel.predict(getDocumentPolarityRequest.query)
   logger.info("Polarity score")
   logger.info(polarity_score)
 

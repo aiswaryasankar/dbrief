@@ -8,7 +8,7 @@ from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
 import idl
-import asyncio
+import threading
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -65,26 +65,13 @@ def getTopicPage(getTopicPageRequest):
         getTopicPageRequest.text = hydrateArticleResponse.article.text
 
       # TODO: Figure out how to make this async
-      # Populate the article
-      # populateArticleTask = asyncio.create_task(
-      #   articleRecHandler.populate_article_by_url(
-      #     PopulateArticleRequest(
-      #       url = getTopicPageRequest.url,
-      #     )
-      #   )
-      # await populateArticleTask
-        # populateArticleRes =
-        # if populateArticleRes.error != None:
-        #   logger.warn("Failed to populate article in the db")
-        #   return GetTopicPageResponse(
-        #     topic_page=None,
-        #     error=str(populateArticleRes.error),
-        #   )
-        # else:
-        #   article = hydrateArticleResponse.article
-        #   articleId = populateArticleRes.id
-        #   text = hydrateArticleResponse.article.text
-        # )
+      x = threading.Thread(target=articleRecHandler.populate_article_by_url, args=(
+            PopulateArticleRequest(
+              url = getTopicPageRequest.url,
+            ),
+          )
+        )
+      x.start()
 
     else:
       article = fetchArticlesResponse.articleList[0]

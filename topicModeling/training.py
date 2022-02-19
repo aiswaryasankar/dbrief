@@ -303,10 +303,6 @@ class Top2Vec:
             self.vocab = [words[ind] for ind in vocab_inds]
 
             self._check_model_status()
-            if embedding_model == None:
-                print("global embedding_model is still none")
-            if embedding_model != None:
-                print("after training embedding_model is not None")
 
             logger.info('Creating joint document/word embedding')
 
@@ -316,10 +312,10 @@ class Top2Vec:
 
             # embed documents
             if use_embedding_model_tokenizer:
-                self.document_vectors = self._embed_documents(documents)
+                self.document_vectors = self._embed_documents(documents, self.embed)
             else:
                 train_corpus = [' '.join(tokens) for tokens in tokenized_corpus]
-                self.document_vectors = self._embed_documents(train_corpus)
+                self.document_vectors = self._embed_documents(train_corpus, self.embed)
 
         else:
             return ValueError(f"{embedding_model} is an invalid embedding model.")
@@ -429,8 +425,6 @@ class Top2Vec:
         dump(self, file)
 
         self.embed = embed_temp
-        if self.embed == None:
-            print("Self.embed is still none after saving ")
         self.document_index = document_index_temp
         self.word_index = word_index_temp
         return embed_temp
@@ -490,10 +484,6 @@ class Top2Vec:
             temp.close()
             top2vec_model.serialized_word_index = None
 
-        global embedding_model
-        if embedding_model == None:
-            print("embedding model None after load")
-
         return top2vec_model
 
     @staticmethod
@@ -504,7 +494,7 @@ class Top2Vec:
         else:
             return normalize(vectors.reshape(1, -1))[0]
 
-    def _embed_documents(self, train_corpus):
+    def _embed_documents(self, train_corpus, embedding_model):
 
         self._check_import_status()
 
@@ -520,11 +510,11 @@ class Top2Vec:
         extra = len(train_corpus) % batch_size
 
         for ind in range(0, batches):
-            document_vectors.append(self.embed(train_corpus[current:current + batch_size]))
+            document_vectors.append(embedding_model(train_corpus[current:current + batch_size]))
             current += batch_size
 
         if extra > 0:
-            document_vectors.append(self.embed(train_corpus[current:current + extra]))
+            document_vectors.append(embedding_model(train_corpus[current:current + extra]))
 
         document_vectors = self._l2_normalize(np.array(np.vstack(document_vectors)))
 
@@ -533,12 +523,9 @@ class Top2Vec:
     def _embed_query(self, query, embedding_model):
         self._check_import_status()
         # Only checked during model set up
-        # self._check_model_status()
-        # global embedding_model
-        # if self.embed == None:
-        #     print("self.embed is None")
-        # if embedding_model == None:
-        #     print("global embedding model is None")
+        if embedding_model == None:
+            logger.info("Embedding model is none patch fixing, will increase latency")
+            self._check_model_status()
 
         return self._l2_normalize(np.array(embedding_model([query])[0]))
 
@@ -1209,7 +1196,7 @@ class Top2Vec:
             error=None,
         )
 
-    def add_documents(self, documents, doc_ids=None, tokenizer=None, use_embedding_model_tokenizer=False):
+    def add_documents(self, documents, doc_ids=None, tokenizer=None, use_embedding_model_tokenizer=False, embedding_model=None):
         """
         Update the model with new documents.
         The documents will be added to the current model without changing
@@ -1285,7 +1272,7 @@ class Top2Vec:
             else:
                 docs_processed = [tokenizer(doc) for doc in documents]
                 docs_training = [' '.join(doc) for doc in docs_processed]
-            document_vectors = self._embed_documents(docs_training)
+            document_vectors = self._embed_documents(docs_training, embedding_model)
             self._set_document_vectors(np.vstack([self._get_document_vectors(), document_vectors]))
 
         # update index

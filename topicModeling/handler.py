@@ -139,8 +139,13 @@ def add_document(addDocumentRequest):
 
     Add a one off document to the topic model.  This endpoint takes in the article text, doc_ids if provided and adds the document to the topic model so that you can fetch the topic for the article in the future.
   """
+  global embedding_model
+  if embedding_model == None:
+    print("Embedding model is none in query documents")
+    return AddDocumentResponse(error="Embedding model is none")
+
   top2vecModel = Top2Vec.load(topicModelFile)
-  err = top2vecModel.add_documents(addDocumentRequest.documents, addDocumentRequest.doc_ids)
+  err = top2vecModel.add_documents(addDocumentRequest.documents, addDocumentRequest.doc_ids, embedding_model=embedding_model)
   if err != None:
     return AddDocumentResponse(error=err)
 
@@ -168,6 +173,11 @@ def query_documents(queryDocumentsRequest):
   global embedding_model
   if embedding_model == None:
     print("Embedding model is none in query documents")
+    return QueryDocumentsResponse(
+      doc_scores=[],
+      doc_ids=[],
+      error=ValueError("Embedding model is none"),
+    )
 
   top2vecModel = Top2Vec.load(topicModelFile)
 
