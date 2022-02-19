@@ -58,3 +58,8 @@ class ArticleRecViewTest(TestCase):
     response = self.client.post('/articleBackfill/', data={"force_update": False, "fields": ["top_fact"]}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
 
+
+  def test_article_backfill_polarity(self):
+    response = self.client.post('/articleBackfill/', data={"force_update": False, "fields": ["polarization_score"]}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+

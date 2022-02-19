@@ -83,7 +83,7 @@ def populate_article(populateArticleRequest):
     )
   )
 
-  # If article is already in the db, don't populate remaining fields
+  # Failed to save article to database
   if saveArticleResponse.error != None:
     return PopulateArticleResponse(url=url, id=None, error=str(ValueError("Failed to save article to database")))
 
@@ -357,16 +357,23 @@ def article_backfill_controller(articleBackfillRequest):
       res = ArticleModel.objects.bulk_update(updatedArticles, ["topic", "parent_topic"])
       totalUpdates += len(updatedArticles)
 
-  # TODO: Implement batch polarity, topic and fact backfill
-  # if "polarity" in articleBackfillRequest.fields:
-  #   getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
-  #     GetDocumentPolarityBatchRequest(
-  #       queryList=[article.text for article in articlesToUpdate],
-  #       source=None,
-  #     )
-  #   )
-  #   if getDocumentPolarityBatchResponse.error != None:
-  #     logger.warn("Failed to get polarity for batch request")
+
+  if "polarization_score" in articleBackfillRequest.fields:
+    getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
+      GetDocumentPolarityBatchRequest(
+        articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate],
+        source=None,
+      )
+    )
+    if getDocumentPolarityBatchResponse.error != None:
+      logger.warn("Failed to get polarity for batch request")
+    else:
+      updatedArticles = [ArticleModel(articleId=a.article_id, polarization_score=a.polarity_score) for a in getDocumentPolarityBatchResponse.articlePolarities]
+      logger.info("Number of articles to update polarity %s", len(updatedArticles))
+      totalUpdates += len(updatedArticles)
+
+      # TODO: Move this into a repository function
+      res = ArticleModel.objects.bulk_update(updatedArticles, ["polarization_score"])
 
   if "top_passage" in articleBackfillRequest.fields:
     getTopPassageBatchResponse = passageRetrievalHandler.get_top_passage_batch(
@@ -376,10 +383,6 @@ def article_backfill_controller(articleBackfillRequest):
     )
     if getTopPassageBatchResponse.error != None:
       logger.warn("Failed to get passage for batch request %s", str(getDocumentTopicBatchResponse.error))
-      return ArticleBackfillResponse(
-        num_updates=0,
-        error=getTopPassageBatchResponse.error,
-      )
     else:
       updatedArticles = [ArticleModel(articleId=a.article_id, top_passage=a.passage) for a in getTopPassageBatchResponse.articlePassages]
       logger.info("Number of articles to update passage %s", len(updatedArticles))

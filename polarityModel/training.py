@@ -73,6 +73,7 @@ class XLNetPredict(torch.nn.Module):
     super(XLNetPredict, self).__init__()
     self.tokenizer = XLNetTokenizer.from_pretrained('xlnet-base-cased', do_lower_case=True)
     self.model = XLNetForPolarizationClassification(2)
+    self.loaded_model = self.load_model(polarizationWeightsFile)
 
   def load_model(self, save_path):
     """
@@ -101,9 +102,7 @@ class XLNetPredict(torch.nn.Module):
       return_tensors='pt',
     )
 
-    model = self.load_model(polarizationWeightsFile)
-
-    outputs = model(input_ids=torch.tensor(encoded_text["input_ids"]), attention_mask=torch.tensor(encoded_text["attention_mask"]))
+    outputs = self.loaded_model(input_ids=torch.tensor(encoded_text["input_ids"]), attention_mask=torch.tensor(encoded_text["attention_mask"]))
     logits = outputs.sigmoid().detach().cpu().numpy()
     logger.info(logits)
 
@@ -143,13 +142,10 @@ class XLNetPredict(torch.nn.Module):
     input_ids = input_ids.reshape(1,512)
     attention_mask = attention_mask
 
-    model = self.load_model(polarizationWeightsFile)
-
-    outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+    outputs = self.loaded_model(input_ids=input_ids, attention_mask=attention_mask)
     logits = outputs.sigmoid().detach().cpu().numpy()
     logger.info(logits)
     logger.info(round(logits[0][0]))
 
     return logits[0][0]
-
 

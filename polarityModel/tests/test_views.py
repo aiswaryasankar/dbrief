@@ -16,6 +16,11 @@ class PolarityModelViewTest(TestCase):
     self.assertEqual(response.status_code, 200)
 
 
+    response = self.client.post('/getDocumentPolarity/', data={"query":"Democrats live in San Francisco and throw liberal parties."}, content_type="application/json")
+    self.assertIsNotNone(response.content)
+    self.assertEqual(response.status_code, 200)
+
+
   def test_get_document_polarity_batch(self):
 
     response = self.client.post('/getDocumentPolarityBatch/', data={"queryList": ["Democrats live in San Francisco and throw liberal parties.", "Republicans are stupid and wear MAGA hats all day long."]}, content_type="application/json")

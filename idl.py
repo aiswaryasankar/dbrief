@@ -449,7 +449,7 @@ class QueryArticleResponse:
 @dataclass
 class GetDocumentPolarityRequest:
   query: Optional[str]
-  source: Optional[str]
+  source: Optional[str] = ""
 
 @dataclass_json
 @dataclass
@@ -458,14 +458,19 @@ class GetDocumentPolarityResponse:
   error: Exception
 
 @dataclass
+class ArticlePolarity:
+  article_id: int
+  polarity_score: int
+
+@dataclass
 class GetDocumentPolarityBatchRequest:
-  queryList: Optional[List[str]]
-  source: Optional[str]
+  articleList: List[Article] = field(default_factory=list)
+  source: Optional[str] = field(default_factory=str)
 
 @dataclass_json
 @dataclass
 class GetDocumentPolarityBatchResponse:
-  polarity_score: Optional[List[float]]
+  articlePolarities: Optional[List[ArticlePolarity]]
   error: Exception
 
 ###

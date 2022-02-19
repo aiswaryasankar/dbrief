@@ -20,7 +20,7 @@ def get_document_polarity_view(request):
 
   getDocumentPolarityRequest = req.validated_data
   res = get_document_polarity(getDocumentPolarityRequest)
-
+  res.polarity_score = float(res.polarity_score)
   return Response(res.to_json())
 
 

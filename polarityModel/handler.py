@@ -54,16 +54,25 @@ def get_document_polarity_batch(getDocumentPolarityBatchRequest):
       polarity_score: Optional[List[float]]
       error: Exception
   """
-    # Initialize the polarity model
+  # Initialize the polarity model
   xlNetPolarityModel = XLNetPredict()
 
   # Pass in the source and query
-  polarity_scores = xlNetPolarityModel.batch_predict(getDocumentPolarityBatchRequest.queryList)
-  logger.info("Polarity scores")
-  logger.info(polarity_scores)
+  articlePolarityList = []
+  for article in getDocumentPolarityBatchRequest.articleList:
+    query = article.text
+    polarity_score = xlNetPolarityModel.predict(query)
+    print("Polarity score for article %s", str(article.id))
+    print(polarity_score)
+
+    articlePolarity = ArticlePolarity(
+      article_id = article.id,
+      polarity_score = polarity_score,
+    )
+    articlePolarityList.append(articlePolarity)
 
   return GetDocumentPolarityBatchResponse(
-    polarity_score = polarity_scores,
+    articlePolarities = articlePolarityList,
     error = None,
   )
 

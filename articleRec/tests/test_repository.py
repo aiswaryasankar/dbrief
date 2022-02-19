@@ -112,10 +112,10 @@ class ArticleRecRepoTest(TestCase):
       date = datetime.now(),
       topic = "",
       parentTopic = "",
-      topPassage = "testPassage",
-      topFact = "testFact",
+      topPassage = "",
+      topFact = "",
       imageURL = "testURL",
-      polarizationScore = 0.0,
+      polarizationScore = 0,
     )
     req = SaveArticleRequest(
       article = a1,
@@ -134,7 +134,7 @@ class ArticleRecRepoTest(TestCase):
       topPassage = "testPassage",
       topFact = "testFact",
       imageURL = "testURL",
-      polarizationScore = 0.0,
+      polarizationScore = 0.5,
     )
     req = SaveArticleRequest(
       article = a2,
@@ -150,4 +150,34 @@ class ArticleRecRepoTest(TestCase):
     self.assertIsNone(queryArticlesRes.error)
     self.assertEqual(len(queryArticlesRes.articles), 1)
 
+    queryArticlesRes = queryArticles(
+      queryArticleRequest=QueryArticleRequest(
+        field="parent_topic"
+      )
+    )
+    self.assertIsNone(queryArticlesRes.error)
+    self.assertEqual(len(queryArticlesRes.articles), 1)
 
+    queryArticlesRes = queryArticles(
+      queryArticleRequest=QueryArticleRequest(
+        field="top_passage"
+      )
+    )
+    self.assertIsNone(queryArticlesRes.error)
+    self.assertEqual(len(queryArticlesRes.articles), 1)
+
+    queryArticlesRes = queryArticles(
+      queryArticleRequest=QueryArticleRequest(
+        field="top_fact"
+      )
+    )
+    self.assertIsNone(queryArticlesRes.error)
+    self.assertEqual(len(queryArticlesRes.articles), 1)
+
+    queryArticlesRes = queryArticles(
+      queryArticleRequest=QueryArticleRequest(
+        field="polarization_score"
+      )
+    )
+    self.assertIsNone(queryArticlesRes.error)
+    self.assertEqual(len(queryArticlesRes.articles), 1)

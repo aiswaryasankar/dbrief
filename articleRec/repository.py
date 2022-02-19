@@ -301,6 +301,8 @@ def queryArticles(queryArticleRequest):
     articles = ArticleModel.objects.filter(top_fact="")
   elif field == "top_passage":
     articles = ArticleModel.objects.filter(top_passage="")
+  elif field == "polarization_score":
+    articles = ArticleModel.objects.filter(polarization_score=0)
 
   articleModels = []
   for article in articles:
@@ -320,6 +322,5 @@ def queryArticles(queryArticleRequest):
     articles=articleModels,
     error=None,
   )
-
 
 
