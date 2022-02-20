@@ -14,6 +14,7 @@ from .repository import *
 # from bertopic import BERTopic
 # from sklearn.feature_extraction.text import CountVectorizer
 from django.conf import settings
+import tensorflow_hub as hub
 
 
 
@@ -141,8 +142,8 @@ def add_document(addDocumentRequest):
   """
   global embedding_model
   if embedding_model == None:
-    print("Embedding model is none in query documents")
-    return AddDocumentResponse(error="Embedding model is none")
+    print("Embedding model is none in add document")
+    embedding_model = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
 
   top2vecModel = Top2Vec.load(topicModelFile)
   err = top2vecModel.add_documents(addDocumentRequest.documents, addDocumentRequest.doc_ids, embedding_model=embedding_model)
@@ -173,11 +174,7 @@ def query_documents(queryDocumentsRequest):
   global embedding_model
   if embedding_model == None:
     print("Embedding model is none in query documents")
-    return QueryDocumentsResponse(
-      doc_scores=[],
-      doc_ids=[],
-      error=ValueError("Embedding model is none"),
-    )
+    embedding_model = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
 
   top2vecModel = Top2Vec.load(topicModelFile)
 
