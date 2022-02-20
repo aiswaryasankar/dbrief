@@ -1,0 +1,5 @@
+version: 1
+cron:
+ — name: "populateArticles"
+   url: "/populateArticles"
+   schedule: @hourly
