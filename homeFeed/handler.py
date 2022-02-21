@@ -32,16 +32,16 @@ def hydrateHomePage(hydrateHomePageRequest):
       )
     )
     if getTopicsYouFollowResponse.error != None:
-      print("error in getTopicsYouFollow")
+      logger.warn("error in getTopicsYouFollow")
       return HydrateHomePageResponse(
         topicPages= [],
         error=str(getTopicsYouFollowResponse.error)
       )
     topicList = [t.TopicName for t in getTopicsYouFollowResponse.topics]
-    print(topicList)
+    logger.info(topicList)
 
   # If the user isn't following any topics get the topic topics currently
-  elif len(topicList) < 5:
+  if len(topicList) < 5:
     getTopicsResponse = topicModelingHandler.get_topics(
       GetTopicsRequest(
         num_topics=5,
@@ -53,7 +53,7 @@ def hydrateHomePage(hydrateHomePageRequest):
         topicPages =[],
         error=str(getTopicsResponse.error)
       )
-    topicList.append(getTopicsResponse.topic_words)
+    topicList.extend(getTopicsResponse.topic_words)
 
   logger.info("The topic list is")
   logger.info(topicList)
