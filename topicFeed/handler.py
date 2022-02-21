@@ -37,6 +37,7 @@ def getTopicPage(getTopicPageRequest):
     Determine whether or not to display a timeline or the opinion format.
   """
   startTime = datetime.now()
+
   if getTopicPageRequest.url != "":
     # Try to fetch the article if already in db
     articleId = -1
@@ -45,32 +46,22 @@ def getTopicPage(getTopicPageRequest):
         articleUrls=[getTopicPageRequest.url]
       )
     )
-
     if fetchArticlesResponse.error != None or len(fetchArticlesResponse.articleList) == 0:
-      # Hydrate the article if not in db and rewrite
-      hydrateArticleResponse = articleRecHandler.hydrate_article(
-        HydrateArticleRequest(
-          url=getTopicPageRequest.url
-        )
-      )
-      if hydrateArticleResponse.error != None:
-        return GetTopicPageResponse(
-          topic_page=None,
-          error=str(hydrateArticleResponse.error),
-        )
-      else:
-        article = hydrateArticleResponse.article
-        articleId = -1
-        text = hydrateArticleResponse.article.text
-        getTopicPageRequest.text = hydrateArticleResponse.article.text
-
-      x = threading.Thread(target=articleRecHandler.populate_article_by_url, args=(
+      # Populate the article which will hydrate the critical fields and populate the remaining model based fields async
+      populateArticleRes = articleRecHandler.populate_article_by_url(
             PopulateArticleRequest(
               url = getTopicPageRequest.url,
-            ),
+            )
           )
+      if populateArticleRes.error != None:
+        return GetTopicPageResponse(
+          topic_page=None,
+          error=str(populateArticleRes.error)
         )
-      x.start()
+      else:
+        article = populateArticleRes.article
+        articleId = populateArticleRes.id
+        text = populateArticleRes.article.text
 
     else:
       article = fetchArticlesResponse.articleList[0]
@@ -234,45 +225,45 @@ def getTopicPage(getTopicPageRequest):
   facts = []
   passages = []
 
-  for article in fetchArticlesResponse.articleList:
-    if article.authors is not None and article.authors != "[]":
-      author = article.authors.split(",")[0].replace("[", "").replace('\'', "").replace("]", "")
+  for a in fetchArticlesResponse.articleList:
+    if a.authors is not None and a.authors != "[]":
+      author = a.authors.split(",")[0].replace("[", "").replace('\'', "").replace("]", "")
     else:
       author = parseSource(article.url)
 
-    if article.date == "":
-      article.date = datetime.now()
+    if a.date == "":
+      a.date = datetime.now()
 
-    source = parseSource(article.url)
-    logger.info("URL %s and source %s", article.url, source)
-    if article.topFact != None:
+    source = parseSource(a.url)
+    logger.info("URL %s and source %s", a.url, source)
+    if a.topFact != None:
       facts.append(
         Fact(
           Quote= Quote(
-            Text=article.topFact,
+            Text=a.topFact,
             SourceName=source,
             Author=author,
-            SourceURL=article.url,
-            ArticleID=article.id,
+            SourceURL=a.url,
+            ArticleID=a.id,
             Polarization=0,
-            Timestamp=article.date,
-            ImageURL=article.imageURL,
+            Timestamp=a.date,
+            ImageURL=a.imageURL,
           )
         )
       )
 
-    if article.topPassage != None:
+    if a.topPassage != None:
       passages.append(
         Opinion(
           Quote= Quote(
-            Text=article.topPassage,
+            Text=a.topPassage,
             SourceName=source,
             Author=author,
-            SourceURL=article.url,
-            ArticleID=article.id,
-            Polarization=article.polarizationScore,
-            Timestamp=article.date,
-            ImageURL=article.imageURL,
+            SourceURL=a.url,
+            ArticleID=a.id,
+            Polarization=a.polarizationScore,
+            Timestamp=a.date,
+            ImageURL=a.imageURL,
           )
         )
       )

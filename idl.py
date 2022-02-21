@@ -375,8 +375,9 @@ class PopulateArticleRequest:
 @dataclass_json
 @dataclass
 class PopulateArticleResponse:
-  url: Optional[str]
+  article: Optional[Article]
   id: Optional[int]
+  url: Optional[str]
   error: Exception
 
 @dataclass_json
@@ -417,7 +418,6 @@ class HydrateArticleRequest:
 @dataclass
 class HydrateArticleResponse:
   article: Optional[Article]
-  id: Optional[int]
   url: Optional[str]
   error: Exception
 

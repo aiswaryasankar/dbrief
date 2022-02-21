@@ -19,6 +19,7 @@ from passageRetrievalModel import handler as passageRetrievalHandler
 import multiprocessing as mp
 from datetime import datetime
 from newspaper.utils import BeautifulSoup
+import threading
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -87,20 +88,38 @@ def populate_article(populateArticleRequest):
   if saveArticleResponse.error != None:
     return PopulateArticleResponse(url=url, id=None, error=str(ValueError("Failed to save article to database")))
 
+  x = threading.Thread(target=hydrateModelOutputsForArticle, args=(
+        article, saveArticleResponse.id, url, saveArticleResponse.created
+      )
+    )
+  x.start()
+
+  return PopulateArticleResponse(
+    article=article,
+    url=url,
+    id=saveArticleResponse.id,
+    error=None,
+  )
+
+
+def hydrateModelOutputsForArticle(article, articleId, url, created):
+  """
+    HydrateModelOutputsForArticle will always be handled asynchronously since it is more time consuming and no live process should wait for it
+  """
   # If the article is already in the database, its already added to the topic model and thus should not be re-added
-  if saveArticleResponse.created:
+  if created:
     # Add document to topic model with text and doc id
     beforeAddDocument = datetime.now()
     addedToTopicModel = tpHandler.add_document(
       AddDocumentRequest(
         documents=[article.text],
-        doc_ids=[saveArticleResponse.id],
+        doc_ids=[articleId],
         tokenizer=None,
         use_embedding_model_tokenizer=None,
       )
     )
     if addedToTopicModel.error != None:
-      return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(addedToTopicModel.error))
+      return PopulateArticleResponse(url=url, id=articleId, error=str(addedToTopicModel.error))
 
     logger.info("Added document to the topic model")
     timeAfterAddDocument = datetime.now()
@@ -109,12 +128,12 @@ def populate_article(populateArticleRequest):
   # Get_document_topic batch will return both the topic and the subtopic together
   getDocumentTopicBatchResponse = tpHandler.get_document_topic_batch(
     GetDocumentTopicBatchRequest(
-      doc_ids=[saveArticleResponse.id],
+      doc_ids=[articleId],
       num_topics=1,
     )
   )
   if getDocumentTopicBatchResponse.error != None:
-    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(getDocumentTopicBatchResponse.error))
+    return PopulateArticleResponse(url=url, id=articleId, error=str(getDocumentTopicBatchResponse.error))
 
   topic = getDocumentTopicBatchResponse.documentTopicInfos[0].topic
   parentTopic = getDocumentTopicBatchResponse.documentTopicInfos[0].parentTopic
@@ -186,7 +205,7 @@ def populate_article(populateArticleRequest):
 
   # Update the db with additional data
   updatedArticle = Article(
-    id=saveArticleResponse.id,
+    id=articleId,
     topic = topic,
     parentTopic = parentTopic,
     url=url,
@@ -207,10 +226,11 @@ def populate_article(populateArticleRequest):
     )
   )
   if updateArticleResponse.error != None:
-    return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=str(updateArticleResponse.error))
+    return PopulateArticleResponse(article=article, url=url, id=articleId, error=str(updateArticleResponse.error))
 
   logger.info("Successfully updated the article")
-  return PopulateArticleResponse(url=url, id=saveArticleResponse.id, error=None)
+  print("Finished hydrating model response")
+  return PopulateArticleResponse(article=article, url=url, id=articleId, error=None)
 
 
 def process_rss_feed():
