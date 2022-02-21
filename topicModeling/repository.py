@@ -69,7 +69,8 @@ def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):
       if isIds:
         topicInfoEntity = TopicModel.objects.get(topicId=val)
       else:
-        topicInfoEntity = TopicModel.objects.get(topic=val)
+        topicInfoEntity = TopicModel.objects.filter(topic=val)[0]
+
 
       topicInfo = TopicInfo(
           TopicID=topicInfoEntity.topicId,
@@ -80,15 +81,13 @@ def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):
       topicInfos.append(topicInfo)
 
     except Exception as e:
+      print("failed to fetch topic from database")
       logger.warn("Failed to fetch topic from database", extra={
         "searchField": val,
         "error": e,
       })
       logger.info(e)
-      return FetchTopicInfoBatchResponse(
-        topics=topicInfos,
-        error=e,
-      )
+      continue
 
   return FetchTopicInfoBatchResponse(
     topics=topicInfos,

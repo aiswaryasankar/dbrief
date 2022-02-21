@@ -4,7 +4,7 @@ import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 from sentence_transformers import SentenceTransformer
 from logtail import LogtailHandler
-from topicModeling.handler import fetch_topic_infos_batch, search_topics
+import topicModeling.handler as topicModelingHandler
 from topicModeling.training import Top2Vec
 from rest_framework.response import Response
 import datetime
@@ -92,7 +92,7 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
   logger.info(currentTopics)
 
   # Hydrates the topics corresponding to those topicIds from the topic database
-  fetchTopicInfoBatchResponse = fetch_topic_infos_batch(
+  fetchTopicInfoBatchResponse = topicModelingHandler.fetch_topic_infos_batch(
     FetchTopicInfoBatchRequest(
       topicIds=currentTopics,
     )
@@ -109,7 +109,7 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
   topics = []
   for topic in fetchTopicInfoBatchResponse.topics:
     # Queries for topics similar to the existing topics
-    searchTopicsResponse = search_topics(
+    searchTopicsResponse = topicModelingHandler.search_topics(
       SearchTopicsRequest(
         keywords=[topic.TopicName],
         num_topics=5,
@@ -126,7 +126,7 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
 
   # Query for topicInfo given the topic words
   # Hydrates the topics corresponding to those topicIds from the topic database
-  fetchTopicInfoBatchResponse = fetch_topic_infos_batch(
+  fetchTopicInfoBatchResponse = topicModelingHandler.fetch_topic_infos_batch(
     FetchTopicInfoBatchRequest(
       topicNames=topics,
     )
@@ -165,12 +165,13 @@ def get_topics_you_follow(getTopicsYouFollowRequest):
   logger.info(currentTopics)
 
   # Hydrates the topics corresponding to those topicIds from the topic database
-  fetchTopicInfoBatchResponse = fetch_topic_infos_batch(
+  fetchTopicInfoBatchResponse = topicModelingHandler.fetch_topic_infos_batch(
     FetchTopicInfoBatchRequest(
       topicIds=currentTopics,
     )
   )
   if fetchTopicInfoBatchResponse.error != None :
+    print("FetchTopicInfosBatch error")
     return GetTopicsForUserResponse(
       topics=[],
       error=fetchTopicInfoBatchResponse.error,
@@ -184,6 +185,5 @@ def get_topics_you_follow(getTopicsYouFollowRequest):
     topics= fetchTopicInfoBatchResponse.topics,
     error=None,
   )
-
 
 

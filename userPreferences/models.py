@@ -4,6 +4,8 @@ from django.db import models
   The user table will include the user's email, name, id, username and possibly firebaseAuthId
 """
 class UserModel (models.Model):
+  class Meta:
+    app_label = "userPreferences"
 
   userId = models.AutoField(primary_key=True)
   firstName = models.TextField("First name")
@@ -21,6 +23,7 @@ class UserModel (models.Model):
 class UserTopicModel (models.Model):
   class Meta:
     unique_together = (('userId', 'topicId'),)
+    app_label = "userPreferences"
 
   userTopicId = models.AutoField(primary_key=True)
   userId = models.IntegerField("UserId", null=True)

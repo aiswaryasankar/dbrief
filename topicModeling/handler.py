@@ -289,7 +289,6 @@ def get_topics(getTopicsRequest):
     num_topics=getTopicsRequest.num_topics,
     reduced = getTopicsRequest.reduced,
   )
-
   return GetTopicsResponse(
     topic_words=topic_words,
     topic_nums=topic_nums,

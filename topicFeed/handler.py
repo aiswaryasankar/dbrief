@@ -64,7 +64,6 @@ def getTopicPage(getTopicPageRequest):
         text = hydrateArticleResponse.article.text
         getTopicPageRequest.text = hydrateArticleResponse.article.text
 
-      # TODO: Figure out how to make this async
       x = threading.Thread(target=articleRecHandler.populate_article_by_url, args=(
             PopulateArticleRequest(
               url = getTopicPageRequest.url,

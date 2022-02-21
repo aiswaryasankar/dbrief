@@ -6,6 +6,7 @@ from django.db import models
 class TopicModel (models.Model):
   class Meta:
     unique_together = (('topic', 'parentTopic'),)
+    app_label = "topicModeling"
 
   topicId = models.AutoField(primary_key=True)
   topic = models.CharField("Topic", max_length=255)

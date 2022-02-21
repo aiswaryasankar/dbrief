@@ -22,4 +22,4 @@ def hydrate_home_page_view(request):
   hydrateHomePageRequest = req.validated_data
   res = hydrateHomePage(hydrateHomePageRequest)
 
-  return Response()
+  return Response(res.to_json())

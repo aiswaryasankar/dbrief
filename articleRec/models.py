@@ -15,6 +15,9 @@ class ArticleModel (models.Model):
   top_passage = models.TextField("TopPassage", null=True)
   top_fact = models.TextField("TopFact", null=True)
 
+  class Meta:
+    app_label = "articleRec"
+
   def __str__(self):
     return self.url
 

@@ -396,10 +396,12 @@ class SaveArticleResponse:
   error: Exception
   created: bool
 
+
 @dataclass
 class FetchArticlesRequest:
   articleIds: Optional[List[int]] = field(default_factory=list)
   articleUrls: Optional[List[str]] = field(default_factory=str)
+
 
 @dataclass_json
 @dataclass
@@ -415,6 +417,7 @@ class HydrateArticleRequest:
 @dataclass
 class HydrateArticleResponse:
   article: Optional[Article]
+  id: Optional[int]
   url: Optional[str]
   error: Exception
 

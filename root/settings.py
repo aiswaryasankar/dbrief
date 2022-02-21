@@ -49,7 +49,6 @@ LOGGING = {
 
 # Application definition
 INSTALLED_APPS = [
-    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -65,9 +64,9 @@ INSTALLED_APPS = [
     'mdsModel.apps.MdsmodelConfig',
     'homeFeed.apps.HomefeedConfig',
     'newsletter.apps.NewsletterConfig',
-    'django_crontab',
-    'background_task',
+    'passageRetrievalModel.apps.PassageretrievalmodelConfig',
     'logtail',
+    'corsheaders',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True

@@ -149,7 +149,7 @@ def getTopicsYouFollow(getTopicsYouFollowRequest):
   """
     Gets the topics a user follows in the UserTopic table
   """
-
+  print("calling getTopicsYouFollow")
   topicList = []
   userId = getTopicsYouFollowRequest.user_id
 

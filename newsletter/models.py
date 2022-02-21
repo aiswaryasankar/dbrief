@@ -1,6 +1,8 @@
 from django.db import models
 
 class NewsletterConfigModel (models.Model):
+  class Meta:
+    app_label = "newsletter"
 
   newsletterConfigId = models.AutoField(primary_key=True)
   userId = models.IntegerField("UserId", unique=True)
