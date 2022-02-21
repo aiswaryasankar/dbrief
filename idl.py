@@ -561,7 +561,7 @@ class GetTopicPageResponse:
 
 @dataclass
 class WhatsHappeningRequest:
-  user_id: int
+  user_id: Optional[int] = 0
 
 @dataclass_json
 @dataclass
