@@ -234,7 +234,7 @@ def articleResToModel(article):
     if article.parent_topic:
       a.parentTopic = article.parent_topic
     if article.publish_date:
-      a.topic = article.publish_date
+      a.publish_date = article.publish_date
     if article.image:
        a.imageURL = article.image
     if article.polarization_score:
