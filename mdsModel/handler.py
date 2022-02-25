@@ -10,12 +10,19 @@ import os
 import openai
 
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
 logger.handlers = [handler]
 logger.setLevel(logging.INFO)
+
+
+def get_mds_summary_v2_handler(getMDSSummaryRequest):
+  """
+    Get the MDS summary using a more standard approach
+  """
+  pass
 
 
 def get_mds_summary_handler(getMDSSummaryRequest):

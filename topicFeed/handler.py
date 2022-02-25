@@ -202,7 +202,28 @@ def getTopicPage(getTopicPageRequest):
   if fetchArticlesResponse.error != None:
     return GetTopicPageResponse(topic_page=None, error=str(fetchArticlesResponse.error))
 
-  # TODO: GetTitleSummaryForSearch in order to fetch the title for the articles
+  # Get the topic from the primary article
+  getDocumentTopicBatchResponse = tpHandler.get_document_topic_batch(
+    GetDocumentTopicBatchRequest(
+      doc_ids=[int(articleId)],
+      num_topics=1
+    )
+  )
+  if getDocumentTopicBatchResponse.error != None or len(getDocumentTopicBatchResponse.documentTopicInfos) < 1:
+    return GetTopicPageRequest(topic_page=None, error=str(getDocumentTopicBatchResponse.error))
+
+  topicName = getDocumentTopicBatchResponse.documentTopicInfos[0].topic
+  topicID = None
+  fetchTopicInfoBatchResponse = tpHandler.fetch_topic_infos_batch(
+    FetchTopicInfoBatchRequest(
+      topicNames=[topicName],
+    )
+  )
+  if fetchTopicInfoBatchResponse.error != None or len(fetchTopicInfoBatchResponse.topics) < 1:
+    # Soft failure since this isn't as critical
+    logger.info("Failed to fetch topic id for topic " + topicName)
+  else:
+    topicID = fetchTopicInfoBatchResponse.topics[0].TopicID
 
   # GetMDS to get the MDS for the articles
   articles = ""
@@ -279,7 +300,7 @@ def getTopicPage(getTopicPageRequest):
     Opinions = passages,
     TopArticleID = int(articleId),
     IsTimeline = isTimeline,
-    TopicID = None,
+    TopicID = topicID,
     ImageURL = topImageUrl,
   )
   logger.info("TOPIC PAGE")
