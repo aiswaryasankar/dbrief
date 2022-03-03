@@ -301,6 +301,7 @@ def getTopicPage(getTopicPageRequest):
     TopArticleID = int(articleId),
     IsTimeline = isTimeline,
     TopicID = topicID,
+    TopicName = topicName,
     ImageURL = topImageUrl,
   )
   logger.info("TOPIC PAGE")

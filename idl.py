@@ -120,6 +120,7 @@ class TopicPage:
   Opinions: List[Opinion]
   TopArticleID: int
   TopicID: int
+  TopicName: str
   IsTimeline: bool
 
 @dataclass_json
