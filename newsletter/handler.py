@@ -90,12 +90,12 @@ def send_newsletter(sendNewsletterRequest):
 
   mailchimp = MailchimpTransactional.Client('IbRJVT9R9C9JBt6gUA-E3g')
   message = {
-      "from_email": "aiswarya@aiswaryas.com",
+      "from_email": "aiswarya.s@dbrief.ai",
       "subject": "Hello world",
       "text": "Demo email!",
       "to": [
         {
-          "email": "aiswarya@aiswaryas.com",
+          "email": "aiswarya.s@dbrief.ai",
           "type": "to"
         }
       ]
