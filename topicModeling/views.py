@@ -19,7 +19,7 @@ def retrain_topic_model_view(request):
     It will then pass in the doc_ids and the document text to the topic model endpoint
     The topic model endpoint will then store the weights in a file that it will read during evaluation
   """
-  res = retrain_topic_model(request)
+  res = retrain_topic_model()
   return Response(res.to_json())
 
 

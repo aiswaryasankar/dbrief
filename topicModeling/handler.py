@@ -32,7 +32,7 @@ else:
 
 embedding_model = None
 
-def retrain_topic_model(request):
+def retrain_topic_model():
   """
     This endpoint will first fetch all the documents from the database and keep it in memory
     It will then pass in the doc_ids and the document text to the topic model endpoint
