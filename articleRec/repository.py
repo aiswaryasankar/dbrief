@@ -67,7 +67,7 @@ def saveArticle(saveArticleRequest):
 
   except Exception as e:
     logger.warn("Failed to save article to the database")
-    logger.warn(e)
+    print(e)
 
     return SaveArticleResponse(id=None, error=e, created=created)
 

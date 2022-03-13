@@ -86,7 +86,7 @@ def populate_article(populateArticleRequest):
 
   # Failed to save article to database
   if saveArticleResponse.error != None:
-    return PopulateArticleResponse(url=url, id=None, error=str(ValueError("Failed to save article to database")))
+    return PopulateArticleResponse(article=None, url=url, id=None, error=str(ValueError("Failed to save article to database")))
 
   x = threading.Thread(target=hydrateModelOutputsForArticle, args=(
         article, saveArticleResponse.id, url, saveArticleResponse.created
