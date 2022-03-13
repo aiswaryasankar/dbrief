@@ -59,7 +59,7 @@ def populate_article(populateArticleRequest):
   url = populateArticleRequest.url
   hydrateArticleResponse = hydrate_article_controller(url)
   if hydrateArticleResponse.error != None:
-    return PopulateArticleResponse(url=url, id=None, error=str(hydrateArticleResponse.error))
+    return PopulateArticleResponse(article=None, url=url, id=None, error=str(hydrateArticleResponse.error))
 
   article=hydrateArticleResponse.article
 
