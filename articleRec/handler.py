@@ -39,7 +39,7 @@ def hydrate_article(hydrateArticleRequest):
   return hydrate_article_controller(hydrateArticleRequest.url)
 
 
-def populate_articles_batch():
+def populate_articles_batch_v1():
   """
     PopulateArticles does the following:
 
@@ -78,6 +78,35 @@ def populate_articles_batch():
     num_articles_populated=numArticlesPopulated,
     num_errors=numErrors
   )
+
+def populate_articles_batch_v2():
+  """
+    The v2 handler will call the batch controller instead of hydrating each article individually.
+  """
+  urlMap = process_rss_feed()
+  numArticlesPopulated, numErrors = 0, 0
+  urls = [urlEntry["url"] for urlEntry in urlMap]
+  timeBeforePopulateArticle = datetime.now()
+
+  populateArticleResponse = populate_articles_batch(
+    PopulateArticlesBatchRequest(
+      urls=urls,
+    )
+  )
+  timeAfterPopulateArticle = datetime.now()
+  logger.info(populateArticleResponse)
+  logger.info("Time to populate article %s", timeAfterPopulateArticle-timeBeforePopulateArticle)
+
+  if populateArticleResponse.error != None:
+    numErrors+=1
+  else:
+    numArticlesPopulated+=1
+
+  return PopulateArticlesResponse(
+    num_articles_populated=numArticlesPopulated,
+    num_errors=numErrors
+  )
+
 
 
 def populate_article_by_url(populateArticleByUrlRequest):

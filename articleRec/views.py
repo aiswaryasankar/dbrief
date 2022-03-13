@@ -79,7 +79,16 @@ def populate_articles_batch_view(request):
   """
     Will populate all the articles in batch and return stats on the number of articles successfully populated in the db.
   """
-  res = populate_articles_batch()
+  res = populate_articles_batch_v1()
+  return Response(res.to_json())
+
+
+@api_view(['GET'])
+def populate_articles_batch_v2_view(request):
+  """
+    This endpoint calls the batch v2 populate articles endpoint optimized for SPEED and MEMORY.
+  """
+  res = populate_articles_batch_v2()
   return Response(res.to_json())
 
 

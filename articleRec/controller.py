@@ -63,6 +63,15 @@ def populate_article(populateArticleRequest):
 
   article=hydrateArticleResponse.article
 
+    # Hydrate the article date
+  if article.publish_date == "" or article.publish_date is None:
+    logger.info("Article doesn't have date info using current date %s", datetime.date())
+    article.publish_date = datetime.now()
+
+  # Hydrate article author
+  if article.authors == []:
+    article.authors = [topicFeedHandler.parseSource(url)]
+
   # Save to database and fetch article id
   a = Article(
     id=None,
@@ -100,6 +109,87 @@ def populate_article(populateArticleRequest):
     id=saveArticleResponse.id,
     error=None,
   )
+
+
+def populate_articles_batch(populateArticlesBatch):
+  """
+    This will hydrate all the articles in batch.
+  """
+  articleIds, articles = [], []
+
+  for url in populateArticlesBatch.urls:
+    print(url)
+    hydrateArticleResponse = hydrate_article_controller(url)
+    if hydrateArticleResponse.error != None:
+      logger.warn("Failed to hydrate article " + url)
+      continue
+
+    article=hydrateArticleResponse.article
+
+      # Hydrate the article date
+    if article.publish_date == "" or article.publish_date is None:
+      logger.info("Article doesn't have date info using current date")
+      article.publish_date = datetime.now()
+
+    # Hydrate article author
+    if article.authors == []:
+      article.authors = [topicFeedHandler.parseSource(url)]
+
+    # Save to database and fetch article id
+    a = Article(
+      id=None,
+      url=url,
+      text=article.text,
+      title=article.title,
+      date=article.publish_date,
+      imageURL=article.top_image,
+      authors=article.authors,
+      topic=None,
+      parentTopic=None,
+      polarizationScore=None,
+      topPassage=None,
+      topFact=None,
+    )
+    saveArticleResponse = saveArticle(
+      SaveArticleRequest(
+        article=a,
+      )
+    )
+
+    # Failed to save article to database
+    if saveArticleResponse.error != None:
+      logger.warn("Failed to save article to database " + url)
+    else:
+      articleIds.append(saveArticleResponse.id)
+      articles.append(article.text)
+
+  print("Number of articles to populate")
+  print(len(articleIds))
+
+  # Add the articles to the topic model
+  addedToTopicModel = tpHandler.add_document(
+    AddDocumentRequest(
+      documents=articles,
+      doc_ids=articleIds,
+      tokenizer=None,
+      use_embedding_model_tokenizer=None,
+    )
+  )
+  if addedToTopicModel.error != None:
+    # How should you most appropriately handle this error?
+    return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articleIds))
+
+  # Allow backfill to handle the remaining fields in batch
+  articleBackfillResponse = article_backfill_controller(
+    ArticleBackfillRequest(
+      force_update= False,
+      fields = ["topic", "polarization_score", "top_passage", "top_fact"]
+    )
+  )
+  if articleBackfillResponse.error != None:
+    return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articles))
+
+  return PopulateArticlesResponse(num_articles_populated=len(articles), num_errors=0)
 
 
 def hydrateModelOutputsForArticle(article, articleId, url, created):
@@ -194,15 +284,6 @@ def hydrateModelOutputsForArticle(article, articleId, url, created):
     timeAfterGetFact = datetime.now()
     logger.info("Time to get fact %s", timeAfterGetFact-timeBeforeGetFact)
 
-  # Hydrate the article date
-  if article.publish_date == "" or article.publish_date is None:
-    logger.info("Article doesn't have date info using current date %s", datetime.date())
-    article.publish_date = datetime.now()
-
-  # Hydrate article author
-  if article.authors == []:
-    article.authors = [topicFeedHandler.parseSource(url)]
-
   # Update the db with additional data
   updatedArticle = Article(
     id=articleId,
@@ -287,11 +368,11 @@ def hydrate_article_controller(url):
     dictionary = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
     date_published = [value for (key, value) in dictionary.items() if key == 'datePublished']
     article_author = [value for (key, value) in dictionary.items() if key == 'author']
-    print(article_author)
+    # print(article_author)
 
     # another method to extract the title
     article_title = [value for (key, value) in dictionary.items() if key == 'headline']
-    print(article_title)
+    # print(article_title)
 
 
   except Exception as e:
@@ -377,7 +458,6 @@ def article_backfill_controller(articleBackfillRequest):
       res = ArticleModel.objects.bulk_update(updatedArticles, ["topic", "parent_topic"])
       totalUpdates += len(updatedArticles)
 
-
   if "polarization_score" in articleBackfillRequest.fields:
     getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
       GetDocumentPolarityBatchRequest(
@@ -410,7 +490,6 @@ def article_backfill_controller(articleBackfillRequest):
 
       # TODO: Move this into a repository function
       res = ArticleModel.objects.bulk_update(updatedArticles, ["top_passage"])
-
 
   if "top_fact" in articleBackfillRequest.fields:
     getTopFactsBatchResponse = passageRetrievalHandler.get_top_facts_batch(

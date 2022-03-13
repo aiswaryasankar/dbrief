@@ -368,6 +368,10 @@ class HelloWorldResponse:
   name: str
 
 @dataclass
+class PopulateArticlesBatchRequest:
+  urls: Optional[List[str]]
+
+@dataclass
 class PopulateArticleRequest:
   url: Optional[str]
   source: Optional[str] = ""
