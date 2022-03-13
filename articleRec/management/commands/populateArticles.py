@@ -15,6 +15,10 @@ class Command(BaseCommand):
   def handle(self, *args, **options):
 
     logger.info("Started cron job")
-    res = populate_articles_batch()
-    logger.info(res.num_articles_populated)
+    res = populate_article_by_url(
+      PopulateArticleRequest(
+        url= "https://www.nytimes.com/2022/03/12/world/europe/ukraine-mayor-kidnapped-ivan-fyodorov.html"
+      )
+    )
+    logger.info(res.error)
 
