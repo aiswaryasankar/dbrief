@@ -88,24 +88,16 @@ def populate_articles_batch_v2():
   urls = [urlEntry["url"] for urlEntry in urlMap]
   timeBeforePopulateArticle = datetime.now()
 
-  populateArticleResponse = populate_articles_batch(
+  populateArticlesResponse = populate_articles_batch(
     PopulateArticlesBatchRequest(
       urls=urls,
     )
   )
   timeAfterPopulateArticle = datetime.now()
-  logger.info(populateArticleResponse)
-  logger.info("Time to populate article %s", timeAfterPopulateArticle-timeBeforePopulateArticle)
+  logger.info(populateArticlesResponse)
+  logger.info("Time to populate articles %s", timeAfterPopulateArticle-timeBeforePopulateArticle)
 
-  if populateArticleResponse.error != None:
-    numErrors+=1
-  else:
-    numArticlesPopulated+=1
-
-  return PopulateArticlesResponse(
-    num_articles_populated=numArticlesPopulated,
-    num_errors=numErrors
-  )
+  return populateArticlesResponse
 
 
 

@@ -294,15 +294,20 @@ def queryArticles(queryArticleRequest):
   # Query for all records where the field is empty
   articles = []
   if field == "topic":
-    articles = ArticleModel.objects.filter(topic="")
+    articles = ArticleModel.objects.filter(topic=None)
+    articles = articles | ArticleModel.objects.filter(topic="")
   elif field == "parent_topic":
-    articles = ArticleModel.objects.filter(parent_topic="")
+    articles = ArticleModel.objects.filter(parent_topic=None)
+    articles = articles | ArticleModel.objects.filter(parent_topic="")
   elif field == "top_fact":
-    articles = ArticleModel.objects.filter(top_fact="")
+    articles = ArticleModel.objects.filter(top_fact=None)
+    articles = articles | ArticleModel.objects.filter(top_fact="")
   elif field == "top_passage":
-    articles = ArticleModel.objects.filter(top_passage="")
+    articles = ArticleModel.objects.filter(top_passage=None)
+    articles = articles | ArticleModel.objects.filter(top_passage="")
   elif field == "polarization_score":
     articles = ArticleModel.objects.filter(polarization_score=0)
+    articles = articles | ArticleModel.objects.filter(polarization_score=None)
 
   articleModels = []
   for article in articles:

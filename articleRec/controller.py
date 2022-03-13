@@ -20,6 +20,7 @@ import multiprocessing as mp
 from datetime import datetime
 from newspaper.utils import BeautifulSoup
 import threading
+from multiprocessing.pool import ThreadPool
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -159,31 +160,32 @@ def populate_articles_batch(populateArticlesBatch):
     # Failed to save article to database
     if saveArticleResponse.error != None:
       logger.warn("Failed to save article to database " + url)
-    else:
+    elif saveArticleResponse.created:
       articleIds.append(saveArticleResponse.id)
       articles.append(article.text)
 
   print("Number of articles to populate")
   print(len(articleIds))
 
-  # Add the articles to the topic model
-  addedToTopicModel = tpHandler.add_document(
-    AddDocumentRequest(
-      documents=articles,
-      doc_ids=articleIds,
-      tokenizer=None,
-      use_embedding_model_tokenizer=None,
+  if len(articleIds) > 0:
+    # Add the articles to the topic model
+    addedToTopicModel = tpHandler.add_document(
+      AddDocumentRequest(
+        documents=articles,
+        doc_ids=articleIds,
+        tokenizer=None,
+        use_embedding_model_tokenizer=None,
+      )
     )
-  )
-  if addedToTopicModel.error != None:
-    # How should you most appropriately handle this error?
-    return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articleIds))
+    if addedToTopicModel.error != None:
+      # How should you most appropriately handle this error?
+      return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articleIds))
 
   # Allow backfill to handle the remaining fields in batch
   articleBackfillResponse = article_backfill_controller(
     ArticleBackfillRequest(
       force_update= False,
-      fields = ["topic", "polarization_score", "top_passage", "top_fact"]
+      fields = ["topic", "top_passage", "top_fact"]
     )
   )
   if articleBackfillResponse.error != None:
