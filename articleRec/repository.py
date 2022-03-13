@@ -177,12 +177,6 @@ def fetchAllArticles():
       })
       print(e)
 
-  f = open("articles.txt", "w")
-
-  for elem in articleText:
-    f.write(elem+"\n")
-  f.close()
-
   return FetchArticlesResponse(
     articleList=articleList,
     error=None,
