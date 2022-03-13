@@ -1,3 +1,4 @@
+from tkinter import N
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -181,17 +182,22 @@ def populate_articles_batch(populateArticlesBatch):
       logger.warn("Failed to add articles to the index")
       return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articleIds))
 
-  # Allow backfill to handle the remaining fields in batch
-  articleBackfillResponse = article_backfill_controller(
+  articleBackfill = threading.Thread(target=article_backfill_controller, args=(
     ArticleBackfillRequest(
       force_update= False,
       fields = ["topic", "top_passage", "top_fact"]
-    )
-  )
-  if articleBackfillResponse.error != None:
-    return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articles))
+    )))
+  articleBackfill.start()
 
-  return PopulateArticlesResponse(num_articles_populated=len(articles), num_errors=0)
+  return PopulateArticlesResponse(
+    num_articles_populated=len(articles),
+    num_errors=0,
+  )
+
+  # if articleBackfill.error != None:
+  #   return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articles))
+
+  # return PopulateArticlesResponse(num_articles_populated=len(articles), num_errors=0)
 
 
 def hydrateModelOutputsForArticle(article, articleId, url, created):
