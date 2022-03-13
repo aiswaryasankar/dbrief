@@ -164,8 +164,7 @@ def populate_articles_batch(populateArticlesBatch):
       articleIds.append(saveArticleResponse.id)
       articles.append(article.text)
 
-  print("Number of articles to populate")
-  print(len(articleIds))
+  logger.info("Number of articles to populate: " + str(len(articleIds)))
 
   if len(articleIds) > 0:
     # Add the articles to the topic model
@@ -179,6 +178,7 @@ def populate_articles_batch(populateArticlesBatch):
     )
     if addedToTopicModel.error != None:
       # How should you most appropriately handle this error?
+      logger.warn("Failed to add articles to the index")
       return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articleIds))
 
   # Allow backfill to handle the remaining fields in batch
