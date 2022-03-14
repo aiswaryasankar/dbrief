@@ -447,7 +447,8 @@ def article_backfill_controller(articleBackfillRequest):
   logger.info("Articles to update %s", len(articlesToUpdate))
 
   x = threading.Thread(target=backfill, args=(
-        articleBackfillRequest.fields
+        articleBackfillRequest.fields,
+        articlesToUpdate,
       )
     )
   x.start()
