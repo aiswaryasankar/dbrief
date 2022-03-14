@@ -446,9 +446,24 @@ def article_backfill_controller(articleBackfillRequest):
 
   logger.info("Articles to update %s", len(articlesToUpdate))
 
+  x = threading.Thread(target=backfill, args=(
+        articleBackfillRequest.fields
+      )
+    )
+  x.start()
+
+  return ArticleBackfillResponse(
+    num_updates=len(articlesToUpdate),
+    error=None,
+  )
+
+
+def backfill(fields, articlesToUpdate):
   # Based on the field that is requested, it will call the appropriate method
   # Should operate in batch to get the appropriate values back
-  if "topic" in articleBackfillRequest.fields or "parent_topic" in articleBackfillRequest.fields:
+  totalUpdates = 0
+
+  if "topic" in fields or "parent_topic" in fields:
     getDocumentTopicBatchResponse = tpHandler.get_document_topic_batch(
       GetDocumentTopicRequest(
         doc_ids=[article.id for article in articlesToUpdate],
@@ -465,7 +480,7 @@ def article_backfill_controller(articleBackfillRequest):
       res = ArticleModel.objects.bulk_update(updatedArticles, ["topic", "parent_topic"])
       totalUpdates += len(updatedArticles)
 
-  if "polarization_score" in articleBackfillRequest.fields:
+  if "polarization_score" in fields:
     getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
       GetDocumentPolarityBatchRequest(
         articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate],
@@ -482,7 +497,7 @@ def article_backfill_controller(articleBackfillRequest):
       # TODO: Move this into a repository function
       res = ArticleModel.objects.bulk_update(updatedArticles, ["polarization_score"])
 
-  if "top_passage" in articleBackfillRequest.fields:
+  if "top_passage" in fields:
     getTopPassageBatchResponse = passageRetrievalHandler.get_top_passage_batch(
       GetTopPassageBatchRequest(
         articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate]
@@ -498,7 +513,7 @@ def article_backfill_controller(articleBackfillRequest):
       # TODO: Move this into a repository function
       res = ArticleModel.objects.bulk_update(updatedArticles, ["top_passage"])
 
-  if "top_fact" in articleBackfillRequest.fields:
+  if "top_fact" in fields:
     getTopFactsBatchResponse = passageRetrievalHandler.get_top_facts_batch(
       GetFactsBatchRequest(
         articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate]
@@ -522,8 +537,6 @@ def article_backfill_controller(articleBackfillRequest):
     num_updates=totalUpdates,
     error=None,
   )
-
-
 
 
 
