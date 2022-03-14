@@ -48,6 +48,8 @@ def get_top_passage_batch(getTopPassageBatchRequest):
 
     if len(paragraphs) == 0:
       logger.warn("No paragraphs for article %s", a.id)
+      logger.warn(paragraphs)
+      logger.warn(article)
       continue
 
     if len(paragraphs) <= 1:
