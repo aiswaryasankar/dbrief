@@ -88,7 +88,7 @@ def populate_articles_batch_v2():
   urls = [urlEntry["url"] for urlEntry in urlMap]
   timeBeforePopulateArticle = datetime.now()
 
-  logger.info("Hydarating %s articles", str(len(urls)))
+  logger.info("Hydrating %s articles", str(len(urls)))
   print("Hydrating articles: " + str(len(urls)))
 
   populateArticlesResponse = populate_articles_batch(

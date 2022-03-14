@@ -151,6 +151,7 @@ def add_document(addDocumentRequest):
     return AddDocumentResponse(error=err)
 
   top2vecModel.save(topicModelFile)
+  logger.info("Added %s documents to topic model", len(addDocumentRequest.doc_ids))
   return AddDocumentResponse(error=None)
 
 
