@@ -446,17 +446,18 @@ def article_backfill_controller(articleBackfillRequest):
 
   logger.info("Articles to update %s", len(articlesToUpdate))
 
-  x = threading.Thread(target=backfill, args=(
-        articleBackfillRequest.fields,
-        articlesToUpdate,
-      )
-    )
-  x.start()
+  return backfill(articleBackfillRequest.fields, articlesToUpdate)
+  # x = threading.Thread(target=backfill, args=(
+  #       articleBackfillRequest.fields,
+  #       articlesToUpdate,
+  #     )
+  #   )
+  # x.start()
 
-  return ArticleBackfillResponse(
-    num_updates=len(articlesToUpdate),
-    error=None,
-  )
+  # return ArticleBackfillResponse(
+  #   num_updates=len(articlesToUpdate),
+  #   error=None,
+  # )
 
 
 def backfill(fields, articlesToUpdate):
