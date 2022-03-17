@@ -8,7 +8,7 @@ import idl
 from userPreferences import handler as upHandler
 from topicFeed import handler as topicFeedHandler
 from topicModeling import handler as topicModelingHandler
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import ThreadPool, Pool
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -24,6 +24,7 @@ def hydrateHomePage(hydrateHomePageRequest):
 
   topicList = []
 
+  beforeGetTopicsYouFollow = datetime.now()
   # If the user is following any topics, get those topics first
   if hydrateHomePageRequest.userId != None:
     getTopicsYouFollowResponse = upHandler.get_topics_you_follow(
@@ -40,7 +41,11 @@ def hydrateHomePage(hydrateHomePageRequest):
     topicList = [t.TopicName for t in getTopicsYouFollowResponse.topics]
     logger.info(topicList)
 
-  # If the user isn't following any topics get the topic topics currently
+  afterGetTopicsYouFollow = datetime.now()
+  logger.info("Time taken to getTopicsYouFollow: %s", str(afterGetTopicsYouFollow-beforeGetTopicsYouFollow))
+
+  # If the user isn't following any topics get the top topics currently
+  beforeGetTopics = datetime.now()
   if len(topicList) < 5:
     getTopicsResponse = topicModelingHandler.get_topics(
       GetTopicsRequest(
@@ -57,7 +62,10 @@ def hydrateHomePage(hydrateHomePageRequest):
 
   logger.info("The topic list is")
   logger.info(topicList)
+  afterGetTopics = datetime.now()
+  logger.info("Time to getTopics: %s", str(afterGetTopics-beforeGetTopics))
 
+  beforeParallelHydration = datetime.now()
   # Aysynchronously populate all of the topic pages to display on the home page
   pool = ThreadPool(processes=len(topicList))
   getTopicPageRequests = [GetTopicPageRequest(topicName = topic)  for topic in topicList]
@@ -71,6 +79,9 @@ def hydrateHomePage(hydrateHomePageRequest):
 
   pool.close()
   pool.join()
+
+  afterParallelHydration = datetime.now()
+  logger.info("Time to parallel hydrate: %s", str(afterParallelHydration-beforeParallelHydration))
 
   return HydrateHomePageResponse(
     topicPages=topicPages,

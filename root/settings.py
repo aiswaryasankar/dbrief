@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import sys
+import django
 
 # Determine if it is the test environment
 TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
@@ -25,6 +26,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '2u35d&j@a4qhojoi68#@)*f-loe^%$=+jkie8*n5kvs&9ioxzu'
+
+# django.setup()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
