@@ -37,7 +37,7 @@ google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
 grpcio==1.42.0
 h5py==3.6.0
-hdbscan==0.8.27
+# hdbscan==0.8.27
 hnswlib==0.5.2
 huggingface-hub==0.2.1
 idna==3.3
