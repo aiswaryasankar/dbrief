@@ -34,6 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'infra.eba-ydmy6xs3.us-west-2.elasticbeanstalk.com',
+    'dbrief.ai'
     '127.0.0.1',
 ]
 
