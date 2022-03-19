@@ -91,14 +91,14 @@ def index_document_vectors_view(request):
   pass
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def generate_topic_pairs_view(request):
   """
-    This endpoint will generate the topic pairs
+    This endpoint will generate the topic pairs v2 for now to test out if it is better or not.  It better be though! At the very least it picks from a pre-determined list of topics so that should prove to be stronger than coming up with everything from scratch.
   """
 
-  res = generate_topic_pairs()
-
+  res = generate_topic_pairs_v2(request)
+  print("FINISHED CALLING GENERATE TOPIC PAIRS V2")
   return Response()
 
 

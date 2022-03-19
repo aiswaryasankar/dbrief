@@ -225,6 +225,25 @@ def generate_topic_pairs():
   )
 
 
+def generate_topic_pairs_v2(request):
+  """
+    This endpoint smartly chooses the best parent topic for a given child topic word.
+  """
+  global embedding_model
+  if embedding_model == None:
+    print("Embedding model is none in query documents")
+    embedding_model = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+
+  print("INSIDE GENERATE TOPIC PAIRS V2")
+  top2vecModel = Top2Vec.load(topicModelFile)
+  topicPairs = top2vecModel.generate_topic_parent_topic_pairs_v2(embedding_model)
+  logger.info("smart topic pairs")
+  logger.info(topicPairs)
+  return GenerateTopicPairsResponse(
+    topic_pairs=topicPairs,
+  )
+
+
 def search_documents_by_topic(searchDocumentsByTopic):
   """
     This endpoint will get the documents that are most related to a given topic id.

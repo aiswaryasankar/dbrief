@@ -203,12 +203,12 @@ def search_topics_v2(searchTopicsV2Request):
     )
 
 
-def generate_topic_pairs_v2(generateTopicPairsV2Request):
-  """
-    Generate the topic<>parentTopic pairs given the hierarchy of topics in the topic model. Either use the reduce_topics function or run through the classification model for the parent topic.
-  """
-  # Can be implemented later, not a core endpoint
-  pass
+# def generate_topic_pairs_v2(generateTopicPairsV2Request):
+#   """
+#     Generate the topic<>parentTopic pairs given the hierarchy of topics in the topic model. Either use the reduce_topics function or run through the classification model for the parent topic.
+#   """
+#   # Can be implemented later, not a core endpoint
+#   pass
 
 
 def search_documents_by_topic_v2(searchDocumentsByTopicV2Request):

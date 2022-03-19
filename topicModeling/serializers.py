@@ -48,14 +48,14 @@ class GetDocumentTopicRequestSerializer(DataclassSerializer):
 #
 ###
 
-# class GetDocumentTopicRequestV2Serializer(DataclassSerializer):
-#   parser_classes = JSONParser
-#   class Meta:
-#     dataclass = GetDocumentTopicRequestV2
+class GetDocumentTopicRequestV2Serializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = GetDocumentTopicRequestV2
 
-# class SearchTopicsRequestV2Serializer(DataclassSerializer):
-#   parser_classes = JSONParser
-#   class Meta:
-#     dataclass = SearchTopicsRequestV2
+class SearchTopicsRequestV2Serializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = SearchTopicsRequestV2
 
 

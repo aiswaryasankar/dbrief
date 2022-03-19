@@ -1514,6 +1514,55 @@ class Top2Vec:
 
         return self.hierarchy, None
 
+    def generate_topic_parent_topic_pairs_v2(self, embedding_model):
+        """
+            This endpoint will generate the topic<>parentTopic pairs given the hierarchy of topics in the topic model. It will be returned as a list of lists with [topic, parentTopic]
+        """
+
+        pairs = []
+
+        print(len(self.hierarchy))
+        print("topic words reduced")
+        print(self.topic_words_reduced)
+        print("topic words")
+        print(self.topic_words)
+        print(self.hierarchy)
+
+        parentTopics = ["Europe", "Asia", "Business", "Politics", "Sports", "Technology", "Economy", "Stock Market", "Lifestyle", "Geopolitics", "War", "Medicine", "World", "Food", "COVID"]
+        parentTopicEmbeddings = []
+        for topic in parentTopics:
+            parentTopicEmbeddings.append(embedding_model([topic]))
+        parentTopicEmbeddings = np.squeeze(parentTopicEmbeddings)
+
+        parentTopicIndex = 0
+        for topicList in self.hierarchy:
+            childTopics = [self.topic_words[i][:][0] for i in topicList]
+
+            topParentTopic = ""
+            for childTopic in childTopics:
+                # Compute the embedding of the childTopic
+                # Dot product them with each of the possible parent topics
+                # Store the best combination in the db
+                childTopicEmbedding = embedding_model([childTopic])
+                childTopicEmbeddingMatrix = [childTopicEmbedding for i in range(len(parentTopics))]
+                childTopicEmbeddingMatrix = np.squeeze(childTopicEmbeddingMatrix)
+
+                dotProducts = np.dot(childTopicEmbeddingMatrix, parentTopicEmbeddings.T)
+                dotProductSum = sum(dotProducts)
+                topTopicIndex = np.argmax(dotProductSum)
+                print("CHILD TOPIC: %s", childTopic )
+                print("PARENT TOPIC: %s", parentTopics[topTopicIndex])
+                topParentTopic = parentTopics[topTopicIndex]
+
+                pairs.extend([[childTopic, topParentTopic]])
+
+            parentTopicIndex += 1
+
+        print("Topic, parent topic pairs")
+        print(pairs)
+        return pairs
+
+
     def generate_topic_parent_topic_pairs(self):
         """
             This endpoint will generate the topic<>parentTopic pairs given the hierarchy of topics in the topic model. It will be returned as a list of lists with [topic, parentTopic]
@@ -1657,7 +1706,7 @@ class Top2Vec:
         # re-order topics
         self._reorder_topics(hierarchy=True)
 
-        return self.generate_topic_parent_topic_pairs(), None
+        return self.generate_topic_parent_topic_pairs_v2(self.embed), None
 
     def query_documents(self, query, num_docs, return_documents=True, use_index=False, ef=None, tokenizer=None, embedding_model=None):
         """

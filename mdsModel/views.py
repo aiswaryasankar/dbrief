@@ -24,3 +24,21 @@ def get_mds_summary_view(request):
 
   return Response(res)
 
+
+@api_view(['GET'])
+def get_mds_summary_v2_view(request):
+  """
+    This calls the "smarter" extractive MDS model to do it by sentences instead of using the GPT API for this.
+  """
+  req = GetMDSSummaryRequest(data=request.data)
+  if not req.is_valid():
+    return JsonResponse(req.errors)
+
+  getMDSSummaryRequest = req.validated_data
+  res = get_mds_summary_v2_handler(getMDSSummaryRequest)
+
+  return Response(res)
+
+
+
+
