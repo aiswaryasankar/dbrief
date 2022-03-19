@@ -9,6 +9,7 @@ from mdsModel.handler import *
 from datetime import datetime
 import idl
 import threading
+import random
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -258,7 +259,7 @@ def getTopicPage(getTopicPageRequest):
       topImageUrl = a.imageURL
 
   beforeMds = datetime.now()
-  getMDSSummaryResponse = get_mds_summary_handler(
+  getMDSSummaryResponse = get_mds_summary_v2_handler(
     GetMDSSummaryRequest(
       articles=articles
     )
@@ -318,7 +319,7 @@ def getTopicPage(getTopicPageRequest):
       )
 
   isTimeline = True
-  if len(passages) > 6:
+  if random.random() < .5:
     isTimeline = False
 
   topic_page = TopicPage(
