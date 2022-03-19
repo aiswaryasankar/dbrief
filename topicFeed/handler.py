@@ -286,7 +286,7 @@ def getTopicPage(getTopicPageRequest):
 
     source = parseSource(a.url)
     logger.info("URL %s and source %s", a.url, source)
-    if a.topFact != None and len(a.topFact) > 5:
+    if a.topFact != None and len(a.topFact) > 5 and a.topFact != "":
       facts.append(
         Fact(
           Quote= Quote(
@@ -302,7 +302,7 @@ def getTopicPage(getTopicPageRequest):
         )
       )
 
-    if a.topPassage != None and len(a.topPassage) > 5:
+    if a.topPassage != None and len(a.topPassage) > 5 and a.topPassage != "":
       passages.append(
         Opinion(
           Quote= Quote(
