@@ -258,7 +258,7 @@ def getTopicPage(getTopicPageRequest):
       topImageUrl = a.imageURL
 
   beforeMds = datetime.now()
-  getMDSSummaryResponse = get_mds_summary_v2_handler(
+  getMDSSummaryResponse = get_mds_summary_handler(
     GetMDSSummaryRequest(
       articles=articles
     )
