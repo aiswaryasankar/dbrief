@@ -42,7 +42,6 @@ def get_mds_summary_v2_handler(getMDSSummaryRequest):
   except LookupError:
     nltk.download('punkt')
 
-  embeddingModel = hub.load(module)
   summary = []
   paragraphs = articles.split("\n")
 
@@ -51,7 +50,7 @@ def get_mds_summary_v2_handler(getMDSSummaryRequest):
   embeddedSentences = []
   for sent in articleSentences:
     if sent != '':
-      embeddedSentences.append(embeddingModel([sent]))
+      embeddedSentences.append(embedding_model([sent]))
   embeddedSentences = np.squeeze(embeddedSentences)
 
   # Create a matrix of facts and compute the dot product between the matrices
