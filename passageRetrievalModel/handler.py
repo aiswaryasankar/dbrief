@@ -37,7 +37,7 @@ def clean_text(text):
     if text != text_clean:
       num_stop_words += 1
 
-  clean_text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text_clean, flags=re.MULTILINE)
+  clean_text = re.sub(r'http\S+', '', text_clean)
   if clean_text != text_clean:
     num_urls += 1
 
