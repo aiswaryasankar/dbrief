@@ -21,6 +21,7 @@ from datetime import datetime
 from newspaper.utils import BeautifulSoup
 import threading
 from multiprocessing.pool import ThreadPool
+import re
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -40,6 +41,28 @@ def fetch_articles_controller(fetchArticlesRequest):
     return fetchArticlesById(fetchArticlesRequest.articleIds)
 
   return fetchArticlesByUrl(fetchArticlesRequest.articleUrls)
+
+
+def clean_text(text):
+  """
+    This function will go ahead and perform sanity checks on the text to clean it up of known issues - e.g. Advertisement type words.
+  """
+
+  stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more"]
+  stop_words = 0
+  urls = 0
+  for word in stop_words:
+    text_clean = text.replace(word, "")
+    if text != text_clean:
+      stop_words += 1
+
+  clean_text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text_clean, flags=re.MULTILINE)
+  if clean_text != text_clean:
+    urls += 1
+
+  logger.info("Replaced stop_words ", str(stop_words))
+  logger.info("Replaced urls ", str(urls))
+  return clean_text
 
 
 def populate_article(populateArticleRequest):
@@ -73,11 +96,13 @@ def populate_article(populateArticleRequest):
   if article.authors == []:
     article.authors = [topicFeedHandler.parseSource(url)]
 
+  text = clean_text(article.text)
+
   # Save to database and fetch article id
   a = Article(
     id=None,
     url=url,
-    text=article.text,
+    text=text,
     title=article.title,
     date=article.publish_date,
     imageURL=article.top_image,

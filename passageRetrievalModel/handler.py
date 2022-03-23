@@ -14,6 +14,7 @@ import numpy as np
 import logging
 import nltk
 from logtail import LogtailHandler
+import re
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -21,6 +22,28 @@ logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 module = "https://tfhub.dev/google/universal-sentence-encoder/4"
+
+
+def clean_text(text):
+  """
+    This function will go ahead and perform sanity checks on the text to clean it up of known issues - e.g. Advertisement type words.
+  """
+
+  stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more"]
+  stop_words = 0
+  urls = 0
+  for word in stop_words:
+    text_clean = text.replace(word, "")
+    if text != text_clean:
+      stop_words += 1
+
+  clean_text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text_clean, flags=re.MULTILINE)
+  if clean_text != text_clean:
+    urls += 1
+
+  logger.info("Replaced stop_words ", str(stop_words))
+  logger.info("Replaced urls ", str(urls))
+  return clean_text
 
 
 def get_top_passage_batch(getTopPassageBatchRequest):
@@ -38,7 +61,7 @@ def get_top_passage_batch(getTopPassageBatchRequest):
   topPassages = []
 
   for a in getTopPassageBatchRequest.articleList:
-    article = a.text
+    article = clean_text(a.text)
     paragraphs = article.split("\n")
     if article == "" or len(paragraphs) == 0:
       logger.warn("Article text empty for article %s", a.id)
@@ -100,48 +123,48 @@ def get_top_facts_batch(getTopFactsBatchRequest):
   topFacts = []
 
   for a in getTopFactsBatchRequest.articleList:
-    article = a.text
-    facts = article.split("\n")
-    if article == "" or len(facts) == 0:
-      logger.warn("Article text is empty for article %s", a.id)
-      logger.info(a.text)
-      continue
+    article = clean_text(a.text)
+    # facts = article.split("\n")
+    # if article == "" or len(facts) == 0:
+    #   logger.warn("Article text is empty for article %s", a.id)
+    #   logger.info(a.text)
+    #   continue
 
-    facts = nltk.tokenize.sent_tokenize(article)
+    # facts = nltk.tokenize.sent_tokenize(article)
 
-    if len(facts) == 0:
-      logger.warn("No sentences %s", a.id)
-      logger.info(a.text)
-      continue
+    # if len(facts) == 0:
+    #   logger.warn("No sentences %s", a.id)
+    #   logger.info(a.text)
+    #   continue
 
-    if len(facts) <= 1:
-      topFacts.append(
-        ArticleFact(
-          article_id = a.id,
-          facts = [facts[0]],
-        )
-      )
-      continue
+    # if len(facts) <= 1:
+    #   topFacts.append(
+    #     ArticleFact(
+    #       article_id = a.id,
+    #       facts = [facts[0]],
+    #     )
+    #   )
+    #   continue
 
-    embeddedFacts = []
-    for fact in facts:
-      if fact != '':
-        embeddedFacts.append(embeddingModel([fact]))
-    embeddedFacts = np.squeeze(embeddedFacts)
+    # embeddedFacts = []
+    # for fact in facts:
+    #   if fact != '':
+    #     embeddedFacts.append(embeddingModel([fact]))
+    # embeddedFacts = np.squeeze(embeddedFacts)
 
-    # Create a matrix of facts and compute the dot product between the matrices
-    dot_products = np.dot(embeddedFacts, embeddedFacts.T)
-    # Return the top row as the result
-    dot_product_sum = sum(dot_products)
-    top_fact_index = np.argmax(dot_product_sum)
-    # Top fact
-    top_fact = facts[top_fact_index]
-    topFacts.append(
-      ArticleFact(
-        article_id = a.id,
-        facts = [top_fact],
-      )
-    )
+    # # Create a matrix of facts and compute the dot product between the matrices
+    # dot_products = np.dot(embeddedFacts, embeddedFacts.T)
+    # # Return the top row as the result
+    # dot_product_sum = sum(dot_products)
+    # top_fact_index = np.argmax(dot_product_sum)
+    # # Top fact
+    # top_fact = facts[top_fact_index]
+    # topFacts.append(
+    #   ArticleFact(
+    #     article_id = a.id,
+    #     facts = [top_fact],
+    #   )
+    # )
 
   return GetFactsBatchResponse(
     articleFacts=topFacts,
@@ -153,7 +176,7 @@ def get_top_passage(getTopPassageRequest):
   """
     Get the top passage from the article and return it
   """
-  article = getTopPassageRequest.article_text
+  article = clean_text(getTopPassageRequest.article_text)
   paragraphs = article.split("\n")
   if article == "" or len(paragraphs) == 0:
     return GetTopPassageResponse(
@@ -217,7 +240,7 @@ def get_facts(getFactsRequest):
   """
     Get facts from the article and return a list of top facts
   """
-  article = getFactsRequest.article_text
+  article = clean_text(getFactsRequest.article_text)
 
   try:
     nltk.data.find('tokenizers/punkt')

@@ -190,6 +190,7 @@ def query_documents(queryDocumentsRequest):
   )
   logger.info("Documents returned")
   logger.info(doc_ids)
+  logger.info(doc_scores)
 
   if doc_scores == [] or doc_ids == [] or error != None:
     return QueryDocumentsResponse(
