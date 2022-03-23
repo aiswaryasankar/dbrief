@@ -550,13 +550,6 @@ class GetTopicPageRequest:
   text: str = ""
   topicName: str = ""
 
-  # def __post_init__(self):
-  #   """
-  #     Escape the double quotes from the text input to pass validation
-  #   """
-  #   print(self.text)
-  #   if self.text and self.text != "":
-  #     self.text = self.text.replace('"','\\"')
 
 @dataclass_json
 @dataclass

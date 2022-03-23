@@ -79,6 +79,7 @@ def populate_articles_batch_v1():
     num_errors=numErrors
   )
 
+
 def populate_articles_batch_v2():
   """
     The v2 handler will call the batch controller instead of hydrating each article individually.
@@ -101,7 +102,6 @@ def populate_articles_batch_v2():
   logger.info("Time to populate articles %s", timeAfterPopulateArticle-timeBeforePopulateArticle)
 
   return populateArticlesResponse
-
 
 
 def populate_article_by_url(populateArticleByUrlRequest):

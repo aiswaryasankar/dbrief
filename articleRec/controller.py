@@ -509,7 +509,7 @@ def backfill(fields, articlesToUpdate):
 
 
   if "polarization_score" in fields:
-    getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch(
+    getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch_v2(
       GetDocumentPolarityBatchRequest(
         articleList=[Article(id=article.id, text=article.text) for article in articlesToUpdate],
         source=None,
@@ -565,6 +565,5 @@ def backfill(fields, articlesToUpdate):
     num_updates=totalUpdates,
     error=None,
   )
-
 
 
