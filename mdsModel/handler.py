@@ -23,6 +23,37 @@ logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 
+def process_paragraph(paragraphs_raw):
+  """
+    This function processes the paragraph length
+  """
+  paragraphs = []
+  for paragraph in paragraphs_raw:
+    if len(paragraph) > 1500:
+      sentences = nltk.tokenize.sent_tokenize(paragraph)
+      index = 0
+      short_paragraph = ""
+
+      while index < len(sentences):
+        while (index < len(sentences) and len(short_paragraph) < 1500) :
+          short_paragraph += sentences[index]
+          index += 1
+        paragraphs.append(short_paragraph)
+        short_paragraph = ""
+    else:
+      paragraphs.append(paragraph)
+
+  paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
+
+  paragraphs_original = [paragraph for paragraph in paragraphs_raw if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
+
+  if len(paragraphs) != len(paragraphs_original):
+    logger.info("processed paragraphs: ")
+    logger.info([len(paragraph) for paragraph in paragraphs])
+
+  return paragraphs
+
+
 def get_mds_summary_v2_handler(getMDSSummaryRequest):
   """
     Get the MDS summary using a more standard approach.  This will include practically doing extraction from the legit concatenation of all the article text in order to pick out the most legit sentences from each of the articles. This way you can guarantee that the text actually makes sense, it is constant, it is quick, it is factual "no chance of making things up" and you aren't fing relying on so much GPT credits and get repetitive content out.
@@ -45,7 +76,7 @@ def get_mds_summary_v2_handler(getMDSSummaryRequest):
   summary = []
   paragraphs = articles.split("\n")
 
-  articleSentences = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
+  articleSentences = process_paragraph(paragraphs)
 
   embeddedSentences = []
   for sent in articleSentences:

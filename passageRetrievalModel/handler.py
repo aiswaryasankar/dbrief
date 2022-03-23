@@ -29,7 +29,7 @@ def clean_text(text):
     This function will go ahead and perform sanity checks on the text to clean it up of known issues - e.g. Advertisement type words.
   """
 
-  stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more"]
+  stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more", "Listen to this story.", "Save time by listening to our audio articles as you multitask", "OK", "[MUSIC PLAYING]"]
   num_stop_words = 0
   num_urls = 0
   for word in stop_words:
@@ -41,9 +41,40 @@ def clean_text(text):
   if clean_text != text_clean:
     num_urls += 1
 
-  logger.info("Replaced stop_words ", str(stop_words))
-  logger.info("Replaced urls ", str(urls))
+  logger.info("Replaced stop_words " + str(num_stop_words))
+  logger.info("Replaced urls " + str(num_urls))
   return clean_text
+
+
+def process_paragraphs(paragraphs_raw):
+  """
+    This function processes the paragraph length
+  """
+  paragraphs = []
+  for paragraph in paragraphs_raw:
+    if len(paragraph) > 1500:
+      sentences = nltk.tokenize.sent_tokenize(paragraph)
+      index = 0
+      short_paragraph = ""
+
+      while index < len(sentences):
+        while (index < len(sentences) and len(short_paragraph) < 1500) :
+          short_paragraph += sentences[index]
+          index += 1
+        paragraphs.append(short_paragraph)
+        short_paragraph = ""
+    else:
+      paragraphs.append(paragraph)
+
+  paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
+
+  paragraphs_original = [paragraph for paragraph in paragraphs_raw if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
+
+  if len(paragraphs) != len(paragraphs_original):
+    logger.info("processed paragraphs: ")
+    logger.info([len(paragraph) for paragraph in paragraphs])
+
+  return paragraphs
 
 
 def get_top_passage_batch(getTopPassageBatchRequest):
@@ -62,13 +93,12 @@ def get_top_passage_batch(getTopPassageBatchRequest):
 
   for a in getTopPassageBatchRequest.articleList:
     article = clean_text(a.text)
-    paragraphs = article.split("\n")
-    if article == "" or len(paragraphs) == 0:
+    paragraphs_raw = article.split("\n")
+    if article == "" or len(paragraphs_raw) == 0:
       logger.warn("Article text empty for article %s", a.id)
       continue
 
-    paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
-
+    paragraphs = process_paragraphs(paragraphs_raw)
     if len(paragraphs) == 0:
       logger.warn("No paragraphs for article %s", a.id)
       logger.warn(paragraphs)
@@ -124,47 +154,47 @@ def get_top_facts_batch(getTopFactsBatchRequest):
 
   for a in getTopFactsBatchRequest.articleList:
     article = clean_text(a.text)
-    # facts = article.split("\n")
-    # if article == "" or len(facts) == 0:
-    #   logger.warn("Article text is empty for article %s", a.id)
-    #   logger.info(a.text)
-    #   continue
+    facts = article.split("\n")
+    if article == "" or len(facts) == 0:
+      logger.warn("Article text is empty for article %s", a.id)
+      logger.info(a.text)
+      continue
 
-    # facts = nltk.tokenize.sent_tokenize(article)
+    facts = nltk.tokenize.sent_tokenize(article)
 
-    # if len(facts) == 0:
-    #   logger.warn("No sentences %s", a.id)
-    #   logger.info(a.text)
-    #   continue
+    if len(facts) == 0:
+      logger.warn("No sentences %s", a.id)
+      logger.info(a.text)
+      continue
 
-    # if len(facts) <= 1:
-    #   topFacts.append(
-    #     ArticleFact(
-    #       article_id = a.id,
-    #       facts = [facts[0]],
-    #     )
-    #   )
-    #   continue
+    if len(facts) <= 1:
+      topFacts.append(
+        ArticleFact(
+          article_id = a.id,
+          facts = [facts[0]],
+        )
+      )
+      continue
 
-    # embeddedFacts = []
-    # for fact in facts:
-    #   if fact != '':
-    #     embeddedFacts.append(embeddingModel([fact]))
-    # embeddedFacts = np.squeeze(embeddedFacts)
+    embeddedFacts = []
+    for fact in facts:
+      if fact != '':
+        embeddedFacts.append(embeddingModel([fact]))
+    embeddedFacts = np.squeeze(embeddedFacts)
 
-    # # Create a matrix of facts and compute the dot product between the matrices
-    # dot_products = np.dot(embeddedFacts, embeddedFacts.T)
-    # # Return the top row as the result
-    # dot_product_sum = sum(dot_products)
-    # top_fact_index = np.argmax(dot_product_sum)
-    # # Top fact
-    # top_fact = facts[top_fact_index]
-    # topFacts.append(
-    #   ArticleFact(
-    #     article_id = a.id,
-    #     facts = [top_fact],
-    #   )
-    # )
+    # Create a matrix of facts and compute the dot product between the matrices
+    dot_products = np.dot(embeddedFacts, embeddedFacts.T)
+    # Return the top row as the result
+    dot_product_sum = sum(dot_products)
+    top_fact_index = np.argmax(dot_product_sum)
+    # Top fact
+    top_fact = facts[top_fact_index]
+    topFacts.append(
+      ArticleFact(
+        article_id = a.id,
+        facts = [top_fact],
+      )
+    )
 
   return GetFactsBatchResponse(
     articleFacts=topFacts,
@@ -176,32 +206,29 @@ def get_top_passage(getTopPassageRequest):
   """
     Get the top passage from the article and return it
   """
-  article = clean_text(getTopPassageRequest.article_text)
-  paragraphs = article.split("\n")
-  if article == "" or len(paragraphs) == 0:
-    return GetTopPassageResponse(
-      passage=[],
-      error= ValueError("Empty article"),
-    )
-
   # Enforce that a paragraph has at least 2 sentences
   try:
     nltk.data.find('tokenizers/punkt')
   except LookupError:
     nltk.download('punkt')
 
-  paragraphs = [paragraph for paragraph in paragraphs if paragraph != '' and len(nltk.tokenize.sent_tokenize(paragraph)) >= 2]
-
-  if len(paragraphs) == 0:
+  article = clean_text(getTopPassageRequest.article_text)
+  paragraphs_raw = article.split("\n")
+  if article == "" or len(paragraphs_raw) == 0:
+    logger.warn("Article text empty for article %s", a.id)
     return GetTopPassageResponse(
       passage=[],
       error= ValueError("No paragraphs in article"),
   )
 
-  if len(paragraphs) <= 1:
+  paragraphs = process_paragraphs(paragraphs_raw)
+  if len(paragraphs) == 0:
+    logger.warn("No paragraphs for article %s", a.id)
+    logger.warn(paragraphs)
+    logger.warn(article)
     return GetTopPassageResponse(
-      passage=paragraphs[0],
-      error= None,
+      passage=[],
+      error= ValueError("No paragraphs in article"),
   )
 
   embeddedParagraphs = []
