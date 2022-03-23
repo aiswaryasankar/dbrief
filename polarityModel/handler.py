@@ -84,6 +84,7 @@ def get_document_polarity_batch_v2(getDocumentPolarityBatchRequest):
   """
   articlePolarityList = []
   for article in getDocumentPolarityBatchRequest.articleList:
+    print(article.url)
     polarity = parsePolarity(article.url)
     articlePolarity = ArticlePolarity(
       article_id = article.id,
