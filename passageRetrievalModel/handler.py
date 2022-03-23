@@ -30,16 +30,16 @@ def clean_text(text):
   """
 
   stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more"]
-  stop_words = 0
-  urls = 0
+  num_stop_words = 0
+  num_urls = 0
   for word in stop_words:
     text_clean = text.replace(word, "")
     if text != text_clean:
-      stop_words += 1
+      num_stop_words += 1
 
   clean_text = re.sub(r'^https?:\/\/.*[\r\n]*', '', text_clean, flags=re.MULTILINE)
   if clean_text != text_clean:
-    urls += 1
+    num_urls += 1
 
   logger.info("Replaced stop_words ", str(stop_words))
   logger.info("Replaced urls ", str(urls))
