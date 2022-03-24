@@ -368,7 +368,7 @@ def whatsHappening(whatsHappeningRequest):
     searchDocumentsByTopicResponse = tpHandler.search_documents_by_topic(
       SearchDocumentsByTopicRequest(
         topic_num = topic,
-        num_docs=2,
+        num_docs=4,
       )
     )
     # No hard failure if one of the search requests fails
@@ -390,8 +390,10 @@ def whatsHappening(whatsHappeningRequest):
       error=str(fetchArticlesByIdResponse.error)
     )
 
+  # Shuffle up the article list to allow for diversity
+  random.shuffle(fetchArticlesByIdResponse.articleList)
   articleInfo = []
-  for article in fetchArticlesByIdResponse.articleList:
+  for article in fetchArticlesByIdResponse.articleList[:8]:
     articleInfo.append(
       ArticleInfo(
         Id= article.id,
