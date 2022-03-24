@@ -88,8 +88,8 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
       error = str(getTopicsYouFollowRes.error),
     )
   currentTopics = getTopicsYouFollowRes.topics
-  logger.info("currentTopics")
-  logger.info(currentTopics)
+  print("currentTopics")
+  print(currentTopics)
 
   # If the user isn't following any topics get the top topics currently
   if len(currentTopics) < 5:
@@ -99,13 +99,17 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
         reduced = False,
       )
     )
+    print("getTopicsResponse")
+    print(getTopicsResponse)
     if getTopicsResponse.error != None:
       return GetRecommendedTopicsForUserResponse(
         topics= None,
         error = str(getTopicsResponse.error),
       )
-    currentTopics.extend(getTopicsResponse.topic_words)
+    currentTopics.extend(getTopicsResponse.topic_nums)
 
+  print("Current topics ")
+  print(currentTopics)
   # Hydrates the topics corresponding to those topicIds from the topic database
   fetchTopicInfoBatchResponse = topicModelingHandler.fetch_topic_infos_batch(
     FetchTopicInfoBatchRequest(
