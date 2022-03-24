@@ -95,7 +95,7 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
   if len(currentTopics) < 5:
     getTopicsResponse = topicModelingHandler.get_topics(
       GetTopicsRequest(
-        num_topics=5,
+        num_topics=25,
         reduced = False,
       )
     )
@@ -126,7 +126,7 @@ def get_recommended_topics_for_user(getRecommendedTopicsForUserRequest):
   logger.info(fetchTopicInfoBatchResponse.topics)
 
   topics = []
-  for topic in fetchTopicInfoBatchResponse.topics:
+  for topic in fetchTopicInfoBatchResponse.topics[:7]:
     # Queries for topics similar to the existing topics
     searchTopicsResponse = topicModelingHandler.search_topics(
       SearchTopicsRequest(
