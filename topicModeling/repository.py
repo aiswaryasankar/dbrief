@@ -8,6 +8,7 @@ from .models import TopicModel
 import logging
 from idl import *
 from logtail import LogtailHandler
+import random
 
 """
   This file will include all the basic database CRUD operations including:
@@ -47,6 +48,29 @@ def createTopics(createTopicRequest):
       continue
 
   return CreateTopicsResponse(ids=ids, error=None)
+
+
+def fetchRandomTopicInfoBatch():
+  """
+    Fetches random top topics and returns to the user.
+  """
+  topicInfos = []
+  topicInfoEntities = TopicModel.objects.all()
+
+  for topicInfoEntity in topicInfoEntities:
+    topicInfo = TopicInfo(
+      TopicID=topicInfoEntity.topicId,
+      TopicName=topicInfoEntity.topic,
+      ParentTopicName=topicInfoEntity.parentTopic,
+    )
+
+    topicInfos.append(topicInfo)
+
+  random.shuffle(topicInfos)
+  return FetchTopicInfoBatchResponse(
+    topics=topicInfos[:7],
+    error=None,
+  )
 
 
 def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):

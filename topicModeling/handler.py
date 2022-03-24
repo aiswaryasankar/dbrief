@@ -328,4 +328,10 @@ def fetch_topic_infos_batch(fetchTopicInfoBatchRequest):
   return fetchTopicInfoBatchResponse
 
 
+def fetch_random_topic_info_batch():
+  """
+    Fetch random set of topics guaranteed to be in the database.
+  """
+  fetchTopicInfoBatchResponse = fetchRandomTopicInfoBatch()
 
+  return fetchTopicInfoBatchResponse
