@@ -61,6 +61,8 @@ def retrain_topic_model():
   docIndex = model.index_document_vectors()
   wordIndex = model.index_word_vectors()
   topicPairs, error = model.hierarchical_topic_reduction(num_topics=20)
+  logger.info("topicPairs")
+  logger.info(topicPairs)
   if error != None:
     return TrainAndIndexTopicModelResponse(
       error=ValueError("Failed to perform hierarchical topic reduction")
