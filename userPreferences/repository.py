@@ -51,25 +51,25 @@ def getUser(getUserRequest):
   """
 
   try:
-    users = UserModel.objects.get(userId=getUserRequest.userId)
-    for user in users:
-      try:
-        user = User(
-            FirstName=user.firstName,
-            LastName=user.lastName,
-            EmailAddress=user.email,
-            UserID=user.id,
-          )
-      except Exception as e:
-        logger.warn("Failed to fetch user from database", extra={
-          "user": user,
-          "error": e,
-        })
-        print(e)
-        return GetUserResponse(
-          user=None,
-          error=str(e),
+    user = UserModel.objects.get(firebaseAuthId=getUserRequest.firebaseAuthId)
+    try:
+      user = User(
+          FirebaseAuthID=getUserRequest.firebaseAuthId,
+          FirstName=user.firstName,
+          LastName=user.lastName,
+          Email=user.email,
+          UserId=user.userId,
         )
+    except Exception as e:
+      logger.warn("Failed to fetch user from database", extra={
+        "user": user,
+        "error": e,
+      })
+      print(e)
+      return GetUserResponse(
+        user=None,
+        error=str(e),
+      )
 
   except Exception as e:
     return GetUserResponse(

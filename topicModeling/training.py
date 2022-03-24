@@ -1520,15 +1520,7 @@ class Top2Vec:
         """
 
         pairs = []
-
-        print(len(self.hierarchy))
-        print("topic words reduced")
-        print(self.topic_words_reduced)
-        print("topic words")
-        print(self.topic_words)
-        print(self.hierarchy)
-
-        parentTopics = ["Europe", "Asia", "Business", "Politics", "Sports", "Technology", "Economy", "Stock Market", "Lifestyle", "Geopolitics", "War", "Medicine", "World", "Food", "COVID"]
+        parentTopics = ["Europe", "Asia", "Business", "Politics", "Sports", "Technology", "Economy", "Stock Market", "Lifestyle", "Geopolitics", "War", "Medicine", "World", "Food", "COVID", "Disaster", "Consumer Electronics", "Entertainment"]
         parentTopicEmbeddings = []
         for topic in parentTopics:
             parentTopicEmbeddings.append(embedding_model([topic]))
@@ -1550,16 +1542,13 @@ class Top2Vec:
                 dotProducts = np.dot(childTopicEmbeddingMatrix, parentTopicEmbeddings.T)
                 dotProductSum = sum(dotProducts)
                 topTopicIndex = np.argmax(dotProductSum)
-                print("CHILD TOPIC: %s", childTopic )
-                print("PARENT TOPIC: %s", parentTopics[topTopicIndex])
                 topParentTopic = parentTopics[topTopicIndex]
-
                 pairs.extend([[childTopic, topParentTopic]])
 
             parentTopicIndex += 1
 
-        print("Topic, parent topic pairs")
-        print(pairs)
+        logger.info("Topic, parent topic pairs")
+        logger.info(pairs)
         return pairs
 
 
@@ -1584,8 +1573,6 @@ class Top2Vec:
             pairs.extend([[childTopic, parentTopic] for childTopic in childTopics])
             parentTopicIndex += 1
 
-        print("Topic, parent topic pairs")
-        print(pairs)
         return pairs
 
     def hierarchical_topic_reduction(self, num_topics):

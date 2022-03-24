@@ -27,10 +27,10 @@ import typing
 @dataclass
 class User:
   FirebaseAuthID: str
-  Username: str
   FirstName: str
   LastName: str
   Email: str
+  UserId: Optional[int]= field(default_factory=int)
 
 @dataclass_json
 @dataclass
@@ -586,7 +586,7 @@ class CreateUserResponse:
 
 @dataclass
 class GetUserRequest:
-  userId: int
+  firebaseAuthId: str
 
 @dataclass_json
 @dataclass
