@@ -141,10 +141,11 @@ def populate_articles_batch(populateArticlesBatch):
   """
     This will hydrate all the articles in batch.
   """
+  logger.info("In populate articles batch")
   articleIds, articles = [], []
 
   for url in populateArticlesBatch.urls:
-    print(url)
+    logger.info(url)
     hydrateArticleResponse = hydrate_article_controller(url)
     if hydrateArticleResponse.error != None:
       logger.warn("Failed to hydrate article " + url)
@@ -152,7 +153,7 @@ def populate_articles_batch(populateArticlesBatch):
 
     article=hydrateArticleResponse.article
 
-      # Hydrate the article date
+    # Hydrate the article date
     if article.publish_date == "" or article.publish_date is None:
       logger.info("Article doesn't have date info using current date")
       article.publish_date = datetime.now()
