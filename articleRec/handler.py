@@ -92,16 +92,19 @@ def populate_articles_batch_v2():
   logger.info("Hydrating %s articles", str(len(urls)))
   print("Hydrating articles: " + str(len(urls)))
 
-  populateArticlesResponse = populate_articles_batch(
+  populateArticles = threading.Thread(target=populate_articles_batch, args=(
     PopulateArticlesBatchRequest(
       urls=urls,
-    )
-  )
+    ),))
+  populateArticles.start()
+
   timeAfterPopulateArticle = datetime.now()
-  logger.info(populateArticlesResponse)
   logger.info("Time to populate articles %s", timeAfterPopulateArticle-timeBeforePopulateArticle)
 
-  return populateArticlesResponse
+  return PopulateArticlesResponse(
+    num_articles_populated=len(urls),
+    num_errors=0,
+  )
 
 
 def populate_article_by_url(populateArticleByUrlRequest):

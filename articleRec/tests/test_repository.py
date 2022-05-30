@@ -189,7 +189,7 @@ class ArticleRecRepoTest(TestCase):
     """
 
     # Populate a set of articles into the database
-    numDays = 3
+    numDays = 200
     a1 = Article(
       url = "testUrl1",
       title = "testTitle",
@@ -228,6 +228,11 @@ class ArticleRecRepoTest(TestCase):
     res2 = saveArticle(req2)
     self.assertIsNone(res2.error)
 
-    deletedArticleIds = deleteArticles(numDays)
+    deletedArticleIds, err = deleteArticles(numDays, False)
     self.assertEqual(deletedArticleIds, [res2.id])
+    self.assertIsNone(err)
+
+    deletedArticleIds, err = deleteArticles(numDays, True)
+    self.assertEqual(deletedArticleIds, [res2.id])
+    self.assertIsNone(err)
 
