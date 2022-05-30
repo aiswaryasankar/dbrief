@@ -67,7 +67,6 @@ class ArticleRecRepoTest(TestCase):
       )
     )
     self.assertIsNone(fetchedArticleRes.error)
-    logger.info(fetchedArticleRes.articleList)
     self.assertEqual(fetchedArticleRes.articleList[0].title, "testTitle_updated")
 
 
@@ -97,7 +96,6 @@ class ArticleRecRepoTest(TestCase):
     fetchedArticleRes = fetchAllArticles()
     self.assertIsNone(fetchedArticleRes.error)
     self.assertEqual(fetchedArticleRes.articleList[0].title, "testTitle")
-
 
 
   def test_query_articles(self):
@@ -235,4 +233,57 @@ class ArticleRecRepoTest(TestCase):
     deletedArticleIds, err = deleteArticles(numDays, True)
     self.assertEqual(deletedArticleIds, [res2.id])
     self.assertIsNone(err)
+
+
+  def test_fetch_articles_by_num_days(self):
+    """
+      Tests fetching articles within a certain date range.
+    """
+
+    # Populate a set of articles into the database
+    numDays = 200
+    a1 = Article(
+      url = "testUrl1",
+      title = "testTitle",
+      text = "testText",
+      authors = ["testAuthor"],
+      date = datetime.now() - timedelta(days = numDays-1),
+      topic = "testTopic",
+      parentTopic = "testParentTopic",
+      topPassage = "testPassage",
+      topFact = "testFact",
+      imageURL = "testURL",
+      polarizationScore = 0.0,
+    )
+    req1 = SaveArticleRequest(
+      article = a1,
+    )
+    res1 = saveArticle(req1)
+    self.assertIsNone(res1.error)
+
+    a2 = Article(
+      url = "testUrl2",
+      title = "testTitle",
+      text = "testText",
+      authors = ["testAuthor"],
+      date = datetime.now() - timedelta(days = numDays+1),
+      topic = "testTopic",
+      parentTopic = "testParentTopic",
+      topPassage = "testPassage",
+      topFact = "testFact",
+      imageURL = "testURL",
+      polarizationScore = 0.0,
+    )
+
+    req2 = SaveArticleRequest(
+      article = a2,
+    )
+    res2 = saveArticle(req2)
+    self.assertIsNone(res2.error)
+
+    articles = fetchArticlesByDateRange(numDays)
+    self.assertEqual(articles.articleList[0].id, res1.id)
+
+
+
 

@@ -35,8 +35,11 @@ def whats_happening_view(request):
   if not req.is_valid():
     return Response(req.errors)
 
+  # whatsHappeningRequest = req.validated_data
+  # res = whatsHappening(whatsHappeningRequest)
+
   whatsHappeningRequest = req.validated_data
-  res = whatsHappening(whatsHappeningRequest)
+  res = whatsHappeningV2(whatsHappeningRequest)
 
   return Response(res.to_json())
 

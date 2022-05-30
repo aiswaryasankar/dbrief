@@ -324,6 +324,53 @@ def queryArticles(queryArticleRequest):
   )
 
 
+def fetchArticlesByDateRange(numDays):
+  """
+    Fetches all articles in the last numDays and ranks by most recent time stamp.
+  """
+  articleList = []
+  time_threshold = datetime.now() - timedelta(days = numDays)
+
+  for article in ArticleModel.objects.filter(publish_date__gte=time_threshold):
+    try:
+      a = Article(
+          id=article.articleId,
+          url=article.url,
+          authors=article.author,
+          text=article.text,
+          title=article.title,
+        )
+
+      if article.topic:
+        a.topic = article.topic
+      if article.parent_topic:
+        a.parentTopic = article.parent_topic
+      if article.publish_date:
+        a.topic = article.publish_date
+      if article.image:
+        a.imageURL = article.image
+      if article.polarization_score:
+        a.polarizationScore = article.polarization_score
+      if article.top_passage:
+        a.topPassage = article.top_passage
+      if article.top_fact:
+        a.topFact = article.top_fact
+
+      articleList.append(a)
+
+    except Exception as e:
+      logger.warn("Failed to fetch article from database", extra={
+        "article": article,
+        "error": e,
+      })
+      print(e)
+
+  return FetchArticlesResponse(
+    articleList=articleList,
+    error=None,
+  )
+
+
 def deleteArticles(numDays, actuallyDelete):
   """
     Will delete articles with publish_date earlier than current_date - numDays.
@@ -343,7 +390,5 @@ def deleteArticles(numDays, actuallyDelete):
   logger.info(deleted_article_ids)
   logger.info("Number of articles to delete %s", len(deleted_article_ids))
   return deleted_article_ids, None
-
-
 
 

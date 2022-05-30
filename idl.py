@@ -417,6 +417,7 @@ class SaveArticleResponse:
 class FetchArticlesRequest:
   articleIds: Optional[List[int]] = field(default_factory=list)
   articleUrls: Optional[List[str]] = field(default_factory=str)
+  numDays: Optional[int] = field(default_factory=int)
 
 
 @dataclass_json

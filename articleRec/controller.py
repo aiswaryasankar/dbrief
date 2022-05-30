@@ -40,6 +40,9 @@ def fetch_articles_controller(fetchArticlesRequest):
   if fetchArticlesRequest.articleIds != None:
     return fetchArticlesById(fetchArticlesRequest.articleIds)
 
+  elif fetchArticlesRequest.numDays != 0:
+    return fetchArticlesByDateRange(fetchArticlesRequest.numDays)
+
   return fetchArticlesByUrl(fetchArticlesRequest.articleUrls)
 
 

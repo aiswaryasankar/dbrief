@@ -31,6 +31,11 @@ class ArticleRecViewTest(TestCase):
   def test_fetch_articles(self):
     response = self.client.get('/fetchArticles/', content_type="application/json")
     self.assertEqual(response.status_code, 200)
+
+
+  def test_fetch_articles_by_num_days(self):
+    response = self.client.get('/fetchArticles/', data={"numDays":2}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
     print(response.data)
 
 

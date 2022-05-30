@@ -4,6 +4,7 @@
 
 import logging
 from articleRec import handler as articleRecHandler
+from articleRec.repository import fetchArticlesByDateRange
 from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
@@ -341,6 +342,39 @@ def getTopicPage(getTopicPageRequest):
   return GetTopicPageResponse(
     topic_page=topic_page,
     error= None,
+  )
+
+
+def whatsHappeningV2(whatsHappeningRequest):
+  """
+    This version of whats happening takes the time into account and only returns the top x articles for the given day.
+    It will first fetch the latest articles within the last 2 days from the db and then choose a few randomly / possibly ones that relate to the top topics.
+  """
+  # Get most recent articles
+  fetchArticlesByDateRangeResponse = articleRecHandler.fetch_articles(
+    FetchArticlesRequest(
+      numDays=2,
+    )
+  )
+
+  # Shuffle up the article list to allow for diversity
+  random.shuffle(fetchArticlesByDateRangeResponse.articleList)
+
+  articleInfo = []
+  for article in fetchArticlesByDateRangeResponse.articleList[:8]:
+    articleInfo.append(
+      ArticleInfo(
+        Id= article.id,
+        Title=article.title,
+        TopicName=article.topic,
+        ImageURL=article.imageURL,
+        TopPassage=article.topPassage,
+      )
+    )
+
+  return WhatsHappeningResponse(
+    articles=articleInfo,
+    error = None,
   )
 
 
