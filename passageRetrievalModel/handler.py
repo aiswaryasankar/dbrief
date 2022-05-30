@@ -100,7 +100,7 @@ def get_top_passage_batch(getTopPassageBatchRequest):
       continue
 
     paragraphs = process_paragraphs(paragraphs_raw)
-    if len(paragraphs) == 0:
+    if len(paragraphs) == 0 or len(paragraphs[0]) < 100:
       logger.warn("No paragraphs for article %s", a.id)
       logger.warn(paragraphs)
       logger.warn(article)
@@ -117,7 +117,7 @@ def get_top_passage_batch(getTopPassageBatchRequest):
 
     embeddedParagraphs = []
     for paragraph in paragraphs:
-      if paragraph != '' and len(paragraph) > 100:
+      if paragraph != '':
         embeddedParagraphs.append(embeddingModel([paragraph]))
     embeddedParagraphs = np.squeeze(embeddedParagraphs)
 
@@ -156,19 +156,19 @@ def get_top_facts_batch(getTopFactsBatchRequest):
   for a in getTopFactsBatchRequest.articleList:
     article = clean_text(a.text)
     facts = article.split("\n")
-    if article == "" or len(facts) == 0:
+    if article == "" or len(facts) == 0 or len(facts[0]) < 100:
       logger.warn("Article text is empty for article %s", a.id)
       logger.info(a.text)
       continue
 
     facts = nltk.tokenize.sent_tokenize(article)
 
-    if len(facts) == 0:
+    if len(facts) == 0 or len(facts[0]) < 100:
       logger.warn("No sentences %s", a.id)
       logger.info(a.text)
       continue
 
-    if len(facts) <= 1 and len(facts[0]) > 100:
+    if len(facts) <= 1:
       topFacts.append(
         ArticleFact(
           article_id = a.id,
@@ -179,7 +179,7 @@ def get_top_facts_batch(getTopFactsBatchRequest):
 
     embeddedFacts = []
     for fact in facts:
-      if fact != '' and len(fact) > 100:
+      if fact != '':
         embeddedFacts.append(embeddingModel([fact]))
     embeddedFacts = np.squeeze(embeddedFacts)
 
