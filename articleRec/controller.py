@@ -34,16 +34,18 @@ def fetch_articles_controller(fetchArticlesRequest):
   """
     This function will fetch all the articles from the articleId list provided or fetch all articles in the db if no articleIds are provided.
   """
-  if fetchArticlesRequest.articleIds == None or len(fetchArticlesRequest.articleIds) == 0 or fetchArticlesRequest.articleUrls == None or len(fetchArticlesRequest.articleUrls) == 0:
-    return fetchAllArticles()
 
-  if fetchArticlesRequest.articleIds != None:
+  if fetchArticlesRequest.articleIds != []:
     return fetchArticlesById(fetchArticlesRequest.articleIds)
 
   elif fetchArticlesRequest.numDays != 0:
     return fetchArticlesByDateRange(fetchArticlesRequest.numDays)
 
-  return fetchArticlesByUrl(fetchArticlesRequest.articleUrls)
+  elif fetchArticlesRequest.articleUrls != '':
+    return fetchArticlesByUrl(fetchArticlesRequest.articleUrls)
+
+  else:
+    return fetchAllArticles()
 
 
 def clean_text(text):
