@@ -39,6 +39,7 @@ urlpatterns = [
     path('fetchArticles/', articleRecView.fetch_articles_view),
     path('hydrateArticle/', articleRecView.hydrate_article_view),
     path('articleBackfill/', articleRecView.article_backfill_view),
+    path('deleteArticles/', articleRecView.delete_articles_view),
 
     #TopicFeed endpoints
     path('getTopicPage/', topicFeedView.get_topic_page_view),

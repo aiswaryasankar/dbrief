@@ -122,7 +122,7 @@ def getTopicPage(getTopicPageRequest):
         error= str(fetchTopicInfoBatchResponse.error)
       )
     afterFetchTopicInfos = datetime.now()
-    print("Time to fetch topicInfos %s", str(afterFetchTopicInfos-beforeFetchTopicInfos))
+    logger.info("Time to fetch topicInfos %s", str(afterFetchTopicInfos-beforeFetchTopicInfos))
     logger.info("Topics fetched")
     logger.info(fetchTopicInfoBatchResponse.topics)
     beforeQueryDocuments = datetime.now()
@@ -142,7 +142,7 @@ def getTopicPage(getTopicPageRequest):
       )
 
     afterQueryDocuments = datetime.now()
-    print("Time to query documents %s", str(afterQueryDocuments-beforeQueryDocuments))
+    logger.info("Time to populate query documents %s", str(afterQueryDocuments-beforeQueryDocuments))
 
     beforeFetchArticles = datetime.now()
     articleId = queryDocumentsResponse.doc_ids[0]
@@ -160,7 +160,7 @@ def getTopicPage(getTopicPageRequest):
     text = fetchArticlesResponse.articleList[0].text
     article = fetchArticlesResponse.articleList[0]
     afterFetchArticles = datetime.now()
-    print("Time to fetch articles %s", str(afterFetchArticles-beforeFetchArticles))
+    logger.info("Time to populate fetch articles %s", str(afterFetchArticles-beforeFetchArticles))
 
   if getTopicPageRequest.articleId != 0:
     fetchArticlesResponse = articleRecHandler.fetchArticles(
@@ -203,7 +203,7 @@ def getTopicPage(getTopicPageRequest):
     return GetTopicPageResponse(topic_page=None, error=str(queryDocumentsResponse.error))
 
   afterQueryDocumentsP2 = datetime.now()
-  print("Time to queryDocumentsV2 %s", str(afterQueryDocumentsP2-beforeQueryDocumentsP2))
+  logger.info("Time to populate queryDocumentsV2 %s", str(afterQueryDocumentsP2-beforeQueryDocumentsP2))
   logger.info("query doc response")
   logger.info(queryDocumentsResponse)
   # Fetch the related articles from the database
@@ -218,7 +218,7 @@ def getTopicPage(getTopicPageRequest):
     return GetTopicPageResponse(topic_page=None, error=str(fetchArticlesResponse.error))
 
   afterFetchArticlesP2 = datetime.now()
-  print("FetchArticlesP2 %s", str(afterFetchArticlesP2-beforeFetchArticlesP2))
+  logger.info("Time to populate FetchArticlesP2 %s", str(afterFetchArticlesP2-beforeFetchArticlesP2))
   # Get the topic from the primary article
 
   beforeGetDocumentTopicBatchP2 = datetime.now()
@@ -232,7 +232,7 @@ def getTopicPage(getTopicPageRequest):
     return GetTopicPageRequest(topic_page=None, error=str(getDocumentTopicBatchResponse.error))
 
   afterGetDocumentTopicBatchP2 = datetime.now()
-  print("Get document topic batch p2 %s", str(afterGetDocumentTopicBatchP2-beforeGetDocumentTopicBatchP2))
+  logger.info("Time to populate get document topic batch p2 %s", str(afterGetDocumentTopicBatchP2-beforeGetDocumentTopicBatchP2))
   topicName = getDocumentTopicBatchResponse.documentTopicInfos[0].topic
   topicID = None
 
@@ -249,7 +249,7 @@ def getTopicPage(getTopicPageRequest):
     topicID = fetchTopicInfoBatchResponse.topics[0].TopicID
 
   afterFetchTopicInfosP2 = datetime.now()
-  print("Time to fetchTopicInfosP2 %s", str(afterFetchTopicInfosP2-beforeFetchTopicInfosP2))
+  logger.info("Time to populate fetchTopicInfosP2 %s", str(afterFetchTopicInfosP2-beforeFetchTopicInfosP2))
   # GetMDS to get the MDS for the articles
   articles = ""
   topImageUrl = ""
@@ -268,7 +268,7 @@ def getTopicPage(getTopicPageRequest):
     return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponse.error))
 
   afterMds = datetime.now()
-  print("time to MDS %s", str(afterMds-beforeMds))
+  logger.info("Time to populate MDS %s", str(afterMds-beforeMds))
 
   logger.info("MDS SUMMARY")
   logger.info(getMDSSummaryResponse.summary)

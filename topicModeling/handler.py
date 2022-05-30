@@ -335,3 +335,28 @@ def fetch_random_topic_info_batch():
   fetchTopicInfoBatchResponse = fetchRandomTopicInfoBatch()
 
   return fetchTopicInfoBatchResponse
+
+
+def delete_documents_batch(deleteDocumentsRequest):
+  """
+    This endpoint will remove documents from the topic model after they have been removed from the mysql table
+  """
+  top2vecModel = Top2Vec.load(topicModelFile)
+  num_articles_deleted, err = top2vecModel.delete_documents(
+    doc_ids = deleteDocumentsRequest.docIds,
+  )
+  if err != None:
+    logger.info("Failed to delete %s documents", len(deleteDocumentsRequest.docIds))
+    logger.warn(err)
+    print(err)
+    return DeleteDocumentsResponse(
+      numArticlesDeleted=0,
+      error=err,
+    )
+
+  return DeleteDocumentsResponse(
+    numArticlesDeleted=num_articles_deleted,
+    error=None,
+  )
+
+

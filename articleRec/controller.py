@@ -242,7 +242,7 @@ def hydrateModelOutputsForArticle(article, articleId, url, created):
       )
     )
     if addedToTopicModel.error != None:
-      return PopulateArticleResponse(url=url, id=articleId, error=str(addedToTopicModel.error))
+      return PopulateArticleResponse(article=None, url=url, id=articleId, error=str(addedToTopicModel.error))
 
     logger.info("Added document to the topic model")
     timeAfterAddDocument = datetime.now()
@@ -256,7 +256,7 @@ def hydrateModelOutputsForArticle(article, articleId, url, created):
     )
   )
   if getDocumentTopicBatchResponse.error != None:
-    return PopulateArticleResponse(url=url, id=articleId, error=str(getDocumentTopicBatchResponse.error))
+    return PopulateArticleResponse(article=None, url=url, id=articleId, error=str(getDocumentTopicBatchResponse.error))
 
   topic = getDocumentTopicBatchResponse.documentTopicInfos[0].topic
   parentTopic = getDocumentTopicBatchResponse.documentTopicInfos[0].parentTopic
@@ -569,4 +569,35 @@ def backfill(fields, articlesToUpdate):
     error=None,
   )
 
+
+def delete_articles_controller(deleteArticlesRequest):
+  """
+    This function will call the repository and delete articles further out than the max num delete day limit.
+  """
+
+  deletedArticles, err = deleteArticles(deleteArticlesRequest.num_days, actuallyDelete=False)
+  if err != None:
+    return DeleteArticlesResponse(num_articles_deleted=0, error=err)
+
+  # Remove the articles from the topic model
+  deleteDocumentsRes = tpHandler.delete_documents_batch(
+    DeleteDocumentsRequest(
+      docIds=deletedArticles,
+    )
+  )
+
+  if err != None:
+    return DeleteArticlesResponse(
+      num_articles_deleted=deleteDocumentsRes.numArticlesDeleted,
+      error=deleteDocumentsRes.error,
+    )
+
+  deletedArticles, err = deleteArticles(deleteArticlesRequest.num_days, actuallyDelete=True)
+  if err != None:
+    return DeleteArticlesResponse(num_articles_deleted=0, error=err)
+
+  return DeleteArticlesResponse(
+    num_articles_deleted=len(deletedArticles),
+    error=None,
+  )
 

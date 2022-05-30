@@ -1315,17 +1315,19 @@ class Top2Vec:
             in search results.
         Returns
         -------
+        num_documents_deleted: int
+            Number of documents deleted
         error: Exception
         """
         # make sure documents exist
         err = self._validate_doc_ids(doc_ids, doc_ids_neg=[])
         if err != None:
-            return err
+            return 0, err
 
         # update index
         if self.documents_indexed:
             # delete doc_ids from index
-            index_ids = [self.doc_id2index_id(doc_id) for doc_id in doc_ids]
+            index_ids = [self.doc_id2index_id[doc_id] for doc_id in doc_ids]
             for index_id in index_ids:
                 self.document_index.mark_deleted(index_id)
             # update index_id and doc_ids
@@ -1366,7 +1368,7 @@ class Top2Vec:
         if self.hierarchy is not None:
             self._unassign_documents_from_topic(doc_indexes, hierarchy=True)
 
-        return None
+        return len(doc_ids), None
 
     def get_num_topics(self, reduced=False):
         """

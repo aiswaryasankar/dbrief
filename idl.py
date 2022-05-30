@@ -202,6 +202,16 @@ class SearchTopicsResponseV2:
 #
 ###
 
+@dataclass
+class DeleteDocumentsRequest:
+  docIds: List[int]
+
+@dataclass_json
+@dataclass
+class DeleteDocumentsResponse:
+  numArticlesDeleted: int
+  error: Exception
+
 # Same
 @dataclass
 class CreateTopicsRequest:
@@ -447,6 +457,16 @@ class QueryArticleResponse:
   articles: List[Article]
   error: Exception
 
+@dataclass_json
+@dataclass
+class DeleteArticlesRequest:
+  num_days: int
+
+@dataclass_json
+@dataclass
+class DeleteArticlesResponse:
+  num_articles_deleted: int
+  error: Exception
 
 ###
 #

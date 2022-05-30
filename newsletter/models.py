@@ -14,5 +14,3 @@ class NewsletterConfigModel (models.Model):
 
   def __str__(self):
     return str(self.newsletterConfigId) + " " + str(self.userId)
-
-

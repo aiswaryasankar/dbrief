@@ -2,6 +2,7 @@ from .models import ArticleModel
 import logging
 from idl import *
 from logtail import LogtailHandler
+from datetime import datetime, timedelta
 
 """
   This file will include all the basic database CRUD operations including:
@@ -321,5 +322,28 @@ def queryArticles(queryArticleRequest):
     articles=articleModels,
     error=None,
   )
+
+
+def deleteArticles(numDays, actuallyDelete):
+  """
+    Will delete articles with publish_date earlier than current_date - numDays.
+    ActuallyDelete determines if we should just make a list of the articles to delete or we should actually delete the articles. We only delete the articles from the database after they have been successfully deleted from the topic model.
+  """
+  deleted_article_ids = []
+  time_threshold = datetime.now() - timedelta(days = numDays)
+  if numDays < 100:
+    return 0, "Invalid date range"
+
+  for article in ArticleModel.objects.filter(publish_date__lt=time_threshold):
+    deleted_article_ids.append(article.articleId)
+
+    if actuallyDelete:
+      article.delete()
+
+  logger.info(deleted_article_ids)
+  logger.info("Number of articles to delete %s", len(deleted_article_ids))
+  return deleted_article_ids, None
+
+
 
 

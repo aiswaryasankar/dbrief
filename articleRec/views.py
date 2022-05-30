@@ -125,5 +125,21 @@ def article_backfill_view(request):
   return Response(res.to_json())
 
 
+@api_view(['POST'])
+def delete_articles_view(request):
+  """
+    This endpoint will delete articles that are past the number of days prior to the current day.
+  """
+
+  req = DeleteArticlesRequestSerializer(data=request.data)
+  if not req.is_valid():
+    return Response(req.errors)
+
+  deleteArticlesRequest = req.validated_data
+
+  print(deleteArticlesRequest)
+  res = delete_articles(deleteArticlesRequest)
+
+  return Response(res.to_json())
 
 

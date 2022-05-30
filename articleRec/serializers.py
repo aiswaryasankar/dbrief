@@ -46,3 +46,9 @@ class ArticleBackfillRequestSerializer(DataclassSerializer):
   class Meta:
     dataclass = ArticleBackfillRequest
 
+class DeleteArticlesRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = DeleteArticlesRequest
+
+

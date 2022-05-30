@@ -125,4 +125,10 @@ def article_backfill(articleBackfillRequest):
   return article_backfill_controller(articleBackfillRequest)
 
 
+def delete_articles(deleteArticlesRequest):
+  """
+    This endpoint will delete articles from the database that are more than numDays old.
+  """
+  return delete_articles_controller(deleteArticlesRequest)
+
 

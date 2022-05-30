@@ -1,5 +1,5 @@
 version: 1
 cron:
- — name: "populateArticles"
-   url: "/populateArticles"
+ — name: "populateArticlesV2"
+   url: "/populateArticlesV2"
    schedule: @hourly

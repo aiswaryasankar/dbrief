@@ -21,7 +21,6 @@ class UserPreferencesRepoTest(TestCase):
     """
     user1 = User(
       FirebaseAuthID= "testFirebaseAuthId",
-      Username= "testUsername",
       FirstName= "testFirstName",
       LastName= "testLastName",
       Email= "testEmail",
@@ -36,7 +35,6 @@ class UserPreferencesRepoTest(TestCase):
     # Try creating the same user again - should error
     duplicateUser1 = User(
       FirebaseAuthID= "testFirebaseAuthId",
-      Username= "testUsername",
       FirstName= "testFirstName",
       LastName= "testLastName",
       Email= "testEmail",
