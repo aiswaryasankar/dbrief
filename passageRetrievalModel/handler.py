@@ -30,6 +30,7 @@ def clean_text(text):
   """
 
   stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more", "Listen to this story.", "Save time by listening to our audio articles as you multitask", "OK", "[MUSIC PLAYING]"]
+
   num_stop_words = 0
   num_urls = 0
   for word in stop_words:
@@ -38,11 +39,11 @@ def clean_text(text):
       num_stop_words += 1
 
   clean_text = re.sub(r'http\S+', '', text_clean)
+  clean_text = re.sub(r'\([^)]*\)', '', clean_text)
+
   if clean_text != text_clean:
     num_urls += 1
 
-  logger.info("Replaced stop_words " + str(num_stop_words))
-  logger.info("Replaced urls " + str(num_urls))
   return clean_text
 
 
@@ -116,7 +117,7 @@ def get_top_passage_batch(getTopPassageBatchRequest):
 
     embeddedParagraphs = []
     for paragraph in paragraphs:
-      if paragraph != '':
+      if paragraph != '' and len(paragraph) > 100:
         embeddedParagraphs.append(embeddingModel([paragraph]))
     embeddedParagraphs = np.squeeze(embeddedParagraphs)
 
@@ -167,7 +168,7 @@ def get_top_facts_batch(getTopFactsBatchRequest):
       logger.info(a.text)
       continue
 
-    if len(facts) <= 1:
+    if len(facts) <= 1 and len(facts[0]) > 100:
       topFacts.append(
         ArticleFact(
           article_id = a.id,
@@ -178,7 +179,7 @@ def get_top_facts_batch(getTopFactsBatchRequest):
 
     embeddedFacts = []
     for fact in facts:
-      if fact != '':
+      if fact != '' and len(fact) > 100:
         embeddedFacts.append(embeddingModel([fact]))
     embeddedFacts = np.squeeze(embeddedFacts)
 
