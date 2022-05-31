@@ -1900,6 +1900,15 @@ class Top2Vec:
 
         if self.documents is not None and return_documents:
             documents = self.documents[doc_indexes]
+
+            # Only return documents if the score is over the .5 threshold
+            valid_docs, valid_doc_scores, valid_doc_ids = [], [], []
+            for i in range(len(documents)):
+                if doc_scores[i] > .5:
+                    valid_docs.append(documents[i])
+                    valid_doc_scores.append(doc_scores[i])
+                    valid_doc_ids.append(doc_ids[i])
+
             return documents, doc_scores, doc_ids, None
         else:
             return [], doc_scores, doc_ids, None

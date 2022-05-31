@@ -190,7 +190,10 @@ def query_documents(queryDocumentsRequest):
     ef=queryDocumentsRequest.ef,
     embedding_model = embedding_model,
   )
-  logger.info("Documents returned")
+  logger.info("Documents returned", extra={
+    'doc_ids': doc_ids,
+    'doc_scores': doc_scores,
+  })
   logger.info(doc_ids)
   logger.info(doc_scores)
 
