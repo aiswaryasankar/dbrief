@@ -92,10 +92,6 @@ def getTopicPage(getTopicPageRequest):
         error=str(queryDocumentsResponse.error)
       )
 
-    logger.info("QUERY DOCUMENT SCORES", extra={
-      "doc_scores": queryDocumentsResponse.doc_ids[1],
-    })
-
     articleId = queryDocumentsResponse.doc_ids[0]
     fetchArticlesResponse = articleRecHandler.fetchArticles(
       fetchArticlesRequest= FetchArticlesRequest(

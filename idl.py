@@ -399,6 +399,7 @@ class PopulateArticleResponse:
 @dataclass
 class PopulateArticlesResponse:
   num_articles_populated: int
+  num_duplicates: int
   num_errors: int
 
 @dataclass

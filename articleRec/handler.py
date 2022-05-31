@@ -1,11 +1,12 @@
 from django.http.response import JsonResponse
 from rest_framework.response import Response
 import logging
-from  .controller import *
+from .controller import *
 from .repository import *
 from .serializers import *
 from logtail import LogtailHandler
 from datetime import datetime
+import threading
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -103,6 +104,7 @@ def populate_articles_batch_v2():
 
   return PopulateArticlesResponse(
     num_articles_populated=len(urls),
+    num_duplicates=0,
     num_errors=0,
   )
 

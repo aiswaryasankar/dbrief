@@ -1522,7 +1522,7 @@ class Top2Vec:
         """
 
         pairs = []
-        parentTopics = ["Europe", "Asia", "Business", "Politics", "Sports", "Technology", "Economy", "Stock Market", "Lifestyle", "Geopolitics", "War", "Medicine", "World", "Food", "COVID", "Disaster", "Consumer Electronics", "Entertainment"]
+        parentTopics = ["Europe", "Asia", "Business", "Politics", "Sports", "Technology", "Economy", "Stock Market", "Lifestyle", "Geopolitics", "War", "Medicine", "World", "Food", "Disaster", "Consumer Electronics", "Entertainment", "Science", "Religion"]
         parentTopicEmbeddings = []
         for topic in parentTopics:
             parentTopicEmbeddings.append(embedding_model([topic]))

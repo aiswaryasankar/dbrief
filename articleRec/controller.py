@@ -148,8 +148,16 @@ def populate_articles_batch(populateArticlesBatch):
   """
   logger.info("In populate articles batch")
   articleIds, articles = [], []
+  num_duplicates = 0
 
   for url in populateArticlesBatch.urls:
+
+    # First try fetching the article by URL - if present skip since it should already be fully hydrated
+    fetchArticlesByUrlRes = fetchArticlesByUrl([url])
+    if len(fetchArticlesByUrlRes.articleList) > 0:
+      num_duplicates += 1
+      continue
+
     logger.info(url)
     hydrateArticleResponse = hydrate_article_controller(url)
     if hydrateArticleResponse.error != None:
@@ -215,14 +223,18 @@ def populate_articles_batch(populateArticlesBatch):
   articleBackfill = threading.Thread(target=article_backfill_controller, args=(
     ArticleBackfillRequest(
       force_update= False,
-      fields = ["topic", "top_passage", "top_fact"]
+      fields = ["topic", "top_passage", "top_fact", "polarization_score"]
     )))
   articleBackfill.start()
 
-  return PopulateArticlesResponse(
-    num_articles_populated=len(articles),
+  res = PopulateArticlesResponse(
+    num_articles_populated=len(articleIds),
+    num_duplicates=num_duplicates,
     num_errors=0,
   )
+  logger.info(res)
+
+  return res
 
   # if articleBackfill.error != None:
   #   return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articles))
