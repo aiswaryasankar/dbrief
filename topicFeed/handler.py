@@ -234,7 +234,7 @@ def getTopicPage(getTopicPageRequest):
     )
   )
   if getDocumentTopicBatchResponse.error != None or len(getDocumentTopicBatchResponse.documentTopicInfos) < 1:
-    return GetTopicPageRequest(topic_page=None, error=str(getDocumentTopicBatchResponse.error))
+    return GetTopicPageResponse(topic_page=None, error=str(getDocumentTopicBatchResponse.error))
 
   afterGetDocumentTopicBatchP2 = datetime.now()
   logger.info("Time to populate get document topic batch p2 %s", str(afterGetDocumentTopicBatchP2-beforeGetDocumentTopicBatchP2))
