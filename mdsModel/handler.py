@@ -64,8 +64,7 @@ def get_mds_summary_v2_handler(getMDSSummaryRequest):
     embedding_model = hub.load(module)
 
   articles = getMDSSummaryRequest.articles
-  print("INPUT for MDS")
-  print(articles)
+  logger.info("INPUT for MDS: " + str(articles))
 
   # Tokenize everything by sentence? by paragraph? and compute the embeddings and then
   # I think you can test both of the options out and actually go ahead and validate by also printing out all the input article text first to make sure that you are picking out what you thinks makes the most sense. One thing to keep in mind though is that it should be decently cohesive and shouldn't be more than 5 to 6 sentences honestly or else it'll be like a mini article all by itself - so try to either do something with paragraphs or literally pick out the top 6-7 sentences from all the articles combined.
