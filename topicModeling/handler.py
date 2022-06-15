@@ -299,9 +299,9 @@ def search_topics(searchTopicsRequest):
   logger.info(topic_scores)
 
   return SearchTopicsResponse(
-    topics_words=[words[0] for words in topic_words],
-    topic_scores=topic_scores,
-    topic_nums=topic_nums,
+    topics_words=set([words[0] for words in topic_words]),
+    topic_scores=None,
+    topic_nums=None,
     error=None
   )
 
