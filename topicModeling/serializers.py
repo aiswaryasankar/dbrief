@@ -42,6 +42,11 @@ class GetDocumentTopicRequestSerializer(DataclassSerializer):
   class Meta:
     dataclass = GetDocumentTopicRequest
 
+class DeleteTopicsRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = DeleteTopicsRequest
+
 ###
 #
 # TopicModelingV2 endpoints

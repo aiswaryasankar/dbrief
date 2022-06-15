@@ -363,3 +363,17 @@ def delete_documents_batch(deleteDocumentsRequest):
   )
 
 
+def delete_topics(deleteTopicsRequest):
+  """
+    This endpoint will delete old topics to maintain topic freshness for all users.
+  """
+  deleteTopicsByTimeRangeRes = deleteTopicsByTimeRange(
+    DeleteArticlesRequest(
+      num_days = deleteTopicsRequest.num_days,
+    )
+  )
+  if deleteTopicsByTimeRangeRes.error != None:
+    return deleteTopicsByTimeRangeRes
+
+  return deleteTopicsByTimeRangeRes
+

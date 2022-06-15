@@ -84,6 +84,21 @@ def search_topics_view(request):
 
 
 @api_view(['POST'])
+def delete_topics_view(request):
+  """
+    This endpoint takes in a keyword and returns the top topics related to that keyword
+  """
+  req = DeleteTopicsRequestSerializer(data=request.data)
+  if not req.is_valid():
+    return Response(req.errors)
+
+  deleteTopicsRequest = req.validated_data
+  res = delete_topics(deleteTopicsRequest)
+
+  return Response(res.to_json())
+
+
+@api_view(['POST'])
 def index_document_vectors_view(request):
   """
     This endpoint is responsible for re-indexing the documents after the topic model has been regenerated. In the case of individual articles being added to the topic model, it will be handled through add_document.

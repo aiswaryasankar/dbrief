@@ -54,6 +54,7 @@ urlpatterns = [
     path('searchTopics/', topicModelView.search_topics_view),
     path('indexDocuments/', topicModelView.index_document_vectors_view),
     path('generateTopicPairs/', topicModelView.generate_topic_pairs_view),
+    path('deleteTopics/', topicModelView.delete_topics_view),
 
     # TopicModelingV2 endpoints
     path('trainTopicModelV2/', topicModelView.retrain_topic_model_view_v2),

@@ -170,6 +170,16 @@ class GetTopicsResponseV2:
   topicInfos: List[TopicInfo]
   error: Optional[Exception]
 
+@dataclass
+class DeleteTopicsRequest:
+  num_days: int
+
+@dataclass_json
+@dataclass
+class DeleteTopicsResponse:
+  error: Exception
+
+
 # TO UPDATE - will return document text using get_representative_docs
 # For all other use cases use query_documents on Top2Vec passing in topic as a string
 @dataclass
@@ -596,6 +606,7 @@ class DeleteTopicsByDateRangeRequest:
 @dataclass_json
 @dataclass
 class DeleteTopicsByDateRangeResponse:
+  num_topics_deleted: int
   error: Exception
 
 

@@ -31,19 +31,22 @@ def deleteTopicsByTimeRange(deleteTopicsByTimeRangeRequest):
   """
 
   deleted_topic_ids = []
-  numDays = deleteTopicsByTimeRangeRequest.numDays
+  numDays = deleteTopicsByTimeRangeRequest.num_days
   time_threshold = datetime.now() - timedelta(days = numDays)
 
   if numDays < 5:
     return 0, "Invalid date range"
 
-  for topic in TopicModel.objects.filter(created_at__lt=time_threshold):
+  for topic in TopicModel.objects.filter(createdAt__lt=time_threshold):
     deleted_topic_ids.append(topic.topicId)
     topic.delete()
 
   logger.info(deleted_topic_ids)
   logger.info("Number of topics to delete %s", len(deleted_topic_ids))
-  return deleted_topic_ids, None
+  return DeleteTopicsByDateRangeResponse(
+    num_topics_deleted=len(deleted_topic_ids),
+    error=None,
+  )
 
 
 
