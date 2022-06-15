@@ -9,7 +9,7 @@ import logging
 from idl import *
 from logtail import LogtailHandler
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 """
   This file will include all the basic database CRUD operations including:
@@ -23,6 +23,28 @@ handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
 logger.handlers = [handler]
 logger.setLevel(logging.INFO)
+
+
+def deleteTopicsByTimeRange(deleteTopicsByTimeRangeRequest):
+  """
+    This will delete the topics that were generated prior to the last x days
+  """
+
+  deleted_topic_ids = []
+  numDays = deleteTopicsByTimeRangeRequest.numDays
+  time_threshold = datetime.now() - timedelta(days = numDays)
+
+  if numDays < 5:
+    return 0, "Invalid date range"
+
+  for topic in TopicModel.objects.filter(created_at__lt=time_threshold):
+    deleted_topic_ids.append(topic.topicId)
+    topic.delete()
+
+  logger.info(deleted_topic_ids)
+  logger.info("Number of topics to delete %s", len(deleted_topic_ids))
+  return deleted_topic_ids, None
+
 
 
 def createTopics(createTopicRequest):
@@ -120,4 +142,3 @@ def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):
     topics=topicInfos,
     error=None,
   )
-

@@ -589,6 +589,15 @@ class WhatsHappeningResponse:
   articles: List[ArticleInfo]
   error: Exception
 
+@dataclass
+class DeleteTopicsByDateRangeRequest:
+  num_days: int
+
+@dataclass_json
+@dataclass
+class DeleteTopicsByDateRangeResponse:
+  error: Exception
+
 
 ###
 #
