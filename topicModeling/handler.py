@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer
 from logtail import LogtailHandler
 from topicModeling.training import Top2Vec
 from rest_framework.response import Response
-import datetime
+from datetime import datetime
 from idl import *
 from articleRec import handler as articleRecHandler
 from idl import *
@@ -54,9 +54,9 @@ def retrain_topic_model():
 
   # train_bert_topic(data)
 
-  startTime = datetime.datetime.now()
+  startTime = datetime.now()
   model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
-  endTime = datetime.datetime.now()
+  endTime = datetime.now()
 
   docIndex = model.index_document_vectors()
   wordIndex = model.index_word_vectors()

@@ -9,6 +9,7 @@ import logging
 from idl import *
 from logtail import LogtailHandler
 import random
+from datetime import datetime
 
 """
   This file will include all the basic database CRUD operations including:
@@ -37,7 +38,9 @@ def createTopics(createTopicRequest):
       topicEntry = TopicModel(
           topic= topicEntity.TopicName,
           parentTopic= topicEntity.ParentTopicName,
+          createdAt = str(datetime.now()),
       )
+
       topicEntry.save()
       logger.info("Saved topic to the database %s", topicEntity.TopicName)
       ids.append(topicEntry.topicId)

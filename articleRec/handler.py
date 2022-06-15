@@ -6,7 +6,8 @@ from .repository import *
 from .serializers import *
 from logtail import LogtailHandler
 from datetime import datetime
-import threading
+import multiprocessing
+import os
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -21,10 +22,29 @@ def hello_world(helloWorldRequest):
   """
   logger.info(helloWorldRequest)
   logger.info(helloWorldRequest.name)
+
+
+  beforeParallelHydration = datetime.now()
+  # Aysynchronously populate all of the topic pages to display on the home page
+  sleepLengths = [10 for i in range(50)]
+  pool = ThreadPool(processes=50)
+  topicPages = pool.map(sleeper, sleepLengths)
+
+  pool.close()
+  pool.join()
+  afterParallelHydration = datetime.now()
+
+  print("testing parallel")
+  print(afterParallelHydration-beforeParallelHydration)
+
   return HelloWorldResponse(
     name=helloWorldRequest.name
   )
 
+def sleeper(length):
+  time.sleep(length)
+  print("PID of Parent process is : ", os.getpid())
+  print(multiprocessing.current_process().pid)
 
 def fetch_articles(fetchArticlesRequest):
   """

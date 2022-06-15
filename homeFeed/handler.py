@@ -1,5 +1,5 @@
 import logging
-import multiprocessing
+import threading
 from articleRec import handler as articleRecHandler
 from topicModeling import handler as topicModelingHandler
 from mdsModel.handler import *

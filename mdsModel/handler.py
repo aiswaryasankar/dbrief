@@ -11,8 +11,11 @@ import openai
 import logging
 import nltk
 import tensorflow_hub as hub
+from transformers import PegasusForConditionalGeneration, PegasusTokenizer
+import torch
 
 embedding_model = None
+model_id = "google/pegasus-multi_news"
 
 openai.api_key = "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"
 module = "https://tfhub.dev/google/universal-sentence-encoder/4"
@@ -54,10 +57,11 @@ def process_paragraph(paragraphs_raw):
   return paragraphs
 
 
-def get_mds_summary_v2_handler(getMDSSummaryRequest):
+def get_mds_summary_v3_handler(getMDSSummaryRequest):
   """
-    Get the MDS summary using a more standard approach.  This will include practically doing extraction from the legit concatenation of all the article text in order to pick out the most legit sentences from each of the articles. This way you can guarantee that the text actually makes sense, it is constant, it is quick, it is factual "no chance of making things up" and you aren't fing relying on so much GPT credits and get repetitive content out.
+    This approach will first extract the top passages per article then concatenate all of them and pass it into pegasus multi news for eval.
   """
+
   global embedding_model
   if embedding_model == None:
     print("Embedding model is none in add document")
@@ -66,33 +70,91 @@ def get_mds_summary_v2_handler(getMDSSummaryRequest):
   articles = getMDSSummaryRequest.articles
   logger.info("INPUT for MDS: " + str(articles))
 
-  # Tokenize everything by sentence? by paragraph? and compute the embeddings and then
-  # I think you can test both of the options out and actually go ahead and validate by also printing out all the input article text first to make sure that you are picking out what you thinks makes the most sense. One thing to keep in mind though is that it should be decently cohesive and shouldn't be more than 5 to 6 sentences honestly or else it'll be like a mini article all by itself - so try to either do something with paragraphs or literally pick out the top 6-7 sentences from all the articles combined.
 
   try:
     nltk.data.find('tokenizers/punkt')
   except LookupError:
     nltk.download('punkt')
 
-  summary = []
   paragraphs = articles.split("\n")
 
-  articleSentences = process_paragraph(paragraphs)
+  articleParagraphs = process_paragraph(paragraphs)
 
-  embeddedSentences = []
-  for sent in articleSentences:
-    if sent != '':
-      embeddedSentences.append(embedding_model([sent]))
-  embeddedSentences = np.squeeze(embeddedSentences)
+  embeddedParagraphs = []
+  for para in articleParagraphs:
+    if para != '':
+      embeddedParagraphs.append(embedding_model([para]))
+  embeddedParagraphs = np.squeeze(embeddedParagraphs)
 
   # Create a matrix of facts and compute the dot product between the matrices
-  dot_products = np.dot(embeddedSentences, embeddedSentences.T)
+  dot_products = np.dot(embeddedParagraphs, embeddedParagraphs.T)
   dot_product_sum = sum(dot_products)
 
-  topSentenceIndices = np.argpartition(dot_product_sum, -1)[-1:]
+  # Take the indices of the top 10 passages so far
+  topParagraphIndices = np.argpartition(dot_product_sum, -1)[-10:]
 
-  topSentences = [articleSentences[index] for index in topSentenceIndices]
-  mdsSummary = " ".join(topSentences)
+  topParagraphs = [articleParagraphs[index] for index in topParagraphIndices]
+  topParagraphs = " ".join(topParagraphs)
+
+  print("INPUT PARAGRAPHS")
+  print(topParagraphs)
+  print("Len top paragraphs: " + str(len(topParagraphs)))
+
+  # Pass the combined paragraphs to the pegasus model
+
+  device = "cuda" if torch.cuda.is_available() else "cpu"
+  tokenizer = PegasusTokenizer.from_pretrained(model_id)
+  model = PegasusForConditionalGeneration.from_pretrained(model_id).to(device)
+  batch = tokenizer(topParagraphs, truncation=True, padding="longest", return_tensors="pt").to(device)
+  translated = model.generate(**batch)
+  summary = tokenizer.batch_decode(translated, skip_special_tokens=True)
+
+  print("OUTPUT SUMMARY")
+  print(summary)
+
+  return GetMDSSummaryResponse(
+    summary=summary,
+    error= None,
+  )
+
+
+def get_mds_summary_v2_handler(getMDSSummaryRequest):
+  """
+    Get the MDS summary using a more standard approach.  This will include practically doing extraction from the legit concatenation of all the article text in order to pick out the most legit sentences from each of the articles. This way you can guarantee that the text actually makes sense, it is constant, it is quick, it is factual "no chance of making things up" and you aren't fing relying on so much GPT credits and get repetitive content out.
+  """
+
+  global embedding_model
+  if embedding_model == None:
+    print("Embedding model is none in add document")
+    embedding_model = hub.load(module)
+
+  articles = getMDSSummaryRequest.articles
+  logger.info("INPUT for MDS: " + str(articles))
+
+
+  try:
+    nltk.data.find('tokenizers/punkt')
+  except LookupError:
+    nltk.download('punkt')
+
+  paragraphs = articles.split("\n")
+
+  articleParagraphs = process_paragraph(paragraphs)
+
+  embeddedParagraphs = []
+  for para in articleParagraphs:
+    if para != '':
+      embeddedParagraphs.append(embedding_model([para]))
+  embeddedParagraphs = np.squeeze(embeddedParagraphs)
+
+  # Create a matrix of facts and compute the dot product between the matrices
+  dot_products = np.dot(embeddedParagraphs, embeddedParagraphs.T)
+  dot_product_sum = sum(dot_products)
+
+  topParagraphIndices = np.argpartition(dot_product_sum, -1)[-1:]
+
+  topParagraphs = [articleParagraphs[index] for index in topParagraphIndices]
+  mdsSummary = " ".join(topParagraphs)
 
   print("MDS SUMMARY V2")
   print(mdsSummary)

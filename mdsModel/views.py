@@ -13,7 +13,7 @@ from .handler import *
 @api_view(['GET'])
 def get_mds_summary_view(request):
   """
-    Get the the MDS summary from the collection of articles passed in
+    Get the the MDS summary using GPT-3 from the collection of articles passed in
   """
   req = GetMDSSummaryRequest(data=request.data)
   if not req.is_valid():
@@ -40,5 +40,19 @@ def get_mds_summary_v2_view(request):
   return Response(res)
 
 
+@api_view(['GET'])
+def get_mds_summary_v3_view(request):
+  """
+    This calls the "smartest" MDS model by first extracting the top passages from each of the articles, then creating a MDS summary using the pegasus model from each of the top passages.
+  """
+
+  req = GetMDSSummaryRequest(data=request.data)
+  if not req.is_valid():
+    return JsonResponse(req.errors)
+
+  getMDSSummaryRequest = req.validated_data
+  res = get_mds_summary_v3_handler(getMDSSummaryRequest)
+
+  return Response(res)
 
 

@@ -207,8 +207,8 @@ def getTopicPage(getTopicPageRequest):
   logger.info("Time to populate queryDocumentsV2 %s", str(afterQueryDocumentsP2-beforeQueryDocumentsP2))
   logger.info("query doc response")
   logger.info(queryDocumentsResponse)
-  # Fetch the related articles from the database
 
+  # Fetch the related articles from the database
   beforeFetchArticlesP2 = datetime.now()
   fetchArticlesResponse = articleRecHandler.fetchArticles(
     FetchArticlesRequest(
@@ -220,8 +220,8 @@ def getTopicPage(getTopicPageRequest):
 
   afterFetchArticlesP2 = datetime.now()
   logger.info("Time to populate FetchArticlesP2 %s", str(afterFetchArticlesP2-beforeFetchArticlesP2))
-  # Get the topic from the primary article
 
+  # Get the topic from the primary article
   beforeGetDocumentTopicBatchP2 = datetime.now()
   getDocumentTopicBatchResponse = tpHandler.get_document_topic_batch(
     GetDocumentTopicBatchRequest(
@@ -251,6 +251,7 @@ def getTopicPage(getTopicPageRequest):
 
   afterFetchTopicInfosP2 = datetime.now()
   logger.info("Time to populate fetchTopicInfosP2 %s", str(afterFetchTopicInfosP2-beforeFetchTopicInfosP2))
+
   # GetMDS to get the MDS for the articles
   articles = ""
   topImageUrl = ""
@@ -273,6 +274,22 @@ def getTopicPage(getTopicPageRequest):
 
   logger.info("MDS SUMMARY")
   logger.info(getMDSSummaryResponse.summary)
+
+  # beforeMDSV2 = datetime.now()
+  # getMDSSummaryResponseV2 = get_mds_summary_v2_handler(
+  #   GetMDSSummaryRequest(
+  #     articles=articles
+  #   )
+  # )
+  # if getMDSSummaryResponseV2.error != None:
+  #   return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponseV2.error))
+
+  # afterMdsV2 = datetime.now()
+  # logger.info("Time to populate MDS V2 %s", str(afterMdsV2-beforeMDSV2))
+
+  # logger.info("MDS SUMMARY V2")
+  # logger.info(getMDSSummaryResponseV2.summary)
+
   facts = []
   passages = []
 

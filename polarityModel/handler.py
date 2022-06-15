@@ -78,6 +78,7 @@ def get_document_polarity_batch(getDocumentPolarityBatchRequest):
     error = None,
   )
 
+
 def get_document_polarity_batch_v2(getDocumentPolarityBatchRequest):
   """
     Speed up using known values for polarity. If the source is known use that to classify otherwise go ahead and let the gods decide.
@@ -167,3 +168,4 @@ def parsePolarity(url):
     polarity = .6
 
   return polarity
+
