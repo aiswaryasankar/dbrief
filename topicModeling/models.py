@@ -15,20 +15,3 @@ class TopicModel (models.Model):
 
   def __str__(self):
     return self.topic + ":" + self.parentTopic
-
-
-class TopicPageModel(models.Model):
-  class Meta:
-    app_label = "topicPage"
-
-  topic = models.CharField("Topic", max_length=255)
-  topicId =  models.AutoField(primary_key=True)
-  summary = models.TextField("Text")
-  title = models.TextField("Text")
-  imageURL = models.TextField("Text")
-  facts = models.TextField("Text")
-  opinions = models.TextField("Text")
-  # topArticleId =
-  # isTimeline =
-
-

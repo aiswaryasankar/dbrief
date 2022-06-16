@@ -17,6 +17,15 @@ logger.handlers = [handler]
 logger.setLevel(logging.INFO)
 
 
+def hydrateHomePageCached(hydrateHomePageRequest):
+  """
+    This sets up a flow that directly reads the topic pages from the cached pages stored in the database.
+  """
+  # It needs to search topic pages by the topic name
+
+
+
+
 def hydrateHomePage(hydrateHomePageRequest):
   """
     The home page will consist of all the topic modals.  It will first query for the top topics, then for each topic it will include the MDS, and a list of the facts for that topic and a top image.  If the user is signed in then it will first query for the topics that the user has saved and surface those first.  After that it will surface the rest of the top topics.

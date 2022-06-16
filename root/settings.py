@@ -81,9 +81,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 #     'http://localhost:3001',
 # ]
 
-CRONJOBS = [
-    ('*/5 * * * *', 'articleRec.management.commands.populateArticles.py ')
-]
 
 # REST framework
 REST_FRAMEWORK = {

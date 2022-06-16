@@ -581,6 +581,7 @@ class GetTopicPageRequest:
   articleId: int = 0
   text: str = ""
   topicName: str = ""
+  savePage : bool = False
 
 
 @dataclass_json
@@ -607,6 +608,24 @@ class DeleteTopicsByDateRangeRequest:
 @dataclass
 class DeleteTopicsByDateRangeResponse:
   num_topics_deleted: int
+  error: Exception
+
+
+@dataclass
+class SaveTopicPageRequest:
+  topic: str
+  topicId: int
+  summary : str
+  title : str
+  imageURL : str
+  urls : str
+  topArticleId : int
+  isTimeline : bool
+
+@dataclass_json
+@dataclass
+class SaveTopicPageResponse:
+  topicPageId: int
   error: Exception
 
 

@@ -5,6 +5,7 @@
 import logging
 from articleRec import handler as articleRecHandler
 from articleRec.repository import fetchArticlesByDateRange
+from topicFeed.repository import *
 from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
@@ -23,6 +24,7 @@ def getTopicPageHydrated(text):
     This helper function will take in article text and return the GetTopicPageResponse
   """
   pass
+
 
 
 def getTopicPage(getTopicPageRequest):
@@ -255,6 +257,8 @@ def getTopicPage(getTopicPageRequest):
   # GetMDS to get the MDS for the articles
   articles = ""
   topImageUrl = ""
+  urls = ", ".join([article.url for article in fetchArticlesResponse.articleList])
+
   for a in fetchArticlesResponse.articleList:
     articles += a.text
     if a.imageURL != "":
@@ -355,6 +359,22 @@ def getTopicPage(getTopicPageRequest):
   logger.info(topic_page)
   endTime = datetime.now()
   logger.info("Time to populate topic page %s", endTime - startTime)
+
+  if getTopicPageRequest.savePage:
+    saveTopicPageRes = saveTopicPage(
+      SaveTopicPageRequest(
+        topic=topicName,
+        topicId=topicID,
+        summary=getMDSSummaryResponse.summary,
+        title=article.title,
+        imageURL=topImageUrl,
+        urls=urls,
+        topArticleId=int(articleId),
+        isTimeline=isTimeline,
+      )
+    )
+    if saveTopicPageRes.error != None:
+      logger.warn("Failed to save topic page")
 
   return GetTopicPageResponse(
     topic_page=topic_page,
