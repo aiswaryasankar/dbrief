@@ -377,3 +377,9 @@ def delete_topics(deleteTopicsRequest):
 
   return deleteTopicsByTimeRangeRes
 
+
+def fetch_all_topics():
+  """
+    Fetch all the topics for the database.
+  """
+  return fetchAllTopics()

@@ -12,18 +12,12 @@ from datetime import datetime
 import idl
 import threading
 import random
+from multiprocessing.pool import ThreadPool, Pool
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
 logger.handlers = [handler]
 logger.setLevel(logging.INFO)
-
-
-def getTopicPageHydrated(text):
-  """
-    This helper function will take in article text and return the GetTopicPageResponse
-  """
-  pass
 
 
 
@@ -552,3 +546,54 @@ def parseSource(url):
   return source
 
 
+def fetchTopicPageByTopic(fetchTopicPageByTopicRequest):
+  """
+    Fetches the latest topic page by topic.
+  """
+  fetchTopicPageRes = fetchTopicPage(
+    fetchTopicPageByTopicRequest
+  )
+
+  if fetchTopicPageRes.error != None:
+    return FetchTopicPageResponse(
+      topicPage=None,
+      error=fetchTopicPageRes.error,
+    )
+
+  return fetchTopicPageRes
+
+
+def hydrateTopicPages():
+  """
+    This will fetch all the topics in the database and hydrate the corresponding topic pages for those topics into the database as well.  Ideally there will only be 5 days of topics in the db at a time.
+  """
+  # Fetch all topics from the database
+  fetchAllTopicsRes = tpHandler.fetch_all_topics()
+  if fetchAllTopicsRes.error != None:
+    return HydrateTopicPagesResponse(
+      numPagesHydrated=0,
+      error=str(fetchAllTopicsRes.error)
+    )
+
+  # Hydrate all the corresponding topic pages for those topics
+  topicList = set([t.TopicName for t in fetchAllTopicsRes.topics])
+  logger.info("Number of topics to hydrate: " + str(len(topicList)))
+
+  # Aysynchronously populate all of the topic pages to display on the home page
+  pool = ThreadPool(processes=5)
+  getTopicPageRequests = [GetTopicPageRequest(topicName = topic, savePage=True)  for topic in topicList]
+  topicPages = pool.map(getTopicPage, getTopicPageRequests)
+
+  i = 0
+  for topicPage in topicPages:
+    logger.info("Topic page " + str(i))
+    logger.info(topicPage)
+    i+= 1
+
+  pool.close()
+  pool.join()
+
+  return HydrateTopicPagesResponse(
+    numPagesHydrated=len(topicList),
+    error=None
+  )

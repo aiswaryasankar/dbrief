@@ -44,4 +44,16 @@ def whats_happening_view(request):
   return Response(res.to_json())
 
 
+@api_view(['POST'])
+def hydrate_topic_pages_view(request):
+  """
+    This function will be run by a cron job to hydrate all the topic pages.
+  """
+  res = hydrateTopicPages()
+
+  return Response(res.to_json())
+
+
+
+
 

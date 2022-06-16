@@ -12,3 +12,7 @@ class HydrateHomePageSerializer(DataclassSerializer):
   class Meta:
     dataclass = HydrateHomePageRequest
 
+class HydrateHomePageCachedSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = HydrateHomePageRequest

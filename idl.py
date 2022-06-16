@@ -628,6 +628,34 @@ class SaveTopicPageResponse:
   topicPageId: int
   error: Exception
 
+@dataclass
+class FetchTopicPageRequest:
+  topic: str
+  topicPageId: Optional[int] = 0
+
+@dataclass_json
+@dataclass
+class FetchTopicPageResponse:
+  topicPage: TopicPage
+  error: Exception
+
+@dataclass
+class FetchTopicPageBatchRequest:
+  topics: List[str]
+  topicPageId: Optional[List[int]] = field(default_factory=list)
+
+@dataclass_json
+@dataclass
+class FetchTopicPageBatchResponse:
+  topicPages: List[TopicPage]
+  error: Exception
+
+@dataclass_json
+@dataclass
+class HydrateTopicPagesResponse:
+  numPagesHydrated: int
+  error: Exception
+
 
 ###
 #

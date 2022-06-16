@@ -44,6 +44,7 @@ urlpatterns = [
     #TopicFeed endpoints
     path('getTopicPage/', topicFeedView.get_topic_page_view),
     path('whatsHappening/', topicFeedView.whats_happening_view),
+    path('hydrateTopicPages/', topicFeedView.hydrate_topic_pages_view),
 
     # TopicModeling endpoints
     path('trainTopicModel/', topicModelView.retrain_topic_model_view),
@@ -72,6 +73,7 @@ urlpatterns = [
 
     # HomeFeed endpoints
     path('hydrateHomePage/', homeFeedView.hydrate_home_page_view),
+    path('hydrateHomePageV2/', homeFeedView.hydrate_home_page_cached_view),
 
     # UserPreferences endpoints
     path('createUser/', userPreferencesView.create_user_view),

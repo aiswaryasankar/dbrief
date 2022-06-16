@@ -4,7 +4,7 @@ from articleRec import handler as articleRecHandler
 from topicModeling import handler as topicModelingHandler
 from mdsModel.handler import *
 from datetime import datetime
-import idl
+from idl import *
 from userPreferences import handler as upHandler
 from topicFeed import handler as topicFeedHandler
 from topicModeling import handler as topicModelingHandler
@@ -22,8 +22,63 @@ def hydrateHomePageCached(hydrateHomePageRequest):
     This sets up a flow that directly reads the topic pages from the cached pages stored in the database.
   """
   # It needs to search topic pages by the topic name
+  topicList = []
+
+  beforeGetTopicsYouFollow = datetime.now()
+  # If the user is following any topics, get those topics first
+  if hydrateHomePageRequest.userId != None:
+    getTopicsYouFollowResponse = upHandler.get_topics_you_follow(
+      GetTopicsForUserRequest(
+        user_id = hydrateHomePageRequest.userId
+      )
+    )
+    if getTopicsYouFollowResponse.error != None:
+      logger.warn("error in getTopicsYouFollow")
+      return HydrateHomePageResponse(
+        topicPages= [],
+        error=str(getTopicsYouFollowResponse.error)
+      )
+    topicList = [t.TopicName for t in getTopicsYouFollowResponse.topics]
+    logger.info(topicList)
+
+  afterGetTopicsYouFollow = datetime.now()
+  logger.info("Time taken to getTopicsYouFollow: %s", str(afterGetTopicsYouFollow-beforeGetTopicsYouFollow))
+
+  # If the user isn't following any topics get the top topics currently
+  beforeGetTopics = datetime.now()
+  if len(topicList) < 5:
+    getTopicsResponse = topicModelingHandler.get_topics(
+      GetTopicsRequest(
+        num_topics=10,
+        reduced = False,
+      )
+    )
+    if getTopicsResponse.error != None:
+      return HydrateHomePageResponse(
+        topicPages =[],
+        error=str(getTopicsResponse.error)
+      )
+    topicList.extend(getTopicsResponse.topic_words)
+
+  logger.info("The topic list is")
+  logger.info(topicList)
+  afterGetTopics = datetime.now()
+  logger.info("Time to getTopics: %s", str(afterGetTopics-beforeGetTopics))
 
 
+  topicPages = []
+  for topic in topicList:
+    topicPage = topicFeedHandler.fetchTopicPageByTopic(
+      fetchTopicPageByTopicRequest=FetchTopicPageRequest(
+        topic=topic,
+      )
+    )
+    topicPages.append(topicPage)
+
+  return HydrateHomePageResponse(
+    topicPages=topicPages,
+    error = None
+  )
 
 
 def hydrateHomePage(hydrateHomePageRequest):

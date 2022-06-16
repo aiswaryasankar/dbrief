@@ -49,7 +49,6 @@ def deleteTopicsByTimeRange(deleteTopicsByTimeRangeRequest):
   )
 
 
-
 def createTopics(createTopicRequest):
   """
     Will create the topic in the database.  If the topic already exists it will update the existing topic instead.
@@ -145,3 +144,27 @@ def fetchTopicInfoBatch(fetchTopicInfoBatchRequest):
     topics=topicInfos,
     error=None,
   )
+
+
+def fetchAllTopics():
+  """
+    Fetches all the topics in the db
+  """
+  topicList = []
+  for topic in TopicModel.objects.all():
+      try:
+        topicInfo = TopicInfo(
+            TopicID=topic.topicId,
+            TopicName=topic.topic,
+            ParentTopicName=topic.parentTopic,
+          )
+        topicList.append(topicInfo)
+      except Exception as e:
+        logger.warn("Failed to fetch fetch topic")
+        print(e)
+
+  return FetchTopicInfoBatchResponse(
+    topics=topicList,
+    error=None,
+  )
+

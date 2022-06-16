@@ -1,6 +1,8 @@
+from articleRec.repository import fetchArticlesByUrl
 from .models import TopicPageModel
 import logging
 from idl import *
+from topicFeed import handler as tfHandler
 from logtail import LogtailHandler
 
 """
@@ -35,13 +37,10 @@ def saveTopicPage(saveTopicPageRequest):
     )
 
     topicPageEntry.save()
-    print("Saved topic page entry")
     logger.info("Saved topic page entry to the database")
 
   except Exception as e:
     logger.info("Failed to save topic page to the database: " + str(e))
-    print("failed to create topic page entry")
-    print(e)
     return SaveTopicPageResponse(
       topicPageId=None,
       error=str(e)
@@ -52,7 +51,90 @@ def saveTopicPage(saveTopicPageRequest):
     error=None
   )
 
+def fetchTopicPageBatch(fetchTopicPageBatchRequest):
+  """
+    Fetch topic pages in batch
+  """
+  pass
 
+def fetchTopicPage(fetchTopicPageRequest):
+  """
+    Fetch the topic page using the topic
+  """
 
+  try:
+    topicPageRes = TopicPageModel.objects.get(topic=fetchTopicPageRequest.topic)
+
+    topicPage = TopicPage(
+      Title = topicPageRes.title,
+      ImageURL = topicPageRes.imageURL,
+      MDSSummary = topicPageRes.summary,
+      Facts = [],
+      Opinions = [],
+      TopArticleID = topicPageRes.topArticleId,
+      TopicID= topicPageRes.topicId,
+      TopicName=topicPageRes.topic,
+      IsTimeline=topicPageRes.isTimeline,
+    )
+
+    # Hydrate the appropriate facts and opinions by querying articles from the articleRec table
+    facts = []
+    opinions = []
+    urls = topicPageRes.urls.split(",")
+    fetchArticlesByUrlRes = fetchArticlesByUrl(urls)
+
+    if fetchArticlesByUrlRes.error != None:
+      logger.warn("Failed to hydrate facts and opinion in the topic page")
+      return FetchTopicPageResponse(
+        topicPage=topicPage,
+        error=fetchArticlesByUrlRes.error,
+      )
+
+    for article in fetchArticlesByUrlRes.articleList:
+      source = tfHandler.parseSource(article.url)
+
+      if article.topFact != None:
+        facts.append(Fact(
+          Quote(
+            Text=article.topFact,
+            Author=article.authors,
+            SourceName=source,
+            SourceURL=article.url,
+            ImageURL=article.imageURL,
+            Polarization=article.polarizationScore,
+            Timestamp=article.date,
+            ArticleID=article.id,
+          )
+        ))
+
+    if article.topPassage != None:
+      opinions.append(Opinion(
+        Quote(
+          Text=article.topPassage,
+          Author=article.authors,
+          SourceName=source,
+          SourceURL=article.url,
+          ImageURL=article.imageURL,
+          Polarization=article.polarizationScore,
+          Timestamp=article.date,
+          ArticleID=article.id,
+        )
+      ))
+
+    topicPage.Facts = facts
+    topicPage.Opinions = opinions
+
+    return FetchTopicPageResponse(
+      topicPage=topicPage,
+      error=None,
+    )
+
+  except Exception as e:
+    logger.warn("Failed to fetch topic page for topic: " + str(fetchTopicPageRequest.topic) + " " + str(e))
+
+    return FetchTopicPageResponse(
+      topicPage=None,
+      error=str(e),
+    )
 
 
