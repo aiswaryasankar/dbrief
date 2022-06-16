@@ -20,7 +20,7 @@ def hydrate_home_page_view(request):
     return Response(req.errors)
 
   hydrateHomePageRequest = req.validated_data
-  res = hydrateHomePage(hydrateHomePageRequest)
+  res = hydrateHomePageCached(hydrateHomePageRequest)
 
   return Response(res.to_json())
 
