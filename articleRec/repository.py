@@ -270,8 +270,8 @@ def fetchArticlesByUrl(articleUrls):
         continue
       else:
         hydratedArticles.extend(fetchRes.articleList)
-    except:
-      logger.warn("Failed to fetch article with url: " + str(url))
+    except Exception as e:
+      logger.warn("Failed to fetch article with url: " + str(url) + " " + str(e))
 
   return FetchArticlesResponse(
     articleList=hydratedArticles,
