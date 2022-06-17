@@ -68,12 +68,13 @@ def hydrateHomePageCached(hydrateHomePageRequest):
 
   topicPages = []
   for topic in topicList:
-    topicPage = topicFeedHandler.fetchTopicPageByTopic(
+    fetchTopicPageByTopicRes = topicFeedHandler.fetchTopicPageByTopic(
       fetchTopicPageByTopicRequest=FetchTopicPageRequest(
         topic=topic,
       )
     )
-    topicPages.append(topicPage)
+    if fetchTopicPageByTopicRes.error != None:
+      topicPages.append(fetchTopicPageByTopicRes.topicPage)
 
   return HydrateHomePageResponse(
     topicPages=topicPages,
