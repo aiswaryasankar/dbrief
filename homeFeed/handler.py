@@ -73,8 +73,10 @@ def hydrateHomePageCached(hydrateHomePageRequest):
         topic=topic,
       )
     )
-    if fetchTopicPageByTopicRes.error != None:
+    if fetchTopicPageByTopicRes.error == None:
       topicPages.append(fetchTopicPageByTopicRes.topicPage)
+    else:
+      logger.warn("Failed to hydrate topic page: " + str(fetchTopicPageByTopicRes.error))
 
   return HydrateHomePageResponse(
     topicPages=topicPages,
