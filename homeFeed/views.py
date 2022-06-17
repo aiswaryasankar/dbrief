@@ -15,12 +15,12 @@ def hydrate_home_page_view(request):
   """
     This function will map the request params of url, articleID, topic string or search string to the appropriate field and pass it to the controller to hydrate the page appropriately. It will execute the following in order to hydrate the TopicPage struct:
   """
-  req = HydrateHomePageSerializer(data=request.data)
+  req = HydrateHomePageCachedSerializer(data=request.data)
   if not req.is_valid():
     return Response(req.errors)
 
   hydrateHomePageRequest = req.validated_data
-  res = hydrateHomePage(hydrateHomePageRequest)
+  res = hydrateHomePageCached(hydrateHomePageRequest)
 
   return Response(res.to_json())
 
