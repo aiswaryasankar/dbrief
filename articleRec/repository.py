@@ -265,13 +265,13 @@ def fetchArticlesByUrl(articleUrls):
       fetchRes = articleResToModel(article)
 
       if fetchRes.error != None:
-        logger.warn("Failed to fetch article with url")
+        logger.warn("Failed to hydrate article with url: " + str(url))
         logger.warn(fetchRes.error)
         continue
       else:
         hydratedArticles.extend(fetchRes.articleList)
     except:
-      logger.warn("Failed to fetch article with url")
+      logger.warn("Failed to fetch article with url: " + str(url))
 
   return FetchArticlesResponse(
     articleList=hydratedArticles,

@@ -577,11 +577,24 @@ def hydrateTopicPages():
 
   # Hydrate all the corresponding topic pages for those topics
   topicList = set([t.TopicName for t in fetchAllTopicsRes.topics])
-  logger.info("Number of topics to hydrate: " + str(len(topicList)))
+  logger.info("Total number of topics: " + str(len(topicList)))
 
+  # Prior to hydrating each of the topic pages check it hasn't already been populated in the db
+  topicsToHydrateList = []
+  for topic in topicList:
+    fetchTopicPageRes = fetchTopicPageByTopic(
+      FetchTopicPageRequest(
+        topic=topic,
+      )
+    )
+    # If the topic page doesn't exist, then fetch a new one
+    if fetchTopicPageRes.error != None:
+      topicsToHydrateList.append(topic)
+
+  logger.info("Number of topics to hydrate: " + str(len(topicsToHydrateList)))
   # Aysynchronously populate all of the topic pages to display on the home page
   pool = ThreadPool(processes=5)
-  getTopicPageRequests = [GetTopicPageRequest(topicName = topic, savePage=True)  for topic in topicList]
+  getTopicPageRequests = [GetTopicPageRequest(topicName = topic, savePage=True)  for topic in topicsToHydrateList]
   topicPages = pool.map(getTopicPage, getTopicPageRequests)
 
   i = 0
