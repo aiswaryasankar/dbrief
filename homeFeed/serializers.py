@@ -12,6 +12,7 @@ class HydrateHomePageSerializer(DataclassSerializer):
   class Meta:
     dataclass = HydrateHomePageRequest
 
+# Both requests have the same input, renamed for clarity
 class HydrateHomePageCachedSerializer(DataclassSerializer):
   parser_classes = JSONParser
   class Meta:
