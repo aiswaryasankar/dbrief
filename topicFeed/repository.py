@@ -24,20 +24,23 @@ def saveTopicPage(saveTopicPageRequest):
     Will save the topic page in the database
   """
 
+  # Check the timestamp of the entry and overwrite if the timestamp is > 24 hrs old
   try:
-    topicPageEntry = TopicPageModel(
+    topicPageEntry, created = TopicPageModel.objects.update_or_create(
       topic = saveTopicPageRequest.topic,
-      topicId =  saveTopicPageRequest.topicId,
-      summary = saveTopicPageRequest.summary,
-      title = saveTopicPageRequest.title,
-      imageURL = saveTopicPageRequest.imageURL,
-      urls = saveTopicPageRequest.urls,
-      topArticleId = saveTopicPageRequest.topArticleId,
-      isTimeline = saveTopicPageRequest.isTimeline,
+      defaults={
+        "topic" : saveTopicPageRequest.topic,
+        "topicId" :  saveTopicPageRequest.topicId,
+        "summary" : saveTopicPageRequest.summary,
+        "title" : saveTopicPageRequest.title,
+        "imageURL" : saveTopicPageRequest.imageURL,
+        "urls" : saveTopicPageRequest.urls,
+        "topArticleId" : saveTopicPageRequest.topArticleId,
+        "isTimeline" : saveTopicPageRequest.isTimeline,
+      },
     )
-
-    topicPageEntry.save()
-    logger.info("Saved topic page entry to the database")
+    if created:
+      logger.info("Saved topic page entry to the database")
 
   except Exception as e:
     logger.info("Failed to save topic page to the database: " + str(e))
@@ -109,19 +112,19 @@ def fetchTopicPage(fetchTopicPageRequest):
           )
         ))
 
-    if article.topPassage != None:
-      opinions.append(Opinion(
-        Quote(
-          Text=article.topPassage,
-          Author=article.authors,
-          SourceName=source,
-          SourceURL=article.url,
-          ImageURL=article.imageURL,
-          Polarization=article.polarizationScore,
-          Timestamp=article.date,
-          ArticleID=article.id,
-        )
-      ))
+      if article.topPassage != None:
+        opinions.append(Opinion(
+          Quote(
+            Text=article.topPassage,
+            Author=article.authors,
+            SourceName=source,
+            SourceURL=article.url,
+            ImageURL=article.imageURL,
+            Polarization=article.polarizationScore,
+            Timestamp=article.date,
+            ArticleID=article.id,
+          )
+        ))
 
     topicPage.Facts = facts
     topicPage.Opinions = opinions

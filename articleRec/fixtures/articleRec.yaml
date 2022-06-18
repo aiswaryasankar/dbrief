@@ -52,12 +52,12 @@
             fast-growing population.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210911_map501.jpg
         publish_date: '2021-09-09 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 2
     fields:
@@ -138,12 +138,12 @@
             and Iran.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210911_MAP004_0.jpg
         publish_date: '2021-09-09 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 3
     fields:
@@ -264,12 +264,12 @@
             no longer need to rape Guinea. We just need to make love to her.”'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210911_map001.jpg
         publish_date: '2021-09-09 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 4
     fields:
@@ -350,12 +350,12 @@
             he may soon have little chance to reform anything. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210904_map502.jpg
         publish_date: '2021-09-02 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 5
     fields:
@@ -446,12 +446,12 @@
             the conflict”. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210904_MAP002_0.jpg
         publish_date: '2021-09-02 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 6
     fields:
@@ -581,12 +581,12 @@
             but also to worshippers. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210904_MAP001_0.jpg
         publish_date: '2021-09-02 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 7
     fields:
@@ -748,12 +748,12 @@
             fortnightly newsletter, or visit our climate-change hub'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210904_map004.jpg
         publish_date: null
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 8
     fields:
@@ -820,12 +820,12 @@
             to mention the name of Ms Bechara Perini’s company. It is now included.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210828_MAP004_0.jpg
         publish_date: '2021-08-28 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 9
     fields:
@@ -947,12 +947,12 @@
             political capital on,” a senior ally confided earlier this year.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210828_MAP001_0.jpg
         publish_date: '2021-08-26 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 10
     fields:
@@ -1017,12 +1017,12 @@
             the priority, even if it left Chad in the same sorry state.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210828_MAP002_0.jpg
         publish_date: '2021-08-26 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 11
     fields:
@@ -1092,12 +1092,12 @@
             for so long. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210828_MAP003_0.jpg
         publish_date: '2021-08-26 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 12
     fields:
@@ -1189,12 +1189,12 @@
             UAE accuses of supporting extremism.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210828_map501.jpg
         publish_date: '2021-08-26 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 13
     fields:
@@ -1281,12 +1281,12 @@
             across Europe and America.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210821_map502.jpg
         publish_date: '2021-08-21 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 14
     fields:
@@ -1343,12 +1343,12 @@
             would be Baghdad, Mansur’s city of peace.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210821_map501.jpg
         publish_date: '2021-08-19 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 15
     fields:
@@ -1464,12 +1464,12 @@
             areas can, and do, overlap.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210821_MAP001_0.jpg
         publish_date: '2021-08-19 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 16
     fields:
@@ -1560,12 +1560,12 @@
             show how to run a country. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210821_MAP003_0.jpg
         publish_date: '2021-08-19 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 17
     fields:
@@ -1646,12 +1646,12 @@
             clean. Perhaps he may have been too good to be true. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210814_MAP007_0.jpg
         publish_date: '2021-08-14 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 18
     fields:
@@ -1763,12 +1763,12 @@
             But will it help the people? '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210814_MAP003_0.jpg
         publish_date: '2021-08-12 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 19
     fields:
@@ -1822,12 +1822,12 @@
             deal comes back for ratification.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210814_map502.jpg
         publish_date: '2021-08-12 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 20
     fields:
@@ -1904,12 +1904,12 @@
             unaided, time may not be on its side. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210814_MAP009_0.jpg
         publish_date: '2021-08-12 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 21
     fields:
@@ -2001,12 +2001,12 @@
             It may not last. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210814_map501.jpg
         publish_date: '2021-08-12 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 22
     fields:
@@ -2114,12 +2114,12 @@
             Observers from the EU and other bodies are present, but spread thinly.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210807_MAP003_0.jpg
         publish_date: '2021-08-05 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 23
     fields:
@@ -2201,12 +2201,12 @@
             rebels. When will he set off? “As soon as possible,” he says.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210807_MAP002_0.jpg
         publish_date: '2021-08-05 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 24
     fields:
@@ -2370,12 +2370,12 @@
             An early version of this article was published online on August 3rd 2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210807_map001.jpg
         publish_date: null
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 25
     fields:
@@ -2469,12 +2469,12 @@
             An early version of this article was published online on August 2nd 2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210807_map505.jpg
         publish_date: '2021-08-02 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 26
     fields:
@@ -2549,12 +2549,12 @@
             Sorry.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/20210731_MAP505.jpg
         publish_date: '2021-07-31 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 27
     fields:
@@ -2617,12 +2617,12 @@
             around the world.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/20210731_MAP506.jpg
         publish_date: '2021-07-31 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 28
     fields:
@@ -2710,12 +2710,12 @@
             the capital as a brazen attempt to put itself back on the throne.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210731_MAP003_0.jpg
         publish_date: '2021-07-31 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 29
     fields:
@@ -2783,12 +2783,12 @@
             “Welcome to Jordan.” '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210731_MAD001_0.jpg
         publish_date: '2021-07-29 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 30
     fields:
@@ -2894,12 +2894,12 @@
             like Saudi Arabia. But it will probably be a little less democratic. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/20210731_MAP002.jpg
         publish_date: '2021-07-26 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 31
     fields:
@@ -3218,12 +3218,12 @@
             Africa’s problem is that going back to normal may not be enough. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210724_MAP002_0.jpg
         publish_date: '2021-07-24 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 32
     fields:
@@ -3336,10 +3336,10 @@
         publish_date: '2021-07-24 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 33
     fields:
@@ -3404,10 +3404,10 @@
         publish_date: '2021-07-19 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 34
     fields:
@@ -3477,10 +3477,10 @@
         publish_date: '2021-07-15 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 35
     fields:
@@ -3529,10 +3529,10 @@
         publish_date: '2021-07-15 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 36
     fields:
@@ -3663,10 +3663,10 @@
         publish_date: '2021-07-15 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 37
     fields:
@@ -3704,10 +3704,10 @@
         publish_date: '2021-07-15 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 38
     fields:
@@ -3810,10 +3810,10 @@
         publish_date: '2021-07-15 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 39
     fields:
@@ -3903,10 +3903,10 @@
         publish_date: '2021-07-10 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 40
     fields:
@@ -3987,10 +3987,10 @@
         publish_date: '2021-07-08 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 41
     fields:
@@ -4065,10 +4065,10 @@
         publish_date: '2021-07-08 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 42
     fields:
@@ -4189,10 +4189,10 @@
         publish_date: '2021-07-07 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 43
     fields:
@@ -4324,10 +4324,10 @@
         publish_date: '2021-07-05 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 44
     fields:
@@ -4469,12 +4469,12 @@
             For many of them, China’s allure ultimately trumps the West’s. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211127_CNP001_0.jpg
         publish_date: '2021-11-25 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 45
     fields:
@@ -4525,12 +4525,12 @@
             insights. He plans to install more. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211127_CNP004_0.jpg
         publish_date: '2021-11-25 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 46
     fields:
@@ -4660,12 +4660,12 @@
             The confidence of China’s Communist Party is striking (Oct 23rd 2021)'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/11/articles/main/20211127_cnd001.jpg
         publish_date: null
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 47
     fields:
@@ -4795,12 +4795,12 @@
             that offers salvation. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211120_CNP001_0.jpg
         publish_date: '2021-11-18 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 48
     fields:
@@ -4878,12 +4878,12 @@
             posting them online. Hundreds of examples have passed the test. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211120_CNP002_0.jpg
         publish_date: '2021-11-18 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 49
     fields:
@@ -5006,12 +5006,12 @@
             2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/11/articles/main/20211120_cnd000.jpg
         publish_date: null
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 50
     fields:
@@ -5136,12 +5136,12 @@
             excess deaths by country and the virus’s spread across Europe.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211113_CND000_0.jpg
         publish_date: '2021-11-12 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 51
     fields:
@@ -5263,12 +5263,12 @@
             deter them. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211113_CND001_0.jpg
         publish_date: '2021-11-11 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 52
     fields:
@@ -5349,12 +5349,12 @@
             '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211113_CNP001_0.jpg
         publish_date: '2021-11-11 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 53
     fields:
@@ -5477,12 +5477,12 @@
             future, c’est moi.”'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/11/articles/main/20211106_cnp502.jpg
         publish_date: '2021-11-06 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 54
     fields:
@@ -5613,12 +5613,12 @@
             for misunderstanding and miscalculation.”'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/11/articles/main/20211106_cnp002.jpg
         publish_date: null
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 55
     fields:
@@ -5641,12 +5641,12 @@
             here.'
         image: https://www.economist.com/img/b/1280/720/90/media-assets/image/20180224_WOP001.jpg
         publish_date: '2021-11-02 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 56
     fields:
@@ -5775,12 +5775,12 @@
             of advocacy allowed. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211030_CNP001_0.jpg
         publish_date: '2021-10-30 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 57
     fields:
@@ -5845,12 +5845,12 @@
             deal with an emergency.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211030_CND001_0.jpg
         publish_date: '2021-10-30 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 58
     fields:
@@ -5892,12 +5892,12 @@
             perfect coverage from infra-red satellites that can spot rocket engines.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/10/articles/main/20211023_cnp501.jpg
         publish_date: '2021-10-23 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 59
     fields:
@@ -6014,12 +6014,12 @@
             at their peril. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211023_CND001_0.jpg
         publish_date: '2021-10-21 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 60
     fields:
@@ -6165,12 +6165,12 @@
             2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/10/articles/main/20211023_cnp001.jpg
         publish_date: null
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 61
     fields:
@@ -6480,12 +6480,12 @@
             excess deaths by country and the virus’s spread across Europe.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211016_CNP001_0.jpg
         publish_date: '2021-10-16 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 62
     fields:
@@ -6604,12 +6604,12 @@
             it for Maoist fanaticism.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211016_CND000_1.jpg
         publish_date: '2021-10-14 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 63
     fields:
@@ -6738,12 +6738,12 @@
             How Taiwan became a flashpoint for US-Sino relations (April 29th)'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211009_CNP001_0.jpg
         publish_date: '2021-10-09 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 64
     fields:
@@ -6825,12 +6825,12 @@
             economist.com/oldbeijing.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211009_CND001_0.jpg
         publish_date: '2021-10-07 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 65
     fields:
@@ -6936,12 +6936,12 @@
             America vows to work with allies, then doesn’t'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211009_CND000_0.jpg
         publish_date: '2021-10-07 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 66
     fields:
@@ -7249,12 +7249,12 @@
             will really count. He will interpret it as he pleases. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211002_CNP001_0.jpg
         publish_date: '2021-10-02 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 67
     fields:
@@ -7374,12 +7374,12 @@
             hostages. China seems to sense a moment for fists, not gloves.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211002_CND000_0.jpg
         publish_date: '2021-10-02 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 68
     fields:
@@ -7483,12 +7483,12 @@
             governance is in serious trouble,” he says.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210925_CND000_1.jpg
         publish_date: '2021-09-25 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 69
     fields:
@@ -7620,12 +7620,12 @@
             found willing assistants. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210925_CNP002_0.jpg
         publish_date: '2021-09-23 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 70
     fields:
@@ -7678,12 +7678,12 @@
             especially if it is followed by a marked decline.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210925_fnp504.jpg
         publish_date: null
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 71
     fields:
@@ -7817,12 +7817,12 @@
             2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210918_cnd001_0.jpg
         publish_date: '2021-09-18 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 72
     fields:
@@ -7908,12 +7908,12 @@
             state control is the greatest risk of all. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210918_cnp001.jpg
         publish_date: '2021-09-18 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 73
     fields:
@@ -8026,12 +8026,12 @@
             act. That makes Qianlong a model worker. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210918_cnd000.jpg
         publish_date: '2021-09-18 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 74
     fields:
@@ -8160,12 +8160,12 @@
             what else will they do?” he asks. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210911_cnd001.jpg
         publish_date: '2021-09-11 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 75
     fields:
@@ -8254,12 +8254,12 @@
             is only the prologue.” '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210911_CNP001_0.jpg
         publish_date: '2021-09-09 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 76
     fields:
@@ -8380,12 +8380,12 @@
             the party’s blood. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210911_CND000_0.jpg
         publish_date: '2021-09-09 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 77
     fields:
@@ -8489,12 +8489,12 @@
             they send the keys? '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210904_CNP001_0.jpg
         publish_date: '2021-09-04 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 78
     fields:
@@ -8575,12 +8575,12 @@
             fortnightly newsletter, or visit our climate-change hub'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/09/articles/main/20210904_cnp501.jpg
         publish_date: '2021-09-04 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 79
     fields:
@@ -8699,12 +8699,12 @@
             elder, it is their role to obey. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210904_CND001_0.jpg
         publish_date: '2021-09-02 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 80
     fields:
@@ -8791,12 +8791,12 @@
             persuaded the man himself to explain. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210828_CND002_0.jpg
         publish_date: '2021-08-28 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 81
     fields:
@@ -8911,12 +8911,12 @@
             way to manage foreigners. To China, however, being defied is worse. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210828_CND001_0.jpg
         publish_date: '2021-08-26 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 82
     fields:
@@ -9032,12 +9032,12 @@
             times.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210821_CND000_0.jpg
         publish_date: '2021-08-21 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 83
     fields:
@@ -9112,12 +9112,12 @@
             Sierra Leonean miner.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210821_CNP001_1.jpg
         publish_date: '2021-08-19 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 84
     fields:
@@ -9363,12 +9363,12 @@
             die in place of me / And I keep writing in place of you.” '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/08/articles/main/20210814_cnp002.jpg
         publish_date: '2021-08-12 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 85
     fields:
@@ -9561,12 +9561,12 @@
             to end in stagnation. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210807_CNP001_0.jpg
         publish_date: '2021-08-05 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 86
     fields:
@@ -9705,12 +9705,12 @@
             outcome.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210731_CNP002_0.jpg
         publish_date: '2021-07-31 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 87
     fields:
@@ -9841,12 +9841,12 @@
             fortnightly newsletter, or visit our climate-change hub'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210731_CND000_0.jpg
         publish_date: '2021-07-31 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 88
     fields:
@@ -9866,12 +9866,12 @@
             Enjoy more audio and podcasts on iOS or Android.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210731_CNP006_0.jpg
         publish_date: '2021-07-29 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 89
     fields:
@@ -9889,12 +9889,12 @@
             30 who were killed by the floods.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210724_CNP004_0.jpg
         publish_date: '2021-07-24 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 90
     fields:
@@ -9955,12 +9955,12 @@
             for women. Expect ever more of them to catch the wave. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/20210724_CNP501.jpg
         publish_date: '2021-07-24 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 91
     fields:
@@ -10080,12 +10080,12 @@
             keep their mouths shut. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/20210724_CNP003.jpg
         publish_date: '2021-07-21 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 92
     fields:
@@ -10214,12 +10214,12 @@
             across Europe and America.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210717_CND000_0.jpg
         publish_date: '2021-07-17 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 93
     fields:
@@ -10333,12 +10333,12 @@
             others. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210717_CNP001_0.jpg
         publish_date: '2021-07-15 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 94
     fields:
@@ -10411,12 +10411,12 @@
             we must oppose,’” says Mr Ma.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210717_CND001_0.jpg
         publish_date: '2021-07-15 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 95
     fields:
@@ -10537,12 +10537,12 @@
             lost. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210710_CNP002_0.jpg
         publish_date: '2021-07-10 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 96
     fields:
@@ -10625,12 +10625,12 @@
             quarter. That is poor advice for China’s entertainment stars. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/20210710_CNP501.jpg
         publish_date: '2021-07-08 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 97
     fields:
@@ -10747,12 +10747,12 @@
             China. It is also selective.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210710_CND000_0.jpg
         publish_date: '2021-07-08 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 98
     fields:
@@ -10837,12 +10837,12 @@
             way to confirming how uninterested in arms control it is.”'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/20210703_CNP501.jpg
         publish_date: '2021-07-04 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 99
     fields:
@@ -10897,12 +10897,12 @@
             Lying flat is having a backbone.”'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210703_CND001_0.jpg
         publish_date: '2021-07-03 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 100
     fields:
@@ -11024,12 +11024,12 @@
             to which not all are invited. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210703_CND000_0.jpg
         publish_date: '2021-07-03 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 101
     fields:
@@ -11167,12 +11167,12 @@
             to the Indian Ocean. The Type 003 may be coming to a port near you. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210703_CNP001_0.jpg
         publish_date: '2021-07-01 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 102
     fields:
@@ -11290,12 +11290,12 @@
             to admirers and critics of China alike. Facts are stubborn things. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210626_CND000_0.jpg
         publish_date: '2021-06-26 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 103
     fields:
@@ -11379,12 +11379,12 @@
             Read our special report on the Chinese Communist Party at 100'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/06/articles/main/20210626_cnp504.jpg
         publish_date: '2021-06-25 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 104
     fields:
@@ -11403,12 +11403,12 @@
             Enjoy more audio and podcasts on iOS or Android.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210626_CNP002_0.jpg
         publish_date: '2021-06-24 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 105
     fields:
@@ -11471,12 +11471,12 @@
             to control everything, always.” '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/06/articles/main/20210626_cnp501.jpg
         publish_date: '2021-06-24 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 106
     fields:
@@ -11592,12 +11592,12 @@
             A version of this article was published online on June 22nd 2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/06/articles/main/20210626_cnp001.jpg
         publish_date: '2021-06-22 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 107
     fields:
@@ -11720,12 +11720,12 @@
             do what they want to do.” '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210619_CNP002_0.jpg
         publish_date: '2021-06-19 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 108
     fields:
@@ -11804,12 +11804,12 @@
             more difficult.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210619_CND001_0.jpg
         publish_date: '2021-06-17 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 109
     fields:
@@ -11937,12 +11937,12 @@
             A version of this article was published online on June 14th 2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/06/articles/main/20210619_cnd000.jpg
         publish_date: '2021-06-17 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 110
     fields:
@@ -12075,12 +12075,12 @@
             '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210612_CND001_0.jpg
         publish_date: '2021-06-12 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 111
     fields:
@@ -12156,12 +12156,12 @@
             of museums may be spreading into new territory. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/06/articles/main/20210612_cnp501.jpg
         publish_date: '2021-06-10 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 112
     fields:
@@ -12283,12 +12283,12 @@
             is decoupling. That shock will have lasting effects. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210612_CND000_0.jpg
         publish_date: '2021-06-10 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 113
     fields:
@@ -12416,12 +12416,12 @@
             Going after China would give it another powerful enemy.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/06/articles/main/20210612_blp510.jpg
         publish_date: '2021-06-10 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 114
     fields:
@@ -12528,12 +12528,12 @@
             in the dark.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/06/articles/main/20210605_cnp501.jpg
         publish_date: '2021-06-04 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 115
     fields:
@@ -12575,12 +12575,12 @@
             track.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/06/articles/main/20210605_cnp001.jpg
         publish_date: '2021-06-03 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 116
     fields:
@@ -12700,12 +12700,12 @@
             be diligent and obedient, sensed that all along. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210605_CND000_0.jpg
         publish_date: '2021-06-03 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 117
     fields:
@@ -12819,12 +12819,12 @@
             A version of this article was published online on May 31st 2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/05/articles/main/20210605_cnp002.jpg
         publish_date: '2021-06-03 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 118
     fields:
@@ -12945,12 +12945,12 @@
             swots, he has, to his relief, got a job offer. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210529_CNP003_0.jpg
         publish_date: '2021-05-27 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 119
     fields:
@@ -13023,12 +13023,12 @@
             not a proposal. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210529_CNP001_0.jpg
         publish_date: '2021-05-27 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 120
     fields:
@@ -13132,12 +13132,12 @@
             To China, nothing matters more than stability'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210529_CND000_0.jpg
         publish_date: '2021-05-27 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 121
     fields:
@@ -13272,12 +13272,12 @@
             counts as tradition, the party will always want to have a say. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210522_CNP003_0.jpg
         publish_date: '2021-05-20 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 122
     fields:
@@ -13355,12 +13355,12 @@
             was the stuff of fiction. Nowadays...shush! '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210522_CND001_0.jpg
         publish_date: '2021-05-20 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 123
     fields:
@@ -13476,12 +13476,12 @@
             If that fails, there is always prayer.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210522_CND000_1.jpg
         publish_date: '2021-05-20 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 124
     fields:
@@ -13539,12 +13539,12 @@
             '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210515_CNP001_0.jpg
         publish_date: '2021-05-15 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 125
     fields:
@@ -13683,12 +13683,12 @@
             needs foreign imports. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210515_CNP002_0.jpg
         publish_date: '2021-05-13 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 126
     fields:
@@ -13810,12 +13810,12 @@
             some dream of heading ashore. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/05/articles/main/20210515_cnd000.jpg
         publish_date: '2021-05-13 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 127
     fields:
@@ -13942,12 +13942,12 @@
             The new scold war could last a while. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210508_CNP001_0.jpg
         publish_date: '2021-05-08 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 128
     fields:
@@ -14023,12 +14023,12 @@
             future in plastic surgery. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/05/articles/main/20210508_cnp501.jpg
         publish_date: '2021-05-08 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 129
     fields:
@@ -14150,12 +14150,12 @@
             form of resistance, too. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20210508_CND000_0.jpg
         publish_date: '2021-05-08 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 130
     fields:
@@ -14283,12 +14283,12 @@
             Nominal spending figures understate China’s military might (Apr 2021)'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/04/articles/main/20210501_cnd001.jpg
         publish_date: '2021-05-01 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 131
     fields:
@@ -14423,12 +14423,12 @@
             A version of this article was published online on April 28th, 2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/04/articles/main/20210501_cnp503.jpg
         publish_date: '2021-04-29 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 132
     fields:
@@ -14522,12 +14522,12 @@
             A version of this article was published online on April 27th, 2021'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/04/articles/main/20210501_cnp001_0.jpg
         publish_date: '2021-04-29 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 133
     fields:
@@ -14611,12 +14611,12 @@
             doctors and overstretched hospitals, it is likely to continue.'
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/2021/04/articles/main/20210424_cnp501.jpg
         publish_date: '2021-04-24 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 134
     fields:
@@ -14637,10 +14637,10 @@
         publish_date: '2021-04-24 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 135
     fields:
@@ -14761,10 +14761,10 @@
         publish_date: '2021-04-24 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 136
     fields:
@@ -14888,10 +14888,10 @@
         publish_date: '2021-04-22 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 137
     fields:
@@ -15014,10 +15014,10 @@
         publish_date: '2021-04-17 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 138
     fields:
@@ -15086,10 +15086,10 @@
         publish_date: '2021-04-17 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 139
     fields:
@@ -15208,10 +15208,10 @@
         publish_date: '2021-04-17 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 140
     fields:
@@ -15392,10 +15392,10 @@
         publish_date: '2021-04-08 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 141
     fields:
@@ -15514,10 +15514,10 @@
         publish_date: '2021-04-08 00:00:00'
         author: '[''The Economist'']'
         polarization_score: 0.0
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'
 -   model: articleRec.articlemodel
     pk: 142
     fields:
@@ -15806,9 +15806,9 @@
             its wonder. '
         image: https://www.economist.com/img/b/1280/720/90/sites/default/files/images/print-edition/20211127_IRP001_0.jpg
         publish_date: '2021-11-25 00:00:00'
-        author: null
-        polarization_score: null
-        topic: null
-        parent_topic: null
-        top_passage: null
-        top_fact: null
+        author: 'Author'
+        polarization_score: 0.5
+        topic: 'topic'
+        parent_topic: 'topic'
+        top_passage: 'passage'
+        top_fact: 'fact'

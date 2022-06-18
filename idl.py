@@ -650,6 +650,10 @@ class FetchTopicPageBatchResponse:
   topicPages: List[TopicPage]
   error: Exception
 
+@dataclass
+class HydrateTopicPagesRequest:
+  force_update: bool
+
 @dataclass_json
 @dataclass
 class HydrateTopicPagesResponse:

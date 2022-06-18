@@ -13,10 +13,15 @@ class GetTopicPageRequestSerializer(DataclassSerializer):
     dataclass = GetTopicPageRequest
 
 
-
-
 class WhatsHappeningRequestSerializer(DataclassSerializer):
   parser_classes = JSONParser
   class Meta:
     dataclass = WhatsHappeningRequest
+
+
+
+class HydrateTopicPagesRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = HydrateTopicPagesRequest
 

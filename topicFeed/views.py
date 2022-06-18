@@ -31,6 +31,7 @@ def whats_happening_view(request):
   """
     Get's a list of the topic articles for the day
   """
+
   req = WhatsHappeningRequestSerializer(data=request.data)
   if not req.is_valid():
     return Response(req.errors)
@@ -49,7 +50,13 @@ def hydrate_topic_pages_view(request):
   """
     This function will be run by a cron job to hydrate all the topic pages.
   """
-  res = hydrateTopicPages()
+
+  req = HydrateTopicPagesRequestSerializer(data=request.data)
+  if not req.is_valid():
+    return Response(req.errors)
+
+  hydrateTopicPagesRequest = req.validated_data
+  res = hydrateTopicPages(hydrateTopicPagesRequest)
 
   return Response(res.to_json())
 

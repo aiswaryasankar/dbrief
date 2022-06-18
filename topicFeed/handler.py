@@ -563,10 +563,11 @@ def fetchTopicPageByTopic(fetchTopicPageByTopicRequest):
   return fetchTopicPageRes
 
 
-def hydrateTopicPages():
+def hydrateTopicPages(hydrateTopicPagesRequest):
   """
     This will fetch all the topics in the database and hydrate the corresponding topic pages for those topics into the database as well.  Ideally there will only be 5 days of topics in the db at a time.
   """
+
   # Fetch all topics from the database
   fetchAllTopicsRes = tpHandler.fetch_all_topics()
   if fetchAllTopicsRes.error != None:
@@ -579,20 +580,24 @@ def hydrateTopicPages():
   topicList = set([t.TopicName for t in fetchAllTopicsRes.topics])
   logger.info("Total number of topics: " + str(len(topicList)))
 
-  # Prior to hydrating each of the topic pages check it hasn't already been populated in the db
-  topicsToHydrateList = []
-  for topic in topicList:
-    fetchTopicPageRes = fetchTopicPageByTopic(
-      FetchTopicPageRequest(
-        topic=topic,
+  if not hydrateTopicPagesRequest.force_upgrade:
+    # If not force upgrade, then get only the topics that don't already have a topic page
+    topicsToHydrateList = []
+    for topic in topicList:
+      fetchTopicPageRes = fetchTopicPageByTopic(
+        FetchTopicPageRequest(
+          topic=topic,
+        )
       )
-    )
-    # If the topic page doesn't exist, then fetch a new one
-    if fetchTopicPageRes.topicPage is None:
-      logger.info("Topic page for topic " + str(topic) + " already exists")
-      topicsToHydrateList.append(topic)
+      # If the topic page doesn't exist, then create a new one
+      if fetchTopicPageRes.topicPage is None:
+        logger.info("Topic page for topic " + str(topic) + " already exists")
+        topicsToHydrateList.append(topic)
 
-  logger.info("Number of topics to hydrate: " + str(len(topicsToHydrateList)))
+  else:
+    topicsToHydrateList = topicList
+
+  logger.info("Number of topic pages to hydrate: " + str(len(topicsToHydrateList)))
 
   # Aysynchronously populate all of the topic pages to display on the home page
   pool = ThreadPool(processes=5)
