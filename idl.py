@@ -636,7 +636,7 @@ class FetchTopicPageRequest:
 @dataclass_json
 @dataclass
 class FetchTopicPageResponse:
-  topicPage: TopicPage
+  topic_page: TopicPage
   error: Exception
 
 @dataclass

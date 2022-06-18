@@ -556,7 +556,7 @@ def fetchTopicPageByTopic(fetchTopicPageByTopicRequest):
 
   if fetchTopicPageRes.error != None:
     return FetchTopicPageResponse(
-      topicPage=None,
+      topic_page=None,
       error=fetchTopicPageRes.error,
     )
 
@@ -588,10 +588,12 @@ def hydrateTopicPages():
       )
     )
     # If the topic page doesn't exist, then fetch a new one
-    if fetchTopicPageRes.error != None:
+    if fetchTopicPageRes.topicPage is None:
+      logger.info("Topic page for topic " + str(topic) + " already exists")
       topicsToHydrateList.append(topic)
 
   logger.info("Number of topics to hydrate: " + str(len(topicsToHydrateList)))
+
   # Aysynchronously populate all of the topic pages to display on the home page
   pool = ThreadPool(processes=5)
   getTopicPageRequests = [GetTopicPageRequest(topicName = topic, savePage=True)  for topic in topicsToHydrateList]
@@ -607,6 +609,6 @@ def hydrateTopicPages():
   pool.join()
 
   return HydrateTopicPagesResponse(
-    numPagesHydrated=len(topicList),
+    numPagesHydrated=len(topicsToHydrateList),
     error=None
   )

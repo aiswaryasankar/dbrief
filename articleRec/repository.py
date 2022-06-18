@@ -259,19 +259,19 @@ def fetchArticlesByUrl(articleUrls):
   """
   hydratedArticles = []
 
-  for url in articleUrls:
+  for u in articleUrls:
     try:
-      article = ArticleModel.objects.get(url=url)
+      article = ArticleModel.objects.get(url=u)
       fetchRes = articleResToModel(article)
 
       if fetchRes.error != None:
-        logger.warn("Failed to hydrate article with url: " + str(url))
+        logger.warn("Failed to hydrate article with url: " + str(u))
         logger.warn(fetchRes.error)
-        continue
       else:
-        hydratedArticles.extend(fetchRes.articleList)
+        hydratedArticles.append(fetchRes.articleList[0])
+
     except Exception as e:
-      logger.warn("Failed to fetch article with url: " + str(url) + " " + str(e))
+      logger.warn("Failed to fetch article with url: " + str(u) + " " + str(e))
 
   return FetchArticlesResponse(
     articleList=hydratedArticles,

@@ -60,7 +60,7 @@ def hydrateHomePageCached(hydrateHomePageRequest):
       )
     topicList.extend(getTopicsResponse.topic_words)
 
-  logger.info("The topic list is")
+  print("The topic list is: " + str(topicList))
   logger.info(topicList)
   afterGetTopics = datetime.now()
   logger.info("Time to getTopics: %s", str(afterGetTopics-beforeGetTopics))
@@ -73,11 +73,15 @@ def hydrateHomePageCached(hydrateHomePageRequest):
         topic=topic,
       )
     )
-    if fetchTopicPageByTopicRes.error == None:
-      topicPages.append(fetchTopicPageByTopicRes.topicPage)
+    logger.info("Fetch topic page cached: ")
+    logger.info(fetchTopicPageByTopicRes)
+    if fetchTopicPageByTopicRes.error == None and fetchTopicPageByTopicRes.topic_page !=  None:
+      topicPages.append(fetchTopicPageByTopicRes)
     else:
       logger.warn("Failed to hydrate topic page: " + str(fetchTopicPageByTopicRes.error))
 
+  print("number of topic pages: " + str(len(topicPages)))
+  print(topicPages)
   return HydrateHomePageResponse(
     topicPages=topicPages,
     error = None

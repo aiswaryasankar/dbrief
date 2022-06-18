@@ -57,6 +57,7 @@ def fetchTopicPageBatch(fetchTopicPageBatchRequest):
   """
   pass
 
+
 def fetchTopicPage(fetchTopicPageRequest):
   """
     Fetch the topic page using the topic
@@ -81,12 +82,13 @@ def fetchTopicPage(fetchTopicPageRequest):
     facts = []
     opinions = []
     urls = topicPageRes.urls.split(",")
+    urls = [url.strip() for url in urls]
     fetchArticlesByUrlRes = fetchArticlesByUrl(urls)
 
     if fetchArticlesByUrlRes.error != None:
       logger.warn("Failed to hydrate facts and opinion in the topic page")
       return FetchTopicPageResponse(
-        topicPage=topicPage,
+        topic_page=None,
         error=fetchArticlesByUrlRes.error,
       )
 
@@ -125,7 +127,7 @@ def fetchTopicPage(fetchTopicPageRequest):
     topicPage.Opinions = opinions
 
     return FetchTopicPageResponse(
-      topicPage=topicPage,
+      topic_page=topicPage,
       error=None,
     )
 
@@ -133,7 +135,7 @@ def fetchTopicPage(fetchTopicPageRequest):
     logger.warn("Failed to fetch topic page for topic: " + str(fetchTopicPageRequest.topic) + " " + str(e))
 
     return FetchTopicPageResponse(
-      topicPage=None,
+      topic_page=None,
       error=str(e),
     )
 
