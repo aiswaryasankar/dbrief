@@ -68,8 +68,6 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
     embedding_model = hub.load(module)
 
   articles = getMDSSummaryRequest.articles
-  logger.info("INPUT for MDS: " + str(articles))
-
 
   try:
     nltk.data.find('tokenizers/punkt')
@@ -93,15 +91,23 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
   # Take the indices of the top 10 passages so far
   topParagraphIndices = np.argpartition(dot_product_sum, -1)[-10:]
 
+  print("Num paragraphs: " + str(len(topParagraphIndices)))
   topParagraphs = [articleParagraphs[index] for index in topParagraphIndices]
+
+  index = 0
+  for para in topParagraphs:
+    print("Paragraph " + str(index))
+    print(para)
+    index += 1
+
   topParagraphs = " ".join(topParagraphs)
 
   print("INPUT PARAGRAPHS")
-  print(topParagraphs)
-  print("Len top paragraphs: " + str(len(topParagraphs)))
+  print("top paragraphs: " + str(topParagraphs))
 
   # Pass the combined paragraphs to the pegasus model
 
+  print("CALLING PEGASUS MODEL")
   device = "cuda" if torch.cuda.is_available() else "cpu"
   tokenizer = PegasusTokenizer.from_pretrained(model_id)
   model = PegasusForConditionalGeneration.from_pretrained(model_id).to(device)
@@ -129,8 +135,6 @@ def get_mds_summary_v2_handler(getMDSSummaryRequest):
     embedding_model = hub.load(module)
 
   articles = getMDSSummaryRequest.articles
-  logger.info("INPUT for MDS: " + str(articles))
-
 
   try:
     nltk.data.find('tokenizers/punkt')

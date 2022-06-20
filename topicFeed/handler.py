@@ -274,7 +274,7 @@ def getTopicPage(getTopicPageRequest):
   logger.info(getMDSSummaryResponse.summary)
 
   # beforeMDSV2 = datetime.now()
-  # getMDSSummaryResponseV2 = get_mds_summary_v2_handler(
+  # getMDSSummaryResponseV2 = get_mds_summary_v3_handler(
   #   GetMDSSummaryRequest(
   #     articles=articles
   #   )
@@ -580,7 +580,7 @@ def hydrateTopicPages(hydrateTopicPagesRequest):
   topicList = set([t.TopicName for t in fetchAllTopicsRes.topics])
   logger.info("Total number of topics: " + str(len(topicList)))
 
-  if not hydrateTopicPagesRequest.force_upgrade:
+  if not hydrateTopicPagesRequest.force_update:
     # If not force upgrade, then get only the topics that don't already have a topic page
     topicsToHydrateList = []
     for topic in topicList:
@@ -590,7 +590,7 @@ def hydrateTopicPages(hydrateTopicPagesRequest):
         )
       )
       # If the topic page doesn't exist, then create a new one
-      if fetchTopicPageRes.topicPage is None:
+      if fetchTopicPageRes.topic_page is None:
         logger.info("Topic page for topic " + str(topic) + " already exists")
         topicsToHydrateList.append(topic)
 
