@@ -66,7 +66,6 @@ def getTopicPage(getTopicPageRequest):
       articleId = fetchArticlesResponse.articleList[0].id
       text = article.text
 
-
   if getTopicPageRequest.text and getTopicPageRequest.text != "":
     article = None
     articleId = -1
@@ -102,7 +101,6 @@ def getTopicPage(getTopicPageRequest):
         )
     text = fetchArticlesResponse.articleList[0].text
     article = fetchArticlesResponse.articleList[0]
-
 
   if getTopicPageRequest.topicName != "":
     # Get top article for the topic id
@@ -348,27 +346,28 @@ def getTopicPage(getTopicPageRequest):
     TopicID = topicID,
     TopicName = topicName,
     ImageURL = topImageUrl,
+    CreatedAt = datetime.now(),
   )
   logger.info("TOPIC PAGE")
   logger.info(topic_page)
   endTime = datetime.now()
   logger.info("Time to populate topic page %s", endTime - startTime)
 
-  if getTopicPageRequest.savePage:
-    saveTopicPageRes = saveTopicPage(
-      SaveTopicPageRequest(
-        topic=topicName,
-        topicId=topicID,
-        summary=getMDSSummaryResponse.summary,
-        title=article.title,
-        imageURL=topImageUrl,
-        urls=urls,
-        topArticleId=int(articleId),
-        isTimeline=isTimeline,
-      )
+  # if getTopicPageRequest.savePage:
+  saveTopicPageRes = saveTopicPage(
+    SaveTopicPageRequest(
+      topic=topicName,
+      topicId=topicID,
+      summary=getMDSSummaryResponse.summary,
+      title=article.title,
+      imageURL=topImageUrl,
+      urls=urls,
+      topArticleId=int(articleId),
+      isTimeline=isTimeline,
     )
-    if saveTopicPageRes.error != None:
-      logger.warn("Failed to save topic page")
+  )
+  if saveTopicPageRes.error != None:
+    logger.warn("Failed to save topic page")
 
   return GetTopicPageResponse(
     topic_page=topic_page,
