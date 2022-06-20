@@ -49,7 +49,7 @@ def hydrateHomePageCached(hydrateHomePageRequest):
   if len(topicList) < 5:
     getTopicsResponse = topicModelingHandler.get_topics(
       GetTopicsRequest(
-        num_topics=10,
+        num_topics=30,
         reduced = False,
       )
     )
@@ -80,9 +80,12 @@ def hydrateHomePageCached(hydrateHomePageRequest):
     else:
       logger.warn("Failed to hydrate topic page: " + str(fetchTopicPageByTopicRes.error))
 
-  logger.info("number of topic pages: " + str(len(topicPages)))
+  # Order the topic pages by date and possibly include a date header in between the pages
+  sortedTopicPages = sorted(topicPages, key=lambda fetchTopicPageRes: fetchTopicPageRes.topic_page.CreatedAt, reverse=True)
+
+  logger.info("number of topic pages: " + str(len(sortedTopicPages)))
   return HydrateHomePageResponse(
-    topicPages=topicPages,
+    topicPages=sortedTopicPages,
     error = None
   )
 

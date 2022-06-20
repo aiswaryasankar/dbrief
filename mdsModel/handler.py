@@ -112,7 +112,7 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
   tokenizer = PegasusTokenizer.from_pretrained(model_id)
   model = PegasusForConditionalGeneration.from_pretrained(model_id).to(device)
   batch = tokenizer(topParagraphs, truncation=True, padding="longest", return_tensors="pt").to(device)
-  translated = model.generate(**batch)
+  translated = model.generate(**batch, no_repeat_ngram_size=5, num_beams=5, max_length=100,early_stopping=True)
   summary = tokenizer.batch_decode(translated, skip_special_tokens=True)
 
   print("OUTPUT SUMMARY")

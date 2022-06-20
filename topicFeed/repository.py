@@ -79,6 +79,7 @@ def fetchTopicPage(fetchTopicPageRequest):
       TopicID= topicPageRes.topicId,
       TopicName=topicPageRes.topic,
       IsTimeline=topicPageRes.isTimeline,
+      CreatedAt=topicPageRes.createdAt,
     )
 
     # Hydrate the appropriate facts and opinions by querying articles from the articleRec table

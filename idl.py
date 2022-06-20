@@ -122,6 +122,7 @@ class TopicPage:
   TopicID: int
   TopicName: str
   IsTimeline: bool
+  CreatedAt: str
 
 @dataclass_json
 @dataclass
