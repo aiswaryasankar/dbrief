@@ -46,7 +46,7 @@ def hydrateHomePageCached(hydrateHomePageRequest):
 
   # If the user isn't following any topics get the top topics currently
   beforeGetTopics = datetime.now()
-  if len(topicList) < 5:
+  if len(topicList) < 25:
     getTopicsResponse = topicModelingHandler.get_topics(
       GetTopicsRequest(
         num_topics=30,
