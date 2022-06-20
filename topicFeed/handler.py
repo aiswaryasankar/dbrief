@@ -353,21 +353,21 @@ def getTopicPage(getTopicPageRequest):
   endTime = datetime.now()
   logger.info("Time to populate topic page %s", endTime - startTime)
 
-  # if getTopicPageRequest.savePage:
-  saveTopicPageRes = saveTopicPage(
-    SaveTopicPageRequest(
-      topic=topicName,
-      topicId=topicID,
-      summary=getMDSSummaryResponse.summary,
-      title=article.title,
-      imageURL=topImageUrl,
-      urls=urls,
-      topArticleId=int(articleId),
-      isTimeline=isTimeline,
+  if getTopicPageRequest.savePage:
+    saveTopicPageRes = saveTopicPage(
+      SaveTopicPageRequest(
+        topic=topicName,
+        topicId=topicID,
+        summary=getMDSSummaryResponse.summary,
+        title=article.title,
+        imageURL=topImageUrl,
+        urls=urls,
+        topArticleId=int(articleId),
+        isTimeline=isTimeline,
+      )
     )
-  )
-  if saveTopicPageRes.error != None:
-    logger.warn("Failed to save topic page")
+    if saveTopicPageRes.error != None:
+      logger.warn("Failed to save topic page")
 
   return GetTopicPageResponse(
     topic_page=topic_page,
