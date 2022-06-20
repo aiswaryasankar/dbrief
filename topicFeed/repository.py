@@ -98,7 +98,7 @@ def fetchTopicPage(fetchTopicPageRequest):
     for article in fetchArticlesByUrlRes.articleList:
       source = tfHandler.parseSource(article.url)
 
-      if article.topFact != None:
+      if article.topFact != None and len(article.topFact) > 100:
         facts.append(Fact(
           Quote(
             Text=article.topFact,
@@ -112,7 +112,7 @@ def fetchTopicPage(fetchTopicPageRequest):
           )
         ))
 
-      if article.topPassage != None:
+      if article.topPassage != None and len(article.topPassage) > 100:
         opinions.append(Opinion(
           Quote(
             Text=article.topPassage,

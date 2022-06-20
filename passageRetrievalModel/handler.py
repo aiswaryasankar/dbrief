@@ -29,7 +29,7 @@ def clean_text(text):
     This function will go ahead and perform sanity checks on the text to clean it up of known issues - e.g. Advertisement type words.
   """
 
-  stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more", "Listen to this story.", "Save time by listening to our audio articles as you multitask", "OK", "[MUSIC PLAYING]"]
+  stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more", "Listen to this story.", "Save time by listening to our audio articles as you multitask", "OK", "[MUSIC PLAYING]", "Story at a glance", "Show caption", "Hide caption", "Originally broadcast"]
 
   num_stop_words = 0
   num_urls = 0
