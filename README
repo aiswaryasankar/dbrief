@@ -1,8 +1,12 @@
 Welcome to Dbrief.AI!
 
 In order to get setup
-1) Create a virtual env and activate by running `source ~/eb-new/bin/activate`
-2) Import all the requirements from requirements.txt
-3) Run python manage.py runserver
+1) Create a virtual env
+2) Activate by running `source ~/eb-new/bin/activate`
+3) Import all the requirements from requirements.txt
+4) Run python manage.py runserver
+5) Install mysql and create a password
+6) Update the password in settings.py
+7) Run the migrate commands
 
 That's all! Have fun :D
