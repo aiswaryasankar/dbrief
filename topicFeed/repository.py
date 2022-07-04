@@ -4,6 +4,7 @@ import logging
 from idl import *
 from topicFeed import handler as tfHandler
 from logtail import LogtailHandler
+from datetime import datetime
 
 """
   This file will include all the basic database CRUD operations including:
@@ -37,6 +38,7 @@ def saveTopicPage(saveTopicPageRequest):
         "urls" : saveTopicPageRequest.urls,
         "topArticleId" : saveTopicPageRequest.topArticleId,
         "isTimeline" : saveTopicPageRequest.isTimeline,
+        "createdAt": datetime.now(),
       },
     )
     if created:
