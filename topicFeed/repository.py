@@ -40,15 +40,16 @@ def saveTopicPage(saveTopicPageRequest):
       },
     )
     if created:
-      logger.info("Saved topic page entry to the database")
+      logger.info("Saved topic page entry to the database: " + str(saveTopicPageRequest.topic))
 
   except Exception as e:
-    logger.info("Failed to save topic page to the database: " + str(e))
+    logger.info("Failed to save topic page for topic " + str(saveTopicPageRequest.topic) + " to the database: " + str(e))
     return SaveTopicPageResponse(
       topicPageId=None,
       error=str(e)
     )
 
+  logger.info("Saved topic page for topic " + str(saveTopicPageRequest.topic) + " entry to the database: " + str(topicPageEntry.topicPageId))
   return SaveTopicPageResponse(
     topicPageId=topicPageEntry.topicPageId,
     error=None

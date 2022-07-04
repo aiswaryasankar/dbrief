@@ -367,11 +367,12 @@ def getTopicPage(getTopicPageRequest):
       )
     )
     if saveTopicPageRes.error != None:
-      logger.warn("Failed to save topic page")
+      logger.warn("Failed to save topic page for topic: " + str(topicName))
+      logger.warn(saveTopicPageRes.error)
 
   return GetTopicPageResponse(
     topic_page=topic_page,
-    error= None,
+    error=None,
   )
 
 

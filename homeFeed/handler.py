@@ -49,7 +49,7 @@ def hydrateHomePageCached(hydrateHomePageRequest):
   if len(topicList) < 25:
     getTopicsResponse = topicModelingHandler.get_topics(
       GetTopicsRequest(
-        num_topics=30,
+        num_topics=10,
         reduced = False,
       )
     )
