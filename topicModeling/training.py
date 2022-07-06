@@ -1902,6 +1902,7 @@ class Top2Vec:
             documents = self.documents[doc_indexes]
 
             # Only return documents if the score is over the .5 threshold
+            logger.info("Docs over threshold")
             valid_docs, valid_doc_scores, valid_doc_ids = [], [], []
             for i in range(len(documents)):
                 if doc_scores[i] > .5:
@@ -1911,7 +1912,14 @@ class Top2Vec:
 
             return valid_docs, valid_doc_scores, valid_doc_ids, None
         else:
-            return [], doc_scores, doc_ids, None
+            logger.info("Docs over threshold")
+            valid_docs, valid_doc_scores, valid_doc_ids = [], [], []
+            for i in range(len(doc_scores)):
+                if doc_scores[i] > .5:
+                    valid_doc_scores.append(doc_scores[i])
+                    valid_doc_ids.append(doc_ids[i])
+            return [], valid_doc_scores, valid_doc_ids, None
+
 
     def search_words_by_vector(self, vector, num_words, use_index=False, ef=None):
         """

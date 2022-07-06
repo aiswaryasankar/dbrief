@@ -96,8 +96,8 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
   topParagraphs = " ".join(topParagraphs)
   logger.info("INPUT PARAGRAPHS: " + str(topParagraphs))
 
-  # Pass the combined paragraphs to the pegasus model
 
+  # Pass the combined paragraphs to the pegasus model
   model_id_multi_news = "google/pegasus-multi_news"
   device = "cuda" if torch.cuda.is_available() else "cpu"
   tokenizer = PegasusTokenizer.from_pretrained(model_id_multi_news)
