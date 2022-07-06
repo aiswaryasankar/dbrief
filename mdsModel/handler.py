@@ -91,32 +91,22 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
   # Take the indices of the top 10 passages so far
   topParagraphIndices = np.argpartition(dot_product_sum, -1)[-10:]
 
-  print("Num paragraphs: " + str(len(topParagraphIndices)))
   topParagraphs = [articleParagraphs[index] for index in topParagraphIndices]
 
-  index = 0
-  for para in topParagraphs:
-    print("Paragraph " + str(index))
-    print(para)
-    index += 1
-
   topParagraphs = " ".join(topParagraphs)
-
-  print("INPUT PARAGRAPHS")
-  print("top paragraphs: " + str(topParagraphs))
+  logger.info("INPUT PARAGRAPHS: " + str(topParagraphs))
 
   # Pass the combined paragraphs to the pegasus model
 
-  print("CALLING PEGASUS MODEL")
   device = "cuda" if torch.cuda.is_available() else "cpu"
   tokenizer = PegasusTokenizer.from_pretrained(model_id)
   model = PegasusForConditionalGeneration.from_pretrained(model_id).to(device)
   batch = tokenizer(topParagraphs, truncation=True, padding="longest", return_tensors="pt").to(device)
-  translated = model.generate(**batch, no_repeat_ngram_size=5, num_beams=5, max_length=100,early_stopping=True)
+  translated = model.generate(**batch, no_repeat_ngram_size=5, num_beams=5, max_length=150,early_stopping=True, repetition_penalty=100.0)
   summary = tokenizer.batch_decode(translated, skip_special_tokens=True)
 
-  print("OUTPUT SUMMARY")
-  print(summary)
+  logger.info("OUTPUT PEGASUS SUMMARY")
+  logger.info(summary)
 
   return GetMDSSummaryResponse(
     summary=summary,

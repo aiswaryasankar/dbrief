@@ -271,20 +271,20 @@ def getTopicPage(getTopicPageRequest):
   logger.info("MDS SUMMARY")
   logger.info(getMDSSummaryResponse.summary)
 
-  # beforeMDSV2 = datetime.now()
-  # getMDSSummaryResponseV2 = get_mds_summary_v3_handler(
-  #   GetMDSSummaryRequest(
-  #     articles=articles
-  #   )
-  # )
-  # if getMDSSummaryResponseV2.error != None:
-  #   return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponseV2.error))
+  beforeMDSV2 = datetime.now()
+  getMDSSummaryResponseV2 = get_mds_summary_v3_handler(
+    GetMDSSummaryRequest(
+      articles=articles
+    )
+  )
+  if getMDSSummaryResponseV2.error != None:
+    return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponseV2.error))
 
-  # afterMdsV2 = datetime.now()
-  # logger.info("Time to populate MDS V2 %s", str(afterMdsV2-beforeMDSV2))
+  afterMdsV2 = datetime.now()
+  logger.info("Time to populate MDS V2 %s", str(afterMdsV2-beforeMDSV2))
 
-  # logger.info("MDS SUMMARY V2")
-  # logger.info(getMDSSummaryResponseV2.summary)
+  logger.info("MDS SUMMARY V2")
+  logger.info(getMDSSummaryResponseV2.summary)
 
   facts = []
   passages = []
@@ -338,7 +338,7 @@ def getTopicPage(getTopicPageRequest):
 
   topic_page = TopicPage(
     Title = article.title,
-    MDSSummary = getMDSSummaryResponse.summary,
+    MDSSummary = getMDSSummaryResponseV2.summary,
     Facts = facts,
     Opinions = passages,
     TopArticleID = int(articleId),
@@ -600,7 +600,7 @@ def hydrateTopicPages(hydrateTopicPagesRequest):
   logger.info("Number of topic pages to hydrate: " + str(len(topicsToHydrateList)))
 
   # Aysynchronously populate all of the topic pages to display on the home page
-  pool = ThreadPool(processes=5)
+  pool = ThreadPool(processes=1)
   getTopicPageRequests = [GetTopicPageRequest(topicName = topic, savePage=True)  for topic in topicsToHydrateList]
   topicPages = pool.map(getTopicPage, getTopicPageRequests)
 
