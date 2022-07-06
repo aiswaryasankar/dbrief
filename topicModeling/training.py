@@ -1909,7 +1909,7 @@ class Top2Vec:
                     valid_doc_scores.append(doc_scores[i])
                     valid_doc_ids.append(doc_ids[i])
 
-            return documents, doc_scores, doc_ids, None
+            return valid_docs, valid_doc_scores, valid_doc_ids, None
         else:
             return [], doc_scores, doc_ids, None
 
