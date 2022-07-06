@@ -98,18 +98,28 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
 
   # Pass the combined paragraphs to the pegasus model
 
+  model_id_multi_news = "google/pegasus-multi_news"
   device = "cuda" if torch.cuda.is_available() else "cpu"
-  tokenizer = PegasusTokenizer.from_pretrained(model_id)
-  model = PegasusForConditionalGeneration.from_pretrained(model_id).to(device)
+  tokenizer = PegasusTokenizer.from_pretrained(model_id_multi_news)
+  model = PegasusForConditionalGeneration.from_pretrained(model_id_multi_news).to(device)
   batch = tokenizer(topParagraphs, truncation=True, padding="longest", return_tensors="pt").to(device)
   translated = model.generate(**batch, no_repeat_ngram_size=5, num_beams=5, max_length=150,early_stopping=True, repetition_penalty=100.0)
   summary = tokenizer.batch_decode(translated, skip_special_tokens=True)
 
-  logger.info("OUTPUT PEGASUS SUMMARY")
-  logger.info(summary)
+  logger.info("OUTPUT PEGASUS SUMMARY: " + str(summary))
 
-  return GetMDSSummaryResponse(
+  model_id_xsum = "google/pegasus-xsum"
+  tokenizer = PegasusTokenizer.from_pretrained(model_id_xsum)
+  model = PegasusForConditionalGeneration.from_pretrained(model_id_xsum).cuda()
+  batch = tokenizer(topParagraphs, truncation=True, padding="longest", return_tensors="pt").to(device)
+  translated = model.generate(**batch, no_repeat_ngram_size=5, num_beams=5, early_stopping=True, repetition_penalty=100.0)
+  title = tokenizer.batch_decode(translated, skip_special_tokens=True)
+
+  logger.info("OUTPUT TITLE: " + str(title))
+
+  return GetMDSSummaryAndTitleResponse(
     summary=summary,
+    title=title,
     error= None,
   )
 

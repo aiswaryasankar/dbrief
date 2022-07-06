@@ -755,6 +755,18 @@ class GetMDSSummaryResponse:
   summary: str
   error: Exception
 
+@dataclass
+class GetMDSSummaryAndTitleRequest:
+  articles: str
+
+
+@dataclass_json
+@dataclass
+class GetMDSSummaryAndTitleResponse:
+  summary: str
+  title: str
+  error: Exception
+
 ###
 #
 # HomeFeed

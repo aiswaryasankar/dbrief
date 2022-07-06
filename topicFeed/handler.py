@@ -250,6 +250,8 @@ def getTopicPage(getTopicPageRequest):
   articles = ""
   topImageUrl = ""
   urls = ", ".join([article.url for article in fetchArticlesResponse.articleList])
+  titles = ", ".join([article.title for article in fetchArticlesResponse.articleList])
+  logger.info("titles: " + str(titles))
 
   for a in fetchArticlesResponse.articleList:
     articles += a.text
@@ -285,7 +287,10 @@ def getTopicPage(getTopicPageRequest):
 
   logger.info("MDS SUMMARY V2")
   logger.info(getMDSSummaryResponseV2.summary)
+  title = getMDSSummaryResponseV2.title
 
+  logger.info("Original title: " + str(article.title))
+  logger.info("Generated title: " + title)
   facts = []
   passages = []
 
@@ -337,7 +342,7 @@ def getTopicPage(getTopicPageRequest):
     isTimeline = False
 
   topic_page = TopicPage(
-    Title = article.title,
+    Title = title,
     MDSSummary = getMDSSummaryResponseV2.summary,
     Facts = facts,
     Opinions = passages,
@@ -358,8 +363,8 @@ def getTopicPage(getTopicPageRequest):
       SaveTopicPageRequest(
         topic=topicName,
         topicId=topicID,
-        summary=getMDSSummaryResponse.summary,
-        title=article.title,
+        summary=getMDSSummaryResponseV2.summary,
+        title=title,
         imageURL=topImageUrl,
         urls=urls,
         topArticleId=int(articleId),
