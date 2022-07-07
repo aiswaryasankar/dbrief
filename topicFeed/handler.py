@@ -290,7 +290,7 @@ def getTopicPage(getTopicPageRequest):
   title = getMDSSummaryResponseV2.title
 
   logger.info("Original title: " + str(article.title))
-  logger.info("Generated title: " + title)
+  logger.info("Generated title: " + str(title))
   facts = []
   passages = []
 
