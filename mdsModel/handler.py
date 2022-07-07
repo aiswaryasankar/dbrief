@@ -106,7 +106,7 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
   translated = model.generate(**batch, no_repeat_ngram_size=5, num_beams=5, max_length=150,early_stopping=True, repetition_penalty=100.0)
   summary = tokenizer.batch_decode(translated, skip_special_tokens=True)
 
-  logger.info("OUTPUT PEGASUS SUMMARY: " + str(summary))
+  logger.info("OUTPUT PEGASUS SUMMARY: " + str(summary[0]))
 
   model_id_xsum = "google/pegasus-xsum"
   tokenizer = PegasusTokenizer.from_pretrained(model_id_xsum)
@@ -115,11 +115,11 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
   translated = model.generate(**batch, no_repeat_ngram_size=5, num_beams=5, early_stopping=True, repetition_penalty=100.0)
   title = tokenizer.batch_decode(translated, skip_special_tokens=True)
 
-  logger.info("OUTPUT TITLE: " + str(title))
+  logger.info("OUTPUT TITLE: " + str(title[0]))
 
   return GetMDSSummaryAndTitleResponse(
-    summary=summary,
-    title=title,
+    summary=summary[0],
+    title=title[0],
     error= None,
   )
 
