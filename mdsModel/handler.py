@@ -110,7 +110,7 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
 
   model_id_xsum = "google/pegasus-xsum"
   tokenizer = PegasusTokenizer.from_pretrained(model_id_xsum)
-  model = PegasusForConditionalGeneration.from_pretrained(model_id_xsum).cuda()
+  model = PegasusForConditionalGeneration.from_pretrained(model_id_xsum)
   batch = tokenizer(topParagraphs, truncation=True, padding="longest", return_tensors="pt").to(device)
   translated = model.generate(**batch, no_repeat_ngram_size=5, num_beams=5, early_stopping=True, repetition_penalty=100.0)
   title = tokenizer.batch_decode(translated, skip_special_tokens=True)
