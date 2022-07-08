@@ -145,6 +145,19 @@ def get_mds_summary_v2_handler(getMDSSummaryRequest):
 
   articleParagraphs = process_paragraph(paragraphs)
 
+  if len(articleParagraphs) == 0 or len(articleParagraphs[0]) < 100:
+    logger.warn("No paragraphs for summary")
+    return GetMDSSummaryResponse(
+      summary="",
+      error= None,
+    )
+
+  if len(paragraphs) <= 1:
+    return GetMDSSummaryResponse(
+      summary=paragraphs[0],
+      error= None,
+    )
+
   embeddedParagraphs = []
   for para in articleParagraphs:
     if para != '':
@@ -159,9 +172,6 @@ def get_mds_summary_v2_handler(getMDSSummaryRequest):
 
   topParagraphs = [articleParagraphs[index] for index in topParagraphIndices]
   mdsSummary = " ".join(topParagraphs)
-
-  print("MDS SUMMARY V2")
-  print(mdsSummary)
 
   return GetMDSSummaryResponse(
     summary=mdsSummary,
