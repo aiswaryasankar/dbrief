@@ -6,6 +6,7 @@ import logging
 from articleRec import handler as articleRecHandler
 from articleRec.repository import fetchArticlesByDateRange
 from topicFeed.repository import *
+from topicFeed.handler import handler as topicFeedHandler
 from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
@@ -18,6 +19,13 @@ handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
 logger.handlers = [handler]
 logger.setLevel(logging.INFO)
+
+
+def getTopicPageCached(getTopicPageRequest):
+  """
+
+  """
+
 
 
 
@@ -34,6 +42,20 @@ def getTopicPage(getTopicPageRequest):
 
     Determine whether or not to display a timeline or the opinion format.
   """
+
+  # Check if the page is cached to begin with
+  # fetchTopicPageByTopicRes = topicFeedHandler.fetchTopicPageByTopic(
+  #     fetchTopicPageByTopicRequest=FetchTopicPageRequest(
+  #       topic=topic,
+  #     )
+  #   )
+  #   logger.info("Fetch topic page cached: ")
+  #   logger.info(fetchTopicPageByTopicRes)
+  #   if fetchTopicPageByTopicRes.error == None and fetchTopicPageByTopicRes.topic_page !=  None:
+  #     topicPages.append(fetchTopicPageByTopicRes)
+  #   else:
+  #     logger.warn("Failed to hydrate topic page: " + str(fetchTopicPageByTopicRes.error))
+
   startTime = datetime.now()
 
   if getTopicPageRequest.url != "":
@@ -274,20 +296,31 @@ def getTopicPage(getTopicPageRequest):
   logger.info(getMDSSummaryResponse.summary)
 
   beforeMDSV2 = datetime.now()
-  getMDSSummaryResponseV2 = get_mds_summary_v3_handler(
-    GetMDSSummaryRequest(
-      articles=articles
+  if getTopicPageRequest.savePage:
+    getMDSSummaryResponseV2 = get_mds_summary_v3_handler(
+      GetMDSSummaryRequest(
+        articles=articles
+      )
     )
-  )
-  if getMDSSummaryResponseV2.error != None:
-    return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponseV2.error))
+    title = getMDSSummaryResponseV2.title
+    if getMDSSummaryResponseV2.error != None:
+      return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponseV2.error))
+
+  else:
+    getMDSSummaryResponseV2 = get_mds_summary_v2_handler(
+      GetMDSSummaryRequest(
+        articles=articles
+      )
+    )
+    title = article.title
+    if getMDSSummaryResponseV2.error != None:
+      return GetTopicPageResponse(topic_page=None, error=str(getMDSSummaryResponseV2.error))
 
   afterMdsV2 = datetime.now()
   logger.info("Time to populate MDS V2 %s", str(afterMdsV2-beforeMDSV2))
 
   logger.info("MDS SUMMARY V2")
   logger.info(getMDSSummaryResponseV2.summary)
-  title = getMDSSummaryResponseV2.title
 
   logger.info("Original title: " + str(article.title))
   logger.info("Generated title: " + str(title))
