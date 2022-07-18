@@ -1905,7 +1905,7 @@ class Top2Vec:
             logger.info("Docs over threshold")
             valid_docs, valid_doc_scores, valid_doc_ids = [], [], []
             for i in range(len(documents)):
-                if doc_scores[i] > .5:
+                if doc_scores[i] > .25:
                     valid_docs.append(documents[i])
                     valid_doc_scores.append(doc_scores[i])
                     valid_doc_ids.append(doc_ids[i])
@@ -1915,7 +1915,7 @@ class Top2Vec:
             logger.info("Docs over threshold")
             valid_docs, valid_doc_scores, valid_doc_ids = [], [], []
             for i in range(len(doc_scores)):
-                if doc_scores[i] > .5:
+                if doc_scores[i] > .25:
                     valid_doc_scores.append(doc_scores[i])
                     valid_doc_ids.append(doc_ids[i])
             return [], valid_doc_scores, valid_doc_ids, None
