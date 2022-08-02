@@ -311,6 +311,11 @@ class QueryDocumentsRequest:
   use_index: bool
   ef: int
 
+@dataclass
+class QueryDocumentsV2Request:
+  query: str
+  num_docs: int
+
 @dataclass_json
 @dataclass
 class QueryDocumentsResponse:

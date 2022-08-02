@@ -15,7 +15,8 @@ from .repository import *
 # from sklearn.feature_extraction.text import CountVectorizer
 from django.conf import settings
 import tensorflow_hub as hub
-
+from haystack.nodes import BM25Retriever
+from haystack.document_stores import ElasticsearchDocumentStore
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -31,6 +32,7 @@ else:
 
 
 embedding_model = None
+document_store = ElasticsearchDocumentStore()
 
 def retrain_topic_model():
   """
@@ -157,6 +159,52 @@ def add_document(addDocumentRequest):
   return AddDocumentResponse(error=None)
 
 
+def add_documents_v2(addDocumentRequest):
+  """
+    Will add all documents to Elastic Search
+  """
+  fetchAllArticlesResponse = articleRecHandler.fetch_articles(
+    FetchArticlesRequest(articleIds=[])
+  )
+  if fetchAllArticlesResponse.error != None:
+    return TrainAndIndexTopicModelResponse(
+      error=ValueError(fetchAllArticlesResponse.error, "Failed to fetch articles from the articleRec db")
+    )
+
+  articles = fetchAllArticlesResponse.articleList
+  logger.info("Number of articles to index %s", len(articles))
+
+
+  elasticSearchDict = []
+  for article in articles:
+    elasticSearchDict.append(
+      {
+        'content': article.text,
+        'meta': {
+          'url': article.url,
+        }
+      }
+    )
+
+  document_store.write_documents(elasticSearchDict)
+
+
+def query_documents_v2(queryDocumentsRequest):
+  """
+    Implement a BM25 retriever
+  """
+  # document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
+  retriever = BM25Retriever(document_store)
+
+  candidate_documents = retriever.retrieve(
+      query=queryDocumentsRequest.query,
+      top_k=queryDocumentsRequest.num_docs,
+  )
+
+  logger.info("BM25 Retriever docs" + str(candidate_documents))
+  return candidate_documents
+
+
 def query_documents(queryDocumentsRequest):
   """
   Req: {
@@ -196,6 +244,14 @@ def query_documents(queryDocumentsRequest):
   })
   logger.info(doc_ids)
   logger.info(doc_scores)
+
+  # Call the v2 model as well and log the results for offline evaluation purposes
+  queryDocumentsV2Res = query_documents_v2(
+    queryDocumentsRequest= QueryDocumentsV2Request(
+      query=queryDocumentsRequest.query,
+      num_docs=queryDocumentsRequest.num_docs,
+    )
+  )
 
   if doc_scores == [] or doc_ids == [] or error != None:
     return QueryDocumentsResponse(

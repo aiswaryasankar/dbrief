@@ -61,10 +61,7 @@ def getUser(getUserRequest):
           UserId=user.userId,
         )
     except Exception as e:
-      logger.warn("Failed to fetch user from database", extra={
-        "user": user,
-        "error": e,
-      })
+      logger.info("Failed to fetch user from database " + str(e))
       print(e)
       return GetUserResponse(
         user=None,
@@ -72,6 +69,7 @@ def getUser(getUserRequest):
       )
 
   except Exception as e:
+    logger.info("Failed to fetch user : " + str(e))
     return GetUserResponse(
       user=None,
       error=str(e),

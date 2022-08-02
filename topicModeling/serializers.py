@@ -27,6 +27,11 @@ class QueryDocumentsRequestSerializer(DataclassSerializer):
   class Meta:
     dataclass = QueryDocumentsRequest
 
+class QueryDocumentsV2RequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = QueryDocumentsV2Request
+
 class TrainAndIndexTopicModelRequestSerializer(DataclassSerializer):
   parser_classes = JSONParser
   class Meta:

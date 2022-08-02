@@ -57,11 +57,13 @@ def saveTopicPage(saveTopicPageRequest):
     error=None
   )
 
-def fetchTopicPageBatch(fetchTopicPageBatchRequest):
+
+def fetchTopicPageByURL(fetchTopicPageBatchRequest):
   """
-    Fetch topic pages in batch
+    Fetch topic page by the url listed in the set of related articles
   """
-  pass
+  # Retrieve all the urls in the database
+  topicPages = TopicPageModel.objects.all()
 
 
 def fetchTopicPage(fetchTopicPageRequest):

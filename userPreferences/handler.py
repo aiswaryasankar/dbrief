@@ -1,3 +1,4 @@
+from getpass import getuser
 import logging
 import numpy as np
 import pandas as pd
@@ -42,6 +43,7 @@ def get_user(getUserRequest):
     Gets a user from the database
   """
   getUserRes = getUser(getUserRequest)
+  logger.info("requested user with firebase id: " + str(getUserRequest.firebaseAuthId))
   if getUserRes.error != None:
     return GetUserResponse(
       user= None,

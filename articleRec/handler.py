@@ -46,6 +46,7 @@ def sleeper(length):
   print("PID of Parent process is : ", os.getpid())
   print(multiprocessing.current_process().pid)
 
+
 def fetch_articles(fetchArticlesRequest):
   """
     Given a list of articleIds, this will return the entire hydrated article entity in the db for the batch of articles.  If no articleIds are provided, it will return all articles in the database.
@@ -155,5 +156,4 @@ def delete_articles(deleteArticlesRequest):
     This endpoint will delete articles from the database that are more than numDays old.
   """
   return delete_articles_controller(deleteArticlesRequest)
-
 

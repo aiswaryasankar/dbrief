@@ -39,6 +39,16 @@ def add_document_view(request):
 
 
 @api_view(['POST'])
+def add_documents_v2_view(request):
+  """
+    This endpoint will add all documents to Elastic Search
+  """
+  res = add_documents_v2(request)
+
+  return Response(res.to_json())
+
+
+@api_view(['POST'])
 def query_documents_url_view(request):
   """
     This endpoint gets similar documents to a given document
@@ -49,6 +59,21 @@ def query_documents_url_view(request):
 
   queryDocumentsRequest = req.validated_data
   res = query_documents(queryDocumentsRequest)
+
+  return Response(res.to_json())
+
+
+@api_view(['POST'])
+def query_documents_v2_view(request):
+  """
+    This endpoint gets similar documents to a given document
+  """
+  req = QueryDocumentsV2RequestSerializer(data=request.data)
+  if not req.is_valid():
+    return Response(req.errors)
+
+  queryDocumentsRequest = req.validated_data
+  res = query_documents_v2(queryDocumentsRequest)
 
   return Response(res.to_json())
 
