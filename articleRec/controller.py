@@ -1,3 +1,5 @@
+import os.path
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -23,6 +25,9 @@ import threading
 from multiprocessing.pool import ThreadPool
 import re
 
+
+from haystack.document_stores import FAISSDocumentStore
+from haystack.nodes import EmbeddingRetriever
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -242,6 +247,140 @@ def populate_articles_batch(populateArticlesBatch):
   # return PopulateArticlesResponse(num_articles_populated=len(articles), num_errors=0)
 
 
+def populate_articles_in_db_and_document_store_batch(populateArticlesBatch):
+  """
+    This will hydrate all the articles in batch.
+    Also hydrates a document store.
+  """
+  logger.info("In populate articles batch")
+  articleIds, articles = [], []
+  num_duplicates = 0
+
+  # Set up document store
+  logger.info("Setting up document store")
+
+  if not os.path.exists("./modelWeights/document_store"):
+    document_store = FAISSDocumentStore(sql_url="sqlite:///haystack_test_faiss.db")
+  else:
+    document_store = FAISSDocumentStore.load(faiss_file_path="testfile_path", sql_url= "sqlite:///haystack_test_faiss.db")
+
+  retriever = EmbeddingRetriever(document_store=document_store,
+                                 embedding_model="deepset/sentence_bert", use_gpu=False)
+  documents = []
+
+  for url in populateArticlesBatch.urls:
+
+    # First try fetching the article by URL - if present skip since it should already be fully hydrated
+    fetchArticlesByUrlRes = fetchArticlesByUrl([url])
+    if len(fetchArticlesByUrlRes.articleList) > 0:
+      num_duplicates += 1
+      continue
+
+    logger.info(url)
+    hydrateArticleResponse = hydrate_article_controller(url)
+    if hydrateArticleResponse.error != None:
+      logger.warn("Failed to hydrate article " + url)
+      continue
+
+    article=hydrateArticleResponse.article
+
+    # Hydrate the article date
+    if article.publish_date == "" or article.publish_date is None:
+      logger.info("Article doesn't have date info using current date")
+      article.publish_date = datetime.now()
+
+    # Hydrate article author
+    if article.authors == []:
+      article.authors = [topicFeedHandler.parseSource(url)]
+
+    # Save to database and fetch article id
+    a = Article(
+      id=None,
+      url=url,
+      text=article.text,
+      title=article.title,
+      date=article.publish_date,
+      imageURL=article.top_image,
+      authors=article.authors,
+      topic=None,
+      parentTopic=None,
+      polarizationScore=None,
+      topPassage=None,
+      topFact=None,
+    )
+    saveArticleResponse = saveArticle(
+      SaveArticleRequest(
+        article=a,
+      )
+    )
+
+    # create document for document store
+    d = {
+      'content': article.text,
+      'meta':{
+        'id' : None,
+        'url' : url,
+        'title' : article.title,
+        'date' : article.publish_date,
+        'imageURL' : article.top_image,
+        'authors' : article.authors,
+        'topic': None,
+        'parentTopic': None,
+        'polarizationScore': None,
+        'topPassage': None,
+        'topFact': None,
+      }
+    }
+
+    # Failed to save article to database
+    if saveArticleResponse.error != None:
+      logger.warn("Failed to save article to database " + url)
+    elif saveArticleResponse.created:
+      documents.append(d)
+      articleIds.append(saveArticleResponse.id)
+      articles.append(article.text)
+
+  logger.info("Number of articles to populate: " + str(len(articleIds)))
+
+  if len(articleIds) > 0:
+    # Add the articles to the topic model
+    addedToTopicModel = tpHandler.add_document(
+      AddDocumentRequest(
+        documents=articles,
+        doc_ids=articleIds,
+        tokenizer=None,
+        use_embedding_model_tokenizer=None,
+      )
+    )
+    if addedToTopicModel.error != None:
+      # How should you most appropriately handle this error?
+      logger.warn("Failed to add articles to the index")
+      return PopulateArticlesResponse(num_articles_populated=0, num_duplicates=num_duplicates,num_errors=len(articleIds))
+
+  articleBackfill = threading.Thread(target=article_backfill_controller, args=(
+    ArticleBackfillRequest(
+      force_update= False,
+      fields = ["topic", "top_passage", "top_fact", "polarization_score"]
+    )))
+  articleBackfill.start()
+
+  # Writing documents to the store and dumping the document store
+  document_store.write_documents(documents)
+  document_store.update_embeddings(retriever)
+
+  # Saving the document store
+  document_store.save("./modelWeights/document_store")
+
+  res = PopulateArticlesResponse(
+    num_articles_populated=len(articleIds),
+    num_duplicates=num_duplicates,
+    num_errors=0,
+  )
+  logger.info(res)
+
+  return res
+
+
 def hydrateModelOutputsForArticle(article, articleId, url, created):
   """
     HydrateModelOutputsForArticle will always be handled asynchronously since it is more time consuming and no live process should wait for it
@@ -439,6 +578,36 @@ def hydrate_article_controller(url):
       url=None,
       error=("Article doesn't have valid text"),
     )
+
+  # Hydrating article in document store
+  if os.path.exists("./modelWeights/document_store"):
+    document_store = FAISSDocumentStore.load(faiss_file_path="testfile_path", sql_url= "sqlite:///haystack_test_faiss.db")
+    retriever = EmbeddingRetriever(document_store=document_store,
+                                   embedding_model="deepset/sentence_bert", use_gpu=False)
+    document = [
+      {
+        'content': article.text,
+        'meta': {
+          'url': url,
+          'title': article_title,
+          'date': date_published,
+          'imageURL': None,
+          'authors': article_author,
+          'topic': None,
+          'parentTopic': None,
+          'polarizationScore': None,
+          'topPassage': None,
+          'topFact': None,
+        }
+      }
+    ]
+
+    # Writing documents to the store and dumping the document store
+    document_store.write_documents(document)
+    document_store.update_embeddings(retriever)
+
+    # Saving the document store
+    document_store.save("./modelWeights/document_store")
 
   return HydrateArticleResponse(
     article=article,

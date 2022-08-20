@@ -15,9 +15,11 @@ from .repository import *
 # from sklearn.feature_extraction.text import CountVectorizer
 from django.conf import settings
 import tensorflow_hub as hub
-from haystack.nodes import BM25Retriever
-from haystack.document_stores import ElasticsearchDocumentStore
 
+from haystack.nodes import BM25Retriever
+#from haystack.document_stores import ElasticsearchDocumentStore
+from haystack.document_stores import FAISSDocumentStore
+from haystack.nodes import EmbeddingRetriever
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -32,7 +34,7 @@ else:
 
 
 embedding_model = None
-document_store = ElasticsearchDocumentStore()
+#document_store = ElasticsearchDocumentStore()
 
 def retrain_topic_model():
   """
@@ -159,49 +161,50 @@ def add_document(addDocumentRequest):
   return AddDocumentResponse(error=None)
 
 
-def add_documents_v2(addDocumentRequest):
-  """
-    Will add all documents to Elastic Search
-  """
-  fetchAllArticlesResponse = articleRecHandler.fetch_articles(
-    FetchArticlesRequest(articleIds=[])
-  )
-  if fetchAllArticlesResponse.error != None:
-    return TrainAndIndexTopicModelResponse(
-      error=ValueError(fetchAllArticlesResponse.error, "Failed to fetch articles from the articleRec db")
-    )
-
-  articles = fetchAllArticlesResponse.articleList
-  logger.info("Number of articles to index %s", len(articles))
-
-
-  elasticSearchDict = []
-  for article in articles:
-    elasticSearchDict.append(
-      {
-        'content': article.text,
-        'meta': {
-          'url': article.url,
-        }
-      }
-    )
-
-  document_store.write_documents(elasticSearchDict)
+# def add_documents_v2(addDocumentRequest):
+#   """
+#     Will add all documents to Elastic Search
+#   """
+#   fetchAllArticlesResponse = articleRecHandler.fetch_articles(
+#     FetchArticlesRequest(articleIds=[])
+#   )
+#   if fetchAllArticlesResponse.error != None:
+#     return TrainAndIndexTopicModelResponse(
+#       error=ValueError(fetchAllArticlesResponse.error, "Failed to fetch articles from the articleRec db")
+#     )
+#
+#   articles = fetchAllArticlesResponse.articleList
+#   logger.info("Number of articles to index %s", len(articles))
+#
+#
+#   elasticSearchDict = []
+#   for article in articles:
+#     elasticSearchDict.append(
+#       {
+#         'content': article.text,
+#         'meta': {
+#           'url': article.url,
+#         }
+#       }
+#     )
+#
+#   #document_store.write_documents(elasticSearchDict)
 
 
 def query_documents_v2(queryDocumentsRequest):
   """
     Implement a BM25 retriever
   """
-  # document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
-  retriever = BM25Retriever(document_store)
+  document_store = FAISSDocumentStore.load(faiss_file_path="testfile_path", sql_url="sqlite:///haystack_test_faiss.db")
+  retriever = EmbeddingRetriever(document_store=document_store,
+                                 embedding_model="deepset/sentence_bert", use_gpu=False)
 
   candidate_documents = retriever.retrieve(
       query=queryDocumentsRequest.query,
       top_k=queryDocumentsRequest.num_docs,
   )
 
-  logger.info("BM25 Retriever docs" + str(candidate_documents))
+  logger.info("Faiss Retriever docs" + str(candidate_documents))
   return candidate_documents
 
 

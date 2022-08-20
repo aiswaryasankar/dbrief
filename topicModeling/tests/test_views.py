@@ -32,7 +32,7 @@ class TopicModelingViewTest(TestCase):
 
 
   def test_query_documents_V2(self):
-    response = self.client.post('/queryDocuments/', data={"query":"Joe Biden has Corona", "num_docs":10} content_type="application/json")
+    response = self.client.post('/queryDocuments/', data={"query":"Joe Biden has Corona", "num_docs":10}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
 
 

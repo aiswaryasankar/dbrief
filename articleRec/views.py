@@ -92,6 +92,16 @@ def populate_articles_batch_v2_view(request):
   return Response(res.to_json())
 
 
+@api_view(['GET'])
+def populate_articles_and_document_store_batch_v2_view(request):
+  """
+    This endpoint calls the batch v2 populate articles endpoint optimized for SPEED and MEMORY and also appends the articles to a document store
+    for better search.
+  """
+  res = populate_articles_and_document_store_batch_v2()
+  return Response(res.to_json())
+
+
 @api_view(['POST'])
 def populate_article_by_url_view(request):
   """

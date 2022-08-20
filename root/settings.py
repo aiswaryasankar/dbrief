@@ -30,7 +30,7 @@ SECRET_KEY = '2u35d&j@a4qhojoi68#@)*f-loe^%$=+jkie8*n5kvs&9ioxzu'
 # django.setup()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'infra.eba-ydmy6xs3.us-west-2.elasticbeanstalk.com',
@@ -145,7 +145,7 @@ else:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'ebdb',
             'USER': 'root',
-            'PASSWORD': 'uber',
+            'PASSWORD': 'MyNewPass0#',
             'HOST': 'localhost',
             'PORT': '3306',
         }

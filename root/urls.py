@@ -35,6 +35,7 @@ urlpatterns = [
     path('home/', articleRecView.hello_world_view),
     path('populateArticles/', articleRecView.populate_articles_batch_view),
     path('populateArticlesV2/', articleRecView.populate_articles_batch_v2_view),
+    path('populateArticlesDocumentStoreV2/', articleRecView.populate_articles_and_document_store_batch_v2_view),
     path('populateArticle/', articleRecView.populate_article_by_url_view),
     path('fetchArticles/', articleRecView.fetch_articles_view),
     path('hydrateArticle/', articleRecView.hydrate_article_view),
