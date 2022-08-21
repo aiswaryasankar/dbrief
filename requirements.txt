@@ -1,203 +1,31 @@
 # -f https://download.pytorch.org/whl/torch_stable.html
 
 
-absl-py==1.0.0
-alembic==1.8.1
-asgiref==3.4.1
-astunparse==1.6.3
-attrs==21.2.0
-azure-ai-formrecognizer==3.2.0b2
-azure-common==1.1.28
-azure-core==1.22.1
-backoff==1.11.1
-beautifulsoup4==4.10.0
-bertopic==0.9.4
-boto3==1.21.2
-botocore==1.24.2
-cachetools==4.2.4
-certifi==2021.10.8
-charset-normalizer==2.0.9
-click==8.0.3
-cloudpickle==2.1.0
-construct==2.5.3
-cssselect==1.1.0
-Cython==0.29.24
-databricks-cli==0.17.0
-dataclasses-json==0.5.6
-desert==2020.11.18
-dill==0.3.5.1
-Django==3.2.9
-django-background-tasks==1.2.5
-django-compat==1.0.15
-django-cors-headers==3.11.0
-django-crontab==0.7.1
-django-enumchoicefield==2.0.0
-djangorestframework==3.12.4
-djangorestframework-dataclasses==1.0.0
-docker==5.0.3
-docopt==0.6.2
-elastic-apm==6.10.1
-elasticsearch==7.10.1
-entrypoints==0.4
-et-xmlfile==1.1.0
-farm-haystack==1.6.0
-feedfinder2==0.0.4
-feedparser==6.0.8
-filelock==3.4.0
-Flask==2.1.3
-flatbuffers==2.0
-fsspec==2022.1.0
-future==0.18.2
-gast==0.4.0
-gensim==4.1.2
-gitdb==4.0.9
-GitPython==3.1.27
-google-auth==2.3.3
-google-auth-oauthlib==0.4.6
-google-pasta==0.2.0
-greenlet==1.1.2
-grpcio==1.42.0
-gunicorn==20.1.0
-h5py==3.6.0
-haystack==0.42
-hdbscan==0.8.27
-hnswlib==0.5.2
-huggingface-hub==0.7.0
-idna==3.3
-importlib-metadata==4.8.2
-importlib-resources==5.9.0
-inflect==6.0.0
-isodate==0.6.1
-itsdangerous==2.1.2
-jarowinkler==1.2.0
-jieba3k==0.35.1
-Jinja2==3.1.2
-jmespath==0.10.0
-joblib==1.1.0
-jsonschema==4.9.0
-keras==2.7.0
-Keras-Preprocessing==1.1.2
-langdetect==1.0.9
-libclang==12.0.0
-llvmlite==0.37.0
-logtail-python==0.1.3
-lxml==4.6.4
-mailchimp-transactional==1.0.46
-Mako==1.2.1
-Markdown==3.3.6
-MarkupSafe==2.1.1
-marshmallow==3.14.1
-marshmallow-enum==1.5.1
-mlflow==1.27.0
-mmh3==3.0.0
-mock==4.0.3
-monotonic==1.6
-more-itertools==8.13.0
-msgpack==1.0.3
-msrest==0.6.21
-mypy-extensions==0.4.3
-mysqlclient==2.1.0
-networkx==2.8.5
-newspaper3k==0.2.8
-nltk==3.6.5
-num2words==0.5.10
-numba==0.53.0
-numpy==1.22.0
-oauthlib==3.1.1
-openai==0.11.5
-openpyxl==3.0.9
-opt-einsum==3.3.0
-packaging==21.3
-pandas==1.3.4
-pandas-stubs==1.2.0.39
-pefile==2022.5.30
-Pillow==8.4.0
-pkgutil_resolve_name==1.3.10
-plotly==5.5.0
-posthog==1.4.9
-prometheus-client==0.14.1
-prometheus-flask-exporter==0.20.2
-protobuf==3.19.1
-pyasn1==0.4.8
-pyasn1-modules==0.2.8
-pydantic==1.9.0
-PyJWT==2.4.0
-pynndescent==0.5.5
-pyparsing==3.0.6
-pyrsistent==0.18.1
-python-dateutil==2.8.2
-python-docx==0.8.11
-python-ptrace==0.9.8
-pytz==2021.3
-PyYAML==5.4.1
-quantulum3==0.7.10
-querystring-parser==1.2.4
-rapidfuzz==2.4.2
-regex==2021.11.10
-requests==2.26.0
-requests-file==1.5.1
-requests-oauthlib==1.3.0
-rsa==4.8
-ruby==0.0.2
-s3fs==0.4.0
-s3transfer==0.5.1
-sacremoses==0.0.46
-schedule==1.1.0
-scikit-learn==1.0.1
-scipy==1.7.3
-sentence-transformers==2.2.2
-sentencepiece==0.1.96
-seqeval==1.2.2
-sgmllib3k==1.0.0
-six==1.16.0
-smart-open==5.2.1
-smmap==5.0.0
-soupsieve==2.3.1
-SQLAlchemy==1.4.39
-sqlparse==0.4.2
-tabulate==0.8.10
-tenacity==8.0.1
-tensorboard==2.7.0
-tensorboard-data-server==0.6.1
-tensorboard-plugin-wit==1.8.0
-tensorflow==2.7.0
-tensorflow-estimator==2.7.0
-tensorflow-hub==0.12.0
-tensorflow-io-gcs-filesystem==0.22.0
-tensorflow-text==2.7.3
-termcolor==1.1.0
-threadpoolctl==3.0.0
-tika==1.24
-tinysegmenter==0.3
-tldextract==3.1.2
-tokenizers==0.12.1
-torch==1.10.0
-torchvision==0.11.1
-tqdm==4.62.3
-transformers==4.20.1
-typing-inspect==0.7.1
-typing_extensions==4.0.1
-umap-learn==0.5.2
-urllib3==1.26.7
-websocket-client==1.3.3
-Werkzeug==2.0.2
-wrapt==1.13.3
-zipp==3.6.0
-
 # absl-py==1.0.0
+# alembic==1.8.1
 # asgiref==3.4.1
 # astunparse==1.6.3
-# attrs==21.4.0
+# attrs==21.2.0
+# azure-ai-formrecognizer==3.2.0b2
+# azure-common==1.1.28
+# azure-core==1.22.1
+# backoff==1.11.1
 # beautifulsoup4==4.10.0
 # bertopic==0.9.4
+# boto3==1.21.2
+# botocore==1.24.2
 # cachetools==4.2.4
 # certifi==2021.10.8
 # charset-normalizer==2.0.9
 # click==8.0.3
+# cloudpickle==2.1.0
+# construct==2.5.3
 # cssselect==1.1.0
 # Cython==0.29.24
+# databricks-cli==0.17.0
 # dataclasses-json==0.5.6
 # desert==2020.11.18
+# dill==0.3.5.1
 # Django==3.2.9
 # django-background-tasks==1.2.5
 # django-compat==1.0.15
@@ -206,119 +34,331 @@ zipp==3.6.0
 # django-enumchoicefield==2.0.0
 # djangorestframework==3.12.4
 # djangorestframework-dataclasses==1.0.0
+# docker==5.0.3
+# docopt==0.6.2
+# elastic-apm==6.10.1
+# elasticsearch==7.10.1
+# entrypoints==0.4
 # et-xmlfile==1.1.0
+# farm-haystack==1.6.0
 # feedfinder2==0.0.4
 # feedparser==6.0.8
 # filelock==3.4.0
+# Flask==2.1.3
 # flatbuffers==2.0
+# fsspec==2022.1.0
+# future==0.18.2
 # gast==0.4.0
 # gensim==4.1.2
+# gitdb==4.0.9
+# GitPython==3.1.27
 # google-auth==2.3.3
 # google-auth-oauthlib==0.4.6
 # google-pasta==0.2.0
+# greenlet==1.1.2
 # grpcio==1.42.0
+# gunicorn==20.1.0
 # h5py==3.6.0
+# haystack==0.42
 # hdbscan==0.8.27
 # hnswlib==0.5.2
-# huggingface-hub==0.2.1
+# huggingface-hub==0.7.0
 # idna==3.3
 # importlib-metadata==4.8.2
+# importlib-resources==5.9.0
+# inflect==6.0.0
+# isodate==0.6.1
+# itsdangerous==2.1.2
+# jarowinkler==1.2.0
 # jieba3k==0.35.1
+# Jinja2==3.1.2
+# jmespath==0.10.0
 # joblib==1.1.0
+# jsonschema==4.9.0
 # keras==2.7.0
 # Keras-Preprocessing==1.1.2
+# langdetect==1.0.9
 # libclang==12.0.0
-# llvmlite==0.36.0
+# llvmlite==0.37.0
 # logtail-python==0.1.3
 # lxml==4.6.4
 # mailchimp-transactional==1.0.46
+# Mako==1.2.1
 # Markdown==3.3.6
+# MarkupSafe==2.1.1
 # marshmallow==3.14.1
 # marshmallow-enum==1.5.1
+# mlflow==1.27.0
+# mmh3==3.0.0
 # mock==4.0.3
+# monotonic==1.6
+# more-itertools==8.13.0
 # msgpack==1.0.3
+# msrest==0.6.21
 # mypy-extensions==0.4.3
 # mysqlclient==2.1.0
+# networkx==2.8.5
 # newspaper3k==0.2.8
 # nltk==3.6.5
+# num2words==0.5.10
 # numba==0.53.0
 # numpy==1.22.0
 # oauthlib==3.1.1
 # openai==0.11.5
-# openpyxl==3.0.10
+# openpyxl==3.0.9
 # opt-einsum==3.3.0
 # packaging==21.3
 # pandas==1.3.4
-# pandas-stubs==1.2.0.62
+# pandas-stubs==1.2.0.39
+# pefile==2022.5.30
 # Pillow==8.4.0
-# plotly==5.9.0
+# pkgutil_resolve_name==1.3.10
+# plotly==5.5.0
+# posthog==1.4.9
+# prometheus-client==0.14.1
+# prometheus-flask-exporter==0.20.2
 # protobuf==3.19.1
 # pyasn1==0.4.8
 # pyasn1-modules==0.2.8
 # pydantic==1.9.0
+# PyJWT==2.4.0
 # pynndescent==0.5.5
 # pyparsing==3.0.6
+# pyrsistent==0.18.1
 # python-dateutil==2.8.2
+# python-docx==0.8.11
+# python-ptrace==0.9.8
 # pytz==2021.3
 # PyYAML==5.4.1
+# quantulum3==0.7.10
+# querystring-parser==1.2.4
+# rapidfuzz==2.4.2
 # regex==2021.11.10
 # requests==2.26.0
 # requests-file==1.5.1
 # requests-oauthlib==1.3.0
 # rsa==4.8
+# ruby==0.0.2
+# s3fs==0.4.0
+# s3transfer==0.5.1
 # sacremoses==0.0.46
 # schedule==1.1.0
 # scikit-learn==1.0.1
 # scipy==1.7.3
-# sentence-transformers==2.1.0
+# sentence-transformers==2.2.2
 # sentencepiece==0.1.96
+# seqeval==1.2.2
 # sgmllib3k==1.0.0
 # six==1.16.0
 # smart-open==5.2.1
+# smmap==5.0.0
 # soupsieve==2.3.1
+# SQLAlchemy==1.4.39
 # sqlparse==0.4.2
+# tabulate==0.8.10
 # tenacity==8.0.1
-# tensorboard==2.9.1
+# tensorboard==2.7.0
 # tensorboard-data-server==0.6.1
-# tensorboard-plugin-wit==1.8.1
-# tensorflow==2.7.3
-# tensorflow-cpu==2.7.3
+# tensorboard-plugin-wit==1.8.0
+# tensorflow==2.7.0
 # tensorflow-estimator==2.7.0
 # tensorflow-hub==0.12.0
 # tensorflow-io-gcs-filesystem==0.22.0
 # tensorflow-text==2.7.3
 # termcolor==1.1.0
 # threadpoolctl==3.0.0
+# tika==1.24
 # tinysegmenter==0.3
 # tldextract==3.1.2
-# tokenizers==0.10.3
+# tokenizers==0.12.1
 # torch==1.10.0
 # torchvision==0.11.1
 # tqdm==4.62.3
-# transformers==4.12.5
+# transformers==4.20.1
 # typing-inspect==0.7.1
 # typing_extensions==4.0.1
 # umap-learn==0.5.2
 # urllib3==1.26.7
+# websocket-client==1.3.3
 # Werkzeug==2.0.2
 # wrapt==1.13.3
 # zipp==3.6.0
-# Flask==2.1.3
-# Jinja2==3.1.2
-# Mako==1.2.1
-# MarkupSafe==2.1.1
-# alembic==1.8.1
-# azure-ai-formrecognizer==3.2.0b2
-# azure-common==1.1.28
-# azure-core==1.22.1
-# backoff==1.11.1
-# cloudpickle==2.1.0
-#  databricks-cli==0.17.0
-#  dill==0.3.5.1
-#  docker==5.0.3
-#  docopt==0.6.2
-#  elastic-apm==6.10.1
-#  elasticsearch-7.10.1 entrypoints-0.4 farm-haystack-1.6.0 gitdb-4.0.9 gitpython-3.1.27 greenlet-1.1.2 gunicorn-20.1.0 huggingface-hub-0.7.0 importlib-resources-5.9.0 inflect-6.0.0 isodate-0.6.1 itsdangerous-2.1.2 jarowinkler-1.2.0 jsonschema-4.9.0 langdetect-1.0.9 mlflow-1.27.0 mmh3-3.0.0 monotonic-1.6 more-itertools-8.13.0 msrest-0.6.21 networkx-2.8.5 num2words-0.5.10 pkgutil-resolve-name-1.3.10 posthog-1.4.9 prometheus-client-0.14.1 prometheus-flask-exporter-0.20.2 pyjwt-2.4.0 pyrsistent-0.18.1 python-docx-0.8.11 quantulum3-0.7.10 querystring-parser-1.2.4 rapidfuzz-2.4.2 sentence-transformers-2.2.2 seqeval-1.2.2 smmap-5.0.0 sqlalchemy-1.4.39 tabulate-0.8.10 tika-1.24 tokenizers-0.12.1 transformers-4.20.1 websocket-client-1.3.3
+
+absl-py==1.0.0
+asgiref==3.4.1
+astunparse==1.6.3
+attrs==21.4.0
+beautifulsoup4==4.10.0
+bertopic==0.9.4
+cachetools==4.2.4
+certifi==2021.10.8
+charset-normalizer==2.0.9
+click==8.0.3
+cssselect==1.1.0
+Cython==0.29.24
+dataclasses-json==0.5.6
+desert==2020.11.18
+Django==3.2.9
+django-background-tasks==1.2.5
+django-compat==1.0.15
+django-cors-headers==3.11.0
+django-crontab==0.7.1
+django-enumchoicefield==2.0.0
+djangorestframework==3.12.4
+djangorestframework-dataclasses==1.0.0
+et-xmlfile==1.1.0
+feedfinder2==0.0.4
+feedparser==6.0.8
+filelock==3.4.0
+flatbuffers==2.0
+gast==0.4.0
+gensim==4.1.2
+google-auth==2.3.3
+google-auth-oauthlib==0.4.6
+google-pasta==0.2.0
+grpcio==1.42.0
+h5py==3.6.0
+hdbscan==0.8.27
+hnswlib==0.5.2
+huggingface-hub==0.2.1
+idna==3.3
+importlib-metadata==4.8.2
+jieba3k==0.35.1
+joblib==1.1.0
+keras==2.7.0
+Keras-Preprocessing==1.1.2
+libclang==12.0.0
+llvmlite==0.36.0
+logtail-python==0.1.3
+lxml==4.6.4
+mailchimp-transactional==1.0.46
+Markdown==3.3.6
+marshmallow==3.14.1
+marshmallow-enum==1.5.1
+mock==4.0.3
+msgpack==1.0.3
+mypy-extensions==0.4.3
+mysqlclient==2.1.0
+newspaper3k==0.2.8
+nltk==3.6.5
+numba==0.53.0
+numpy==1.22.0
+oauthlib==3.1.1
+openai==0.11.5
+openpyxl==3.0.10
+opt-einsum==3.3.0
+packaging==21.3
+pandas==1.3.4
+pandas-stubs==1.2.0.62
+Pillow==8.4.0
+plotly==5.9.0
+protobuf==3.19.1
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+pydantic==1.9.0
+pynndescent==0.5.5
+pyparsing==3.0.6
+python-dateutil==2.8.2
+pytz==2021.3
+PyYAML==5.4.1
+regex==2021.11.10
+requests==2.26.0
+requests-file==1.5.1
+requests-oauthlib==1.3.0
+rsa==4.8
+sacremoses==0.0.46
+schedule==1.1.0
+scikit-learn==1.0.1
+scipy==1.7.3
+sentence-transformers==2.1.0
+sentencepiece==0.1.96
+sgmllib3k==1.0.0
+six==1.16.0
+smart-open==5.2.1
+soupsieve==2.3.1
+sqlparse==0.4.2
+tenacity==8.0.1
+tensorboard==2.9.1
+tensorboard-data-server==0.6.1
+tensorboard-plugin-wit==1.8.1
+tensorflow==2.7.3
+tensorflow-cpu==2.7.3
+tensorflow-estimator==2.7.0
+tensorflow-hub==0.12.0
+tensorflow-io-gcs-filesystem==0.22.0
+tensorflow-text==2.7.3
+termcolor==1.1.0
+threadpoolctl==3.0.0
+tinysegmenter==0.3
+tldextract==3.1.2
+tokenizers==0.10.3
+torch==1.10.0
+torchvision==0.11.1
+tqdm==4.62.3
+transformers==4.12.5
+typing-inspect==0.7.1
+typing_extensions==4.0.1
+umap-learn==0.5.2
+urllib3==1.26.7
+Werkzeug==2.0.2
+wrapt==1.13.3
+zipp==3.6.0
+Flask==2.1.3
+Jinja2==3.1.2
+Mako==1.2.1
+MarkupSafe==2.1.1
+alembic==1.8.1
+azure-ai-formrecognizer==3.2.0b2
+azure-common==1.1.28
+azure-core==1.22.1
+backoff==1.11.1
+cloudpickle==2.1.0
+ databricks-cli==0.17.0
+ dill==0.3.5.1
+ docker==5.0.3
+ docopt==0.6.2
+ elastic-apm==6.10.1
+ elasticsearch==7.10.1
+ entrypoints==0.4
+ farm-haystack==1.6.0
+ gitdb==4.0.9
+ gitpython==3.1.27
+ greenlet==1.1.2
+ gunicorn==20.1.0
+ huggingface-hub==0.7.0
+ importlib-resources==5.9.0
+ inflect==6.0.0
+ isodate==0.6.1
+ itsdangerous==2.1.2
+ jarowinkler==1.2.0
+ jsonschema==4.9.0
+ langdetect==1.0.9
+ mlflow==1.27.0
+ mmh3==3.0.0
+ monotonic==1.6
+ more-itertools==8.13.0
+ msrest==0.6.21
+ networkx==2.8.5
+ num2words==0.5.10
+ pkgutil-resolve-name==1.3.10
+ posthog==1.4.9
+ prometheus-client==0.14.1
+ prometheus-flask-exporter==0.20.2
+ pyjwt==2.4.0
+ pyrsistent==0.18.1
+ python-docx==0.8.11
+ quantulum3==0.7.10
+ querystring-parser==1.2.4
+ rapidfuzz==2.4.2
+ sentence-transformers==2.2.2
+ seqeval==1.2.2
+ smmap==5.0.0
+ sqlalchemy==1.4.39
+ tabulate==0.8.10
+ tika==1.24
+ tokenizers==0.12.1
+ transformers==4.20.1
+ websocket-client==1.3.3
 
 
 # -f https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.8.0-py3-none-any.whl
