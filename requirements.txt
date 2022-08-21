@@ -101,8 +101,8 @@ networkx==2.8.5
 newspaper3k==0.2.8
 nltk==3.6.5
 num2words==0.5.10
-numba==0.54.1
-numpy==1.20.3
+numba==0.53.0
+numpy==1.22.0
 oauthlib==3.1.1
 openai==0.11.5
 openpyxl==3.0.9
