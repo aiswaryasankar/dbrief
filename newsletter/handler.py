@@ -62,8 +62,18 @@ def get_newsletter_config_for_user(getNewsletterConfigRequest):
     Get already created newsletter for a user
   """
   # Basic retrieval on the newsletter config based on userId
+  getNewsLetterConfigRes = getNewsletterConfig(getNewsletterConfigRequest)
+  if getNewsLetterConfigRes.error != None:
+    return GetNewsletterConfigForUserResponse(
+      newsletterConfig=None,
+      error=getNewsLetterConfigRes.error
+    )
+  return GetNewsletterConfigForUserResponse(
+    newsletterConfig=getNewsLetterConfigRes.res,
+    error=None,
+  )
 
-  pass
+
 
 
 def send_newsletters_batch(sendNewslettersBatchRequest):

@@ -34,6 +34,7 @@ else:
 embedding_model = None
 document_store = ElasticsearchDocumentStore()
 
+
 def retrain_topic_model():
   """
     This endpoint will first fetch all the documents from the database and keep it in memory
@@ -159,9 +160,24 @@ def add_document(addDocumentRequest):
   return AddDocumentResponse(error=None)
 
 
+def delete_documents_v2(deleteDocumentRequest):
+  """
+    This will delete the documents by document id from the search index.
+  """
+  pass
+
+
 def add_documents_v2(addDocumentRequest):
   """
-    Will add all documents to Elastic Search
+    This will add an individual document to the Elastic Search index.
+  """
+  pass
+
+
+def add_documents_batch_v2(addDocumentRequest):
+  """
+    Will add all documents to Elastic Search in batch. This is used essentially to entirely refresh the
+    index of articles in the database.
   """
   fetchAllArticlesResponse = articleRecHandler.fetch_articles(
     FetchArticlesRequest(articleIds=[])

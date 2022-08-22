@@ -378,7 +378,7 @@ def deleteArticles(numDays, actuallyDelete):
   """
   deleted_article_ids = []
   time_threshold = datetime.now() - timedelta(days = numDays)
-  if numDays < 100:
+  if numDays < 60:
     return 0, "Invalid date range"
 
   for article in ArticleModel.objects.filter(publish_date__lt=time_threshold):

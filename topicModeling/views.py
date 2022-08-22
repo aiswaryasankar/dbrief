@@ -43,7 +43,7 @@ def add_documents_v2_view(request):
   """
     This endpoint will add all documents to Elastic Search
   """
-  res = add_documents_v2(request)
+  res = add_documents_batch_v2(request)
 
   return Response(res.to_json())
 

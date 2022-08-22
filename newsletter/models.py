@@ -6,7 +6,6 @@ class NewsletterConfigModel (models.Model):
 
   newsletterConfigId = models.AutoField(primary_key=True)
   userId = models.IntegerField("UserId", unique=True)
-  firebaseUserId = models.TextField("FirebaseUserId", null=True)
   deliveryTime = models.TextField("Delivery time", default="EVENING")
   recurrenceType = models.TextField("Recurrence type", default="WEEKLY")
   dayOfWeek = models.IntegerField("Day of week", default=0)

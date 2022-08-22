@@ -86,8 +86,23 @@ def getNewsletterConfig(getNewsletterConfigRequest):
   """
     This will fetch the newsletter config stored by the requested user.
   """
-  pass
+  try:
+    article = NewsletterConfigModel.objects.get(userId = getNewsletterConfigRequest.userId)
 
+    if fetchRes.error != None:
+      logger.warn("Failed to hydrate article with url: " + str(u))
+      logger.warn(fetchRes.error)
+    else:
+      hydratedArticles.append(fetchRes.articleList[0])
+
+  except Exception as e:
+    logger.warn("Failed to fetch article with url: " + str(u) + " " + str(e))
+
+  return FetchArticlesResponse(
+    articleList=hydratedArticles,
+    error=None,
+  )
+  pass
 
 
 
