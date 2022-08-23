@@ -32,3 +32,10 @@ Deployment to AWS is a 2 step process - you can
 
 ## Checking prod Mysql
 
+
+## Elastic Search
+In order to set up elastic search on docker you need to run the following commands -
+1. ```sudo systemctl start docker```
+2. ```sudo docker pull docker.elastic.co/elasticsearch/elasticsearch:7.9.2```
+3. ```sudo docker run -d -p 9200:9200 -e 'discovery.type=single-node' elasticsearch:7.9.2```
+

@@ -262,19 +262,19 @@ def query_documents(queryDocumentsRequest):
   logger.info(doc_scores)
 
   # Call the v2 model as well and log the results for offline evaluation purposes
-  queryDocumentsV2Res = query_documents_v2(
-    queryDocumentsRequest= QueryDocumentsV2Request(
-      query=queryDocumentsRequest.query,
-      num_docs=queryDocumentsRequest.num_docs,
-    )
-  )
+  # queryDocumentsV2Res = query_documents_v2(
+  #   queryDocumentsRequest= QueryDocumentsV2Request(
+  #     query=queryDocumentsRequest.query,
+  #     num_docs=queryDocumentsRequest.num_docs,
+  #   )
+  # )
 
-  if doc_scores == [] or doc_ids == [] or error != None:
-    return QueryDocumentsResponse(
-      doc_scores=doc_scores,
-      doc_ids=doc_ids,
-      error=ValueError("No documents returned by search"),
-    )
+  # if doc_scores == [] or doc_ids == [] or error != None:
+  #   return QueryDocumentsResponse(
+  #     doc_scores=doc_scores,
+  #     doc_ids=doc_ids,
+  #     error=ValueError("No documents returned by search"),
+  #   )
 
   return QueryDocumentsResponse(
     doc_scores=doc_scores,

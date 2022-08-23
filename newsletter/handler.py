@@ -74,16 +74,29 @@ def get_newsletter_config_for_user(getNewsletterConfigRequest):
   )
 
 
-
-
 def send_newsletters_batch(sendNewslettersBatchRequest):
   """
     Will query all the users that have subscribed to a newsletter at a given time of day/ day and call send_newsletter for each of them. Send_newsletters_batch_request will only take in the time of day and the day of week.  In the future this will need to account for time zones properly.
   """
   # Query the newsletter_config database for all the userIds that match the current time of day and day of week
+  queryNewsletterConfigRes = queryNewsletterConfig(
+    QueryNewsletterConfigRequest(
+      deliveryTime=sendNewslettersBatchRequest.deliveryTime,
+      day=sendNewslettersBatchRequest.day,
+    )
+  )
+  if queryNewsletterConfigRes.error != None:
+    return SendNewsletterResponse(
+      error = queryNewsletterConfigRes.error
+    )
 
   # Call send_newsletter for each of those userIds either in parallel or sequentially
-
+  for config in queryNewsletterConfigRes.newsletterConfigs:
+    sendNewsletterRes = send_newsletter(
+      SendNewsletterRequest(
+        userId= config.UserId,
+      )
+    )
 
   pass
 

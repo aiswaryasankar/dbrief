@@ -42,12 +42,12 @@ class TopicInfo:
 @dataclass_json
 @dataclass
 class NewsletterConfigV1:
-  NewsletterConfigId: Optional[int]
   UserID: int
   DeliveryTime: typing.Literal['MORNING', 'AFTERNOON', 'EVENING']
   RecurrenceType: typing.Literal['DAILY', 'WEEKLY', 'MONTHLY']
   IsEnabled: bool
   TopicsFollowed: List[int]
+  NewsletterConfigId: Optional[int]=field(default_factory=int)
 
 @dataclass_json
 @dataclass
@@ -822,6 +822,7 @@ class UpdateNewsletterConfigForUserRequest:
 @dataclass_json
 @dataclass
 class UpdateNewsletterConfigForUserResponse:
+  newsletterId: int
   error: Exception
 
 @dataclass
@@ -832,13 +833,13 @@ class SendNewslettersBatchRequest:
 @dataclass_json
 @dataclass
 class SendNewslettersBatchResponse:
-  newsletters_success: List[str]
-  newsletters_failed: List[str]
+  success_user_ids: List[int]
+  failed_user_ids: List[int]
 
 @dataclass
 class SendNewsletterRequest:
-  userId: int
-  userEmail: Optional[str]
+  userId: Optional[int]=field(default_factory=int)
+  newsletterConfig: Optional[NewsletterConfigV1]=field(default_factory=NewsletterConfigV1)
 
 @dataclass_json
 @dataclass
@@ -853,5 +854,16 @@ class HydrateNewsletterRequest:
 @dataclass
 class HydrateNewsletterResponse:
   error: Exception
+
+@dataclass
+class QueryNewsletterConfigRequest:
+  deliveryTime: typing.Literal['MORNING', 'AFTERNOON', 'EVENING']
+  day: typing.Literal['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+
+@dataclass
+class QueryNewsletterConfigResponse:
+  newsletterConfigs: List[NewsletterConfigV1]
+  error: Exception
+
 
 

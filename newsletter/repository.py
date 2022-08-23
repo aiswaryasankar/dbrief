@@ -77,9 +77,15 @@ def updateNewsletterConfig(updateNewsletterConfigRequest):
       "error": e,
     })
 
-    return UpdateNewsletterConfigForUserResponse(error=str(e))
+    return UpdateNewsletterConfigForUserResponse(
+      newsletterId=None,
+      error=str(e),
+    )
 
-  return UpdateNewsletterConfigForUserResponse(error=None)
+  return UpdateNewsletterConfigForUserResponse(
+    newsletterId=newsletterConfigEntry.newsletterConfigId,
+    error=None,
+  )
 
 
 def getNewsletterConfig(getNewsletterConfigRequest):
@@ -87,23 +93,48 @@ def getNewsletterConfig(getNewsletterConfigRequest):
     This will fetch the newsletter config stored by the requested user.
   """
   try:
-    article = NewsletterConfigModel.objects.get(userId = getNewsletterConfigRequest.userId)
+    newsletterConfig = NewsletterConfigModel.objects.get(userId = getNewsletterConfigRequest.userId)
 
-    if fetchRes.error != None:
-      logger.warn("Failed to hydrate article with url: " + str(u))
-      logger.warn(fetchRes.error)
-    else:
-      hydratedArticles.append(fetchRes.articleList[0])
+    # Hydrate the topic from the list of topics included in newsletterConfig
+    newsletterConfig = NewsletterConfigV1(
+      NewsletterConfigId=newsletterConfig.NewsletterConfigId,
+      UserId=newsletterConfig.UserID,
+      DeliveryTime=newsletterConfig.DeliveryTime,
+      RecurrenceType=newsletterConfig.RecurrenceType,
+      IsEnabled=newsletterConfig.IsEnabled,
+      TopicsFollowed=newsletterConfig.TopicsFollowed,
+    )
+    logger.info(newsletterConfig)
 
   except Exception as e:
-    logger.warn("Failed to fetch article with url: " + str(u) + " " + str(e))
+    logger.warn("Failed to fetch newsletter config for user: " + str(getNewsletterConfigRequest.userId))
 
-  return FetchArticlesResponse(
-    articleList=hydratedArticles,
+  return GetNewsletterConfigForUserResponse(
+    newsletterConfig=newsletterConfig,
     error=None,
   )
-  pass
 
+
+def queryNewsletterConfig(queryNewsletterConfigRequest):
+  """
+    This will query the newsletter config database with the requested fields.
+  """
+  try:
+    configs = NewsletterConfigModel.objects.filter(dayOfWeek=queryNewsletterConfigRequest.DayOfWeek)
+    configs = configs | NewsletterConfigModel.objects.filter(deliveryTime=queryNewsletterConfigRequest.DeliveryTime)
+
+    return QueryNewsletterConfigResponse(
+      newsletterConfigs=configs,
+      error=None,
+    )
+
+  except Exception as e:
+    logger.warn("Failed to query newsletter configs on days: " + str(queryNewsletterConfigRequest.DayOfWeek))
+
+    return QueryNewsletterConfigResponse(
+      newsletterConfigs=None,
+      error=str(e),
+    )
 
 
 
