@@ -17,7 +17,6 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 
-
 def create_newsletter_config_for_user(createNewsletterConfigRequest):
   """
     Create a newsletter config for a user

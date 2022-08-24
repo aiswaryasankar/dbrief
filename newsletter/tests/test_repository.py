@@ -36,7 +36,6 @@ class NewsletterRepoTest(TestCase):
 
     # Try to create another newsletter for the same user and just check that it updates the same config instead of creating a new one
     newsletterConfig = NewsletterConfigV1 (
-      NewsletterConfigId=2,
       UserID=1,
       DeliveryTime="EVENING",
       RecurrenceType="WEEKLY",
@@ -66,8 +65,8 @@ class NewsletterRepoTest(TestCase):
       Tests querying for newsletter configs that match the given day of week and time of day.
     """
 
+    # Add a config to the database
     newsletterConfig = NewsletterConfigV1 (
-      NewsletterConfigId= 1,
       UserID=1,
       DeliveryTime="MORNING",
       RecurrenceType="DAILY",
@@ -79,19 +78,32 @@ class NewsletterRepoTest(TestCase):
       newsletterConfig=newsletterConfig,
     )
     res1 = updateNewsletterConfig(req)
+    self.assertIsNone(res1.error)
+    self.assertEqual(res1.newsletterId, 2)
 
+    # Add a config to the database
     newsletterConfig = NewsletterConfigV1 (
-      NewsletterConfigId= 1,
-      UserID=1,
+      UserID=2,
       DeliveryTime="MORNING",
-      DayOfWeek="DAILY",
+      RecurrenceType="DAILY",
       IsEnabled=True,
-      TopicsFollowed=[1],
+      TopicsFollowed=[4],
     )
 
     req = CreateNewsletterConfigForUserRequest(
       newsletterConfig=newsletterConfig,
     )
-    res1 = updateNewsletterConfig(req)
+    res2 = updateNewsletterConfig(req)
+    self.assertIsNone(res2.error)
+    self.assertEqual(res2.newsletterId, 3)
 
+    # Query for the config
+    req = QueryNewsletterConfigRequest(
+      deliveryTime=["MORNING"],
+      day=0
+    )
+    queryRes = queryNewsletterConfig(req)
+    self.assertIsNone(queryRes.error)
+    self.assertEqual(len(queryRes.newsletterConfigs), 2)
+    self.assertEqual(queryRes.newsletterConfigs[0].userId, 1)
 

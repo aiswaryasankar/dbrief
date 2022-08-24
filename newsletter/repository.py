@@ -119,17 +119,20 @@ def queryNewsletterConfig(queryNewsletterConfigRequest):
   """
     This will query the newsletter config database with the requested fields.
   """
+  logger.info(queryNewsletterConfigRequest.deliveryTime)
+  logger.info(queryNewsletterConfigRequest.day)
   try:
-    configs = NewsletterConfigModel.objects.filter(dayOfWeek=queryNewsletterConfigRequest.DayOfWeek)
-    configs = configs | NewsletterConfigModel.objects.filter(deliveryTime=queryNewsletterConfigRequest.DeliveryTime)
+    configs = NewsletterConfigModel.objects.filter(deliveryTime=queryNewsletterConfigRequest.deliveryTime[0], dayOfWeek=queryNewsletterConfigRequest.day)
 
+    configList = [config for config in configs]
+    logger.info(configList)
     return QueryNewsletterConfigResponse(
-      newsletterConfigs=configs,
+      newsletterConfigs=configList,
       error=None,
     )
 
   except Exception as e:
-    logger.warn("Failed to query newsletter configs on days: " + str(queryNewsletterConfigRequest.DayOfWeek))
+    logger.warn("Failed to query newsletter configs on days: " + str(queryNewsletterConfigRequest.day))
 
     return QueryNewsletterConfigResponse(
       newsletterConfigs=None,
