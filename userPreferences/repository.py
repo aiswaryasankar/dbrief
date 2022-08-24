@@ -91,23 +91,27 @@ def followTopic(followTopicRequest):
   forNewsletter = followTopicRequest.forNewsletter
 
   try:
-    userTopicEntry = UserTopicModel(
-        userId= userId,
-        topicId= topicId,
-        forNewsletter = forNewsletter,
-    )
-    userTopicEntry.save()
-    logger.info("Saved topic to the database: ", extra={ "topic": userTopicEntry })
-
+    topicPair = UserTopicModel.objects.get(topicId=topicId, userId=userId)
   except Exception as e:
-    logger.info("Failed to save user topic to the database", extra= {
-      "user": userId,
-      "error": e,
-    })
+    try:
+      userTopicEntry = UserTopicModel(
+          userId= userId,
+          topicId= topicId,
+          forNewsletter = forNewsletter,
+      )
+      userTopicEntry.save()
+      logger.info("Saved topic to the database: ", extra={ "topic": userTopicEntry })
+      return FollowTopicResponse(userTopicId=userTopicEntry.userTopicId, error=None)
 
-    return FollowTopicResponse(userTopicId=None, error=str(e))
+    except Exception as e:
+      logger.info("Failed to save user topic to the database", extra= {
+        "user": userId,
+        "error": e,
+      })
 
-  return FollowTopicResponse(userTopicId=userTopicEntry.userTopicId, error=None)
+      return FollowTopicResponse(userTopicId=None, error=str(e))
+
+  return FollowTopicResponse(userTopicId=topicPair.userTopicId, error=None)
 
 
 def unfollowTopic(unfollowTopicRequest):

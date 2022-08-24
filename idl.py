@@ -47,7 +47,7 @@ class NewsletterConfigV1:
   RecurrenceType: typing.Literal['DAILY', 'WEEKLY', 'MONTHLY']
   IsEnabled: bool
   TopicsFollowed: List[int]
-  NewsletterConfigId: Optional[int]=field(default_factory=int)
+  NewsletterConfigId: Optional[int]=""
 
 @dataclass_json
 @dataclass
