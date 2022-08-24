@@ -51,7 +51,10 @@ def getUser(getUserRequest):
   """
 
   try:
-    user = UserModel.objects.get(firebaseAuthId=getUserRequest.firebaseAuthId)
+    if getUserRequest.firebaseAuthId != "":
+      user = UserModel.objects.get(firebaseAuthId=getUserRequest.firebaseAuthId)
+    elif getUserRequest.userId != 0:
+      user = UserModel.objects.get(userId=getUserRequest.userId)
     try:
       user = User(
           FirebaseAuthID=getUserRequest.firebaseAuthId,
@@ -151,12 +154,12 @@ def getTopicsYouFollow(getTopicsYouFollowRequest):
   """
     Gets the topics a user follows in the UserTopic table
   """
-  print("calling getTopicsYouFollow")
   topicList = []
   userId = getTopicsYouFollowRequest.user_id
+  forNewsletter = getTopicsYouFollowRequest.for_newsletter
 
   try:
-    followedTopics = UserTopicModel.objects.filter(userId=userId)
+    followedTopics = UserTopicModel.objects.filter(userId=userId, forNewsletter=forNewsletter)
 
   except Exception as e:
     logger.warn("Failed to get topics for user %s", userId)

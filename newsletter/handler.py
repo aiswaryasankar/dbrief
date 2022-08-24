@@ -4,10 +4,13 @@ import logging
 from .repository import *
 from .serializers import *
 from userPreferences.handler import *
+from topicFeed.handler import *
 from logtail import LogtailHandler
 import mailchimp_transactional as MailchimpTransactional
 from mailchimp_transactional.api_client import ApiClientError
-
+import os
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -96,19 +99,82 @@ def send_newsletters_batch(sendNewslettersBatchRequest):
         userId= config.UserId,
       )
     )
+    if sendNewsletterRes.error != None:
+      return SendNewsletterResponse(
+        error = sendNewsletterRes.error
+      )
 
-  pass
 
 
 def send_newsletter(sendNewsletterRequest):
   """
     Send a newsletter to a user
   """
+  # Get the user
+  getUserRes = getUser(
+    GetUserRequest(
+      userId = sendNewsletterRequest.userId
+    )
+  )
+  if getUserRes.error != None:
+    return SendNewsletterResponse(
+      error = getUserRes.error
+    )
+
   # Will take in a userId and query for the topics that the user follows
+  newsletterTopicsRes = get_topics_you_follow(
+    GetTopicsForUserRequest(
+      user_id=sendNewsletterRequest.userId,
+      for_newsletter=True,
+    )
+  )
+  if newsletterTopicsRes.error != None or len(newsletterTopicsRes.topics) == 0:
+    logger.warn("No topics for user")
+    return SendNewsletterResponse(
+      error = newsletterTopicsRes.error
+    )
 
   # Will fetch the relevant information by passing the topic into getTopicPage
+  for topic in newsletterTopicsRes.topics:
+    fetchTopicPageRes = fetchTopicPage(
+      FetchTopicPageRequest(
+        topic=topic,
+      )
+    )
+    if fetchTopicPageRes.error != None:
+      return SendNewsletterResponse(
+        error = fetchTopicPageRes.error
+      )
+
+  # Populate the template with the variables fetched through the topic page
+  hydrateNewsletterRes = hydrate_newsletter(
+    HydrateNewsletterRequest(
+
+    )
+  )
+
+  # Send out the email
+  message = Mail(
+      from_email='from_email@example.com',
+      to_emails='to@example.com',
+      subject='Sending with Twilio SendGrid is Fun',
+      html_content='<strong>and easy to do anywhere, even with Python</strong>')
+  try:
+      sg = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
+      response = sg.send(message)
+      print(response.status_code)
+      print(response.body)
+      print(response.headers)
+  except Exception as e:
+      print(e.message)
+
 
   # Will call hydrate_newsletter to populate the information into the newsletter template
+
+def send_newsletter_mailchimp():
+  """
+    Deprecated endpoint supporting emails through mailchimp
+  """
 
   mailchimp = MailchimpTransactional.Client('IbRJVT9R9C9JBt6gUA-E3g')
   message = {
@@ -139,4 +205,5 @@ def hydrate_newsletter(hydrateNewsletterRequest):
   # Response type for this function is not yet known entirely
 
   pass
+
 

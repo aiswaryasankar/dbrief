@@ -32,4 +32,3 @@ class UserTopicModel (models.Model):
 
   def __str__(self):
     return str(self.userId) + " " + str(self.topicId)
-

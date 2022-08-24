@@ -109,4 +109,51 @@ class UserPreferencesRepoTest(TestCase):
     self.assertEqual(res.topics, [])
 
 
+  def test_follow_topic_for_newsletter(self):
+    """
+      Follow a topic for newsletter and fetch all topics for a user that are newsletter.
+    """
+    # Follow topic for newsletter
+    followTopicReq = FollowTopicRequest(
+        userId= 123,
+        topicId= 1,
+        forNewsletter = True,
+    )
+    res = followTopic(followTopicReq)
+    self.assertIsNone(res.error)
+    self.assertIsNotNone(res.userTopicId)
+
+    # Follow topic not for newsletter
+    followTopicReq = FollowTopicRequest(
+        userId= 123,
+        topicId= 2,
+        forNewsletter = False,
+    )
+    res = followTopic(followTopicReq)
+    self.assertIsNone(res.error)
+    self.assertIsNotNone(res.userTopicId)
+
+    # Get all topics you follow
+    getTopicsYouFollowReq = GetTopicsForUserRequest(
+      user_id=123,
+      for_newsletter=True
+    )
+    res = getTopicsYouFollow(
+      getTopicsYouFollowRequest=getTopicsYouFollowReq
+    )
+    self.assertIsNone(res.error)
+    self.assertEqual(res.topics, [1])
+
+    # Get all topics you follow
+    getTopicsYouFollowReq = GetTopicsForUserRequest(
+      user_id=123,
+      for_newsletter=False
+    )
+    res = getTopicsYouFollow(
+      getTopicsYouFollowRequest=getTopicsYouFollowReq
+    )
+    self.assertIsNone(res.error)
+    self.assertEqual(res.topics, [2])
+
+
 

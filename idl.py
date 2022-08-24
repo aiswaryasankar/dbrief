@@ -685,7 +685,8 @@ class CreateUserResponse:
 
 @dataclass
 class GetUserRequest:
-  firebaseAuthId: str
+  firebaseAuthId: Optional[str]=""
+  userId: Optional[int]=0
 
 @dataclass_json
 @dataclass
@@ -718,6 +719,7 @@ class UnfollowTopicResponse:
 @dataclass
 class GetTopicsForUserRequest:
   user_id: int
+  for_newsletter: Optional[bool]=False
 
 @dataclass_json
 @dataclass
