@@ -59,8 +59,8 @@ def updateNewsletterConfig(updateNewsletterConfigRequest):
   newsletterConfig = updateNewsletterConfigRequest.newsletterConfig
   try:
     newsletterConfigEntry, created = NewsletterConfigModel.objects.update_or_create(
+      userId=newsletterConfig.UserID,
       defaults={
-        'userId': newsletterConfig.UserID,
         'deliveryTime': newsletterConfig.DeliveryTime,
         'recurrenceType' : newsletterConfig.RecurrenceType,
         'isEnabled': newsletterConfig.IsEnabled,
