@@ -39,7 +39,7 @@ def create_newsletter_config_for_user(createNewsletterConfigRequest):
     )
     if followTopicResponse.error != None:
       return CreateNewsletterConfigForUserResponse(
-        newsletterId=createNewsletterConfigForUserResponse.newsletterId,
+        newsletterId=None,
         error=followTopicResponse.error,
       )
     else:
