@@ -72,6 +72,27 @@ def get_newsletter_config_for_user(getNewsletterConfigRequest):
       newsletterConfig=None,
       error=getNewsLetterConfigRes.error
     )
+
+  # Hydrate the topics that a user is following
+  getTopicsYouFollowResponse = getTopicsYouFollow(
+    getTopicsYouFollowRequest=GetTopicsForUserRequest(
+      user_id=getNewsletterConfigRequest.userId,
+      for_newsletter=True,
+    )
+  )
+  logger.info("topics you follow")
+  logger.info(getTopicsYouFollowResponse.topics)
+  if getTopicsYouFollowResponse.error != None:
+    return GetNewsletterConfigForUserResponse(
+      newsletterConfig=None,
+      error=getTopicsYouFollowResponse.error
+    )
+
+  getNewsLetterConfigRes.newsletterConfig.TopicsFollowed = getTopicsYouFollowResponse.topics
+
+  logger.info("getNewsletterConfigRes")
+  logger.info(getNewsLetterConfigRes.newsletterConfig)
+
   return GetNewsletterConfigForUserResponse(
     newsletterConfig=getNewsLetterConfigRes.newsletterConfig,
     error=None,
@@ -96,6 +117,7 @@ def send_newsletters_batch(sendNewslettersBatchRequest):
       error = queryNewsletterConfigRes.error
     )
 
+  logger.info("CALLING SEND NEWSLETTER")
   # Call send_newsletter for each of those userIds either in parallel or sequentially
   for config in queryNewsletterConfigRes.newsletterConfigs:
     sendNewsletterRes = send_newsletter(
@@ -103,25 +125,29 @@ def send_newsletters_batch(sendNewslettersBatchRequest):
         userId= config.userId,
       )
     )
-    print("SUCCESSFULLY SENT NEWSLETTER")
+    logger.info("SUCCESSFULLY SENT NEWSLETTER")
     if sendNewsletterRes.error != None:
       return SendNewsletterResponse(
         error = sendNewsletterRes.error
       )
 
-
+  return SendNewsletterResponse(
+    error=None
+  )
 
 def send_newsletter(sendNewsletterRequest):
   """
     Send a newsletter to a user
   """
   # Get the user
-  getUserRes = getUser(
+  logger.info("CALLING GET USER")
+  getUserRes = get_user(
     GetUserRequest(
       userId = sendNewsletterRequest.userId
     )
   )
   if getUserRes.error != None:
+    logger.info("FAILED TO GET USER")
     return SendNewsletterResponse(
       error = getUserRes.error
     )
@@ -668,8 +694,9 @@ body {font-family: 'Chivo', sans-serif;}
   except Exception as e:
       print(e)
 
-
-  # Will call hydrate_newsletter to populate the information into the newsletter template
+  return SendNewsletterResponse(
+    error=None
+  )
 
 
 def send_newsletter_mailchimp():
