@@ -46,7 +46,7 @@ class NewsletterConfigV1:
   DeliveryTime: typing.Literal['MORNING', 'AFTERNOON', 'EVENING']
   RecurrenceType: typing.Literal['DAILY', 'WEEKLY', 'MONTHLY']
   IsEnabled: bool
-  TopicsFollowed: List[int]
+  TopicsFollowed: List[TopicInfo]
   NewsletterConfigId: Optional[int]=""
 
 @dataclass_json
@@ -731,6 +731,7 @@ class GetTopicsForUserResponse:
 @dataclass
 class GetTopicsYouFollowResponse:
   topics: List[str]
+  topicInfos: List[TopicInfo]
   error: Exception
 
 @dataclass

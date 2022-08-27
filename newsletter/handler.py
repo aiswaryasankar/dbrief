@@ -74,7 +74,7 @@ def get_newsletter_config_for_user(getNewsletterConfigRequest):
     )
 
   # Hydrate the topics that a user is following
-  getTopicsYouFollowResponse = getTopicsYouFollow(
+  getTopicsYouFollowResponse = get_topics_you_follow(
     getTopicsYouFollowRequest=GetTopicsForUserRequest(
       user_id=getNewsletterConfigRequest.userId,
       for_newsletter=True,
@@ -91,7 +91,7 @@ def get_newsletter_config_for_user(getNewsletterConfigRequest):
   getNewsLetterConfigRes.newsletterConfig.TopicsFollowed = getTopicsYouFollowResponse.topics
 
   logger.info("getNewsletterConfigRes")
-  logger.info(getNewsLetterConfigRes.newsletterConfig)
+  logger.info(getNewsLetterConfigRes.newsletterConfig.TopicsFollowed)
 
   return GetNewsletterConfigForUserResponse(
     newsletterConfig=getNewsLetterConfigRes.newsletterConfig,

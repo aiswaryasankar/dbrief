@@ -50,11 +50,14 @@ def getUser(getUserRequest):
     Will get the user from the db
   """
 
+  logger.info("GETTING USER")
   try:
     if getUserRequest.firebaseAuthId != "":
       user = UserModel.objects.get(firebaseAuthId=getUserRequest.firebaseAuthId)
     elif getUserRequest.userId != 0:
+      logger.info("GET USER WITH ID: " + str(getUserRequest.userId))
       user = UserModel.objects.get(userId=getUserRequest.userId)
+      logger.info(user)
     try:
       user = User(
           FirebaseAuthID=getUserRequest.firebaseAuthId,
@@ -155,6 +158,7 @@ def getTopicsYouFollow(getTopicsYouFollowRequest):
     Gets the topics a user follows in the UserTopic table
   """
   topicList = []
+  topicInfos = []
   userId = getTopicsYouFollowRequest.user_id
   forNewsletter = getTopicsYouFollowRequest.for_newsletter
 
@@ -165,14 +169,17 @@ def getTopicsYouFollow(getTopicsYouFollowRequest):
     logger.warn("Failed to get topics for user %s", userId)
     return GetTopicsYouFollowResponse(
       topics=None,
+      topicInfos=None,
       error=str(e)
     )
 
   for topic in followedTopics:
     topicList.append(topic.topicId)
+    topicInfos.append(topic)
 
   return GetTopicsYouFollowResponse(
     topics=topicList,
+    topicInfos=topicInfos,
     error=None
   )
 
