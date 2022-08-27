@@ -830,7 +830,7 @@ class UpdateNewsletterConfigForUserResponse:
 @dataclass
 class SendNewslettersBatchRequest:
   timeOfDay: typing.Literal['MORNING', 'AFTERNOON', 'EVENING']
-  day: typing.Literal['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+  day: int
 
 @dataclass_json
 @dataclass
@@ -841,7 +841,6 @@ class SendNewslettersBatchResponse:
 @dataclass
 class SendNewsletterRequest:
   userId: Optional[int]=field(default_factory=int)
-  newsletterConfig: Optional[NewsletterConfigV1]=field(default_factory=NewsletterConfigV1)
 
 @dataclass_json
 @dataclass
@@ -850,11 +849,12 @@ class SendNewsletterResponse:
 
 @dataclass
 class HydrateNewsletterRequest:
-  newsletterConfigId: int
+  topicPages: List[TopicPage]
 
 @dataclass_json
 @dataclass
 class HydrateNewsletterResponse:
+  newsletter: str
   error: Exception
 
 @dataclass

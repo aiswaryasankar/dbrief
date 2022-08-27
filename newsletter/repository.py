@@ -97,17 +97,21 @@ def getNewsletterConfig(getNewsletterConfigRequest):
 
     # Hydrate the topic from the list of topics included in newsletterConfig
     newsletterConfig = NewsletterConfigV1(
-      NewsletterConfigId=newsletterConfig.NewsletterConfigId,
-      UserId=newsletterConfig.UserID,
-      DeliveryTime=newsletterConfig.DeliveryTime,
-      RecurrenceType=newsletterConfig.RecurrenceType,
-      IsEnabled=newsletterConfig.IsEnabled,
-      TopicsFollowed=newsletterConfig.TopicsFollowed,
+      NewsletterConfigId=newsletterConfig.newsletterConfigId,
+      UserID=newsletterConfig.userId,
+      DeliveryTime=newsletterConfig.deliveryTime,
+      RecurrenceType=newsletterConfig.recurrenceType,
+      IsEnabled=newsletterConfig.isEnabled,
+      TopicsFollowed=[]
     )
     logger.info(newsletterConfig)
 
   except Exception as e:
     logger.warn("Failed to fetch newsletter config for user: " + str(getNewsletterConfigRequest.userId))
+    return GetNewsletterConfigForUserResponse(
+      newsletterConfig=None,
+      error=str(e)
+    )
 
   return GetNewsletterConfigForUserResponse(
     newsletterConfig=newsletterConfig,
@@ -122,7 +126,7 @@ def queryNewsletterConfig(queryNewsletterConfigRequest):
   logger.info(queryNewsletterConfigRequest.deliveryTime)
   logger.info(queryNewsletterConfigRequest.day)
   try:
-    configs = NewsletterConfigModel.objects.filter(deliveryTime=queryNewsletterConfigRequest.deliveryTime[0], dayOfWeek=queryNewsletterConfigRequest.day)
+    configs = NewsletterConfigModel.objects.filter(deliveryTime=queryNewsletterConfigRequest.deliveryTime, dayOfWeek=queryNewsletterConfigRequest.day)
 
     configList = [config for config in configs]
     logger.info(configList)
