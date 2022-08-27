@@ -37,7 +37,7 @@ def create_newsletter_config_for_user(createNewsletterConfigRequest):
     followTopicResponse = follow_topic(
       FollowTopicRequest(
         userId= newsletterConfig.UserID,
-        topicId=topic,
+        topicId=topic.TopicID,
         forNewsletter=True,
       )
     )
