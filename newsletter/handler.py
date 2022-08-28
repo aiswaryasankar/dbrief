@@ -33,21 +33,71 @@ def create_newsletter_config_for_user(createNewsletterConfigRequest):
 
   # Write the user topics in the UserTopic database
   newsletterConfig = createNewsletterConfigRequest.newsletterConfig
-  for topic in newsletterConfig.TopicsFollowed:
-    followTopicResponse = follow_topic(
-      FollowTopicRequest(
-        userId= newsletterConfig.UserID,
-        topicId=topic.TopicID,
-        forNewsletter=True,
-      )
+
+  # First fetch all the topics the user follows for the newsletter
+  # If there are any topics that the user isn't currently including then remove those
+  # Add any new topics
+  # Current topics
+  followingTopicsResponse = get_topics_you_follow(
+    GetTopicsForUserRequest(
+      user_id=newsletterConfig.UserID,
+      for_newsletter=True,
     )
-    if followTopicResponse.error != None:
-      return CreateNewsletterConfigForUserResponse(
-        newsletterId=None,
-        error=followTopicResponse.error,
+  )
+  if followingTopicsResponse.error != None:
+    return CreateNewsletterConfigForUserResponse(
+      newsletterId=None,
+      error=followingTopicsResponse.error,
+    )
+
+  topicsToFollow, topicsToUnfollow = [], []
+
+  logger.info("Existing topics: " + str(followingTopicsResponse))
+  logger.info("New topics: " + str(newsletterConfig.TopicsFollowed))
+
+  for topic in newsletterConfig.TopicsFollowed:
+    if topic not in followingTopicsResponse.topics:
+      topicsToFollow.append(topic)
+
+  for topic in followingTopicsResponse.topics:
+    if topic not in newsletterConfig.TopicsFollowed:
+      topicsToUnfollow.append(topic)
+
+  logger.info("Topics to follow: " + str(topicsToFollow))
+  logger.info("Topics to unfollow: " + str(topicsToUnfollow))
+
+  for topic in topicsToFollow:
+      # Topic needs to be added
+      followTopicResponse = follow_topic(
+        FollowTopicRequest(
+          userId= newsletterConfig.UserID,
+          topicId=topic.TopicID,
+          forNewsletter=True,
+        )
       )
-    else:
-      logger.info("Successfully followed topic")
+      if followTopicResponse.error != None:
+        return CreateNewsletterConfigForUserResponse(
+          newsletterId=None,
+          error=followTopicResponse.error,
+        )
+      else:
+        logger.info("Successfully followed topic: " + str(topic.TopicID))
+
+  for topic in topicsToUnfollow:
+      # Topic needs to be added
+      unfollowTopicResponse = unfollow_topic(
+        UnfollowTopicRequest(
+          userId= newsletterConfig.UserID,
+          topicId=topic.TopicID,
+        )
+      )
+      if unfollowTopicResponse.error != None:
+        return CreateNewsletterConfigForUserResponse(
+          newsletterId=None,
+          error=unfollowTopicResponse.error,
+        )
+      else:
+        logger.info("Successfully unfollowed topic: " + str(topic.TopicID))
 
   return createNewsletterConfigForUserResponse
 
@@ -133,6 +183,7 @@ def send_newsletters_batch(sendNewslettersBatchRequest):
     error=None
   )
 
+
 def send_newsletter(sendNewsletterRequest):
   """
     Send a newsletter to a user
@@ -199,7 +250,8 @@ def send_newsletter(sendNewsletterRequest):
   logger.info(hydrateNewsletterRes)
 
   # Send out the email
-  template_id = "d-e59e28f3ae8543ccb4f67f59eb418d39"
+  # template_id = "d-e59e28f3ae8543ccb4f67f59eb418d39"
+  template_id = "d-52147667a88c45e6a0eb33ccb83adae4"
 
   sg = SendGridAPIClient('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')
 
@@ -290,26 +342,32 @@ def hydrate_newsletter(hydrateNewsletterRequest):
   topicPages = hydrateNewsletterRequest.topicPages
 
   # Will handle hydrating the newsletter given the information passed in through []TopicPage
-  newsletter = {
-    "Topic_Name": topicPages[0].TopicName,
-    "Story_Title": topicPages[0].Title,
-    "Story_Content": topicPages[0].MDSSummary[2:],
-    "Picture": topicPages[0].ImageURL,
-    "Fact_Content1": topicPages[0].Facts[0].Quote.Text,
-    "Fact_Author1": topicPages[0].Facts[0].Quote.Author[2:-2],
-    "Fact_Link1": topicPages[0].Facts[0].Quote.SourceURL,
-    "Fact_Content2": topicPages[0].Facts[1].Quote.Text,
-    "Fact_Author2": topicPages[0].Facts[1].Quote.Author[2:-2],
-    "Fact_Link2": topicPages[0].Facts[1].Quote.SourceURL,
-    "View_Type1": "Left Leaning",
-    "Opinion_Content1": topicPages[0].Opinions[0].Quote.Text,
-    "Opinion_Author1": topicPages[0].Opinions[0].Quote.Author[2:-2],
-    "Opinion_Link1": topicPages[0].Opinions[0].Quote.SourceURL,
-    "View_Type2": "Right Leaning",
-    "Opinion_Content2": topicPages[0].Opinions[1].Quote.Text,
-    "Opinion_Author2": topicPages[0].Opinions[1].Quote.Author[2:-2],
-    "Opinion_Link2": topicPages[0].Opinions[1].Quote.SourceURL,
-  }
+  if len(topicPages) > 0:
+    newsletter = {
+      "Topic_Name": topicPages[0].TopicName,
+      "Story_Title": topicPages[0].Title,
+      "Story_Content": topicPages[0].MDSSummary[2:],
+      "Picture": topicPages[0].ImageURL,
+      "Fact_Content1": topicPages[0].Facts[0].Quote.Text,
+      "Fact_Author1": topicPages[0].Facts[0].Quote.Author[2:-2],
+      "Fact_Link1": topicPages[0].Facts[0].Quote.SourceURL,
+      "Fact_Content2": topicPages[0].Facts[1].Quote.Text,
+      "Fact_Author2": topicPages[0].Facts[1].Quote.Author[2:-2],
+      "Fact_Link2": topicPages[0].Facts[1].Quote.SourceURL,
+      "View_Type1": "Left Leaning",
+      "Opinion_Content1": topicPages[0].Opinions[0].Quote.Text,
+      "Opinion_Author1": topicPages[0].Opinions[0].Quote.Author[2:-2],
+      "Opinion_Link1": topicPages[0].Opinions[0].Quote.SourceURL,
+      "View_Type2": "Right Leaning",
+      "Opinion_Content2": topicPages[0].Opinions[1].Quote.Text,
+      "Opinion_Author2": topicPages[0].Opinions[1].Quote.Author[2:-2],
+      "Opinion_Link2": topicPages[0].Opinions[1].Quote.SourceURL,
+    }
+  else:
+    return HydrateArticleResponse(
+      newsletter=None,
+      error="No topic pages to hydrate"
+    )
 
   logger.info("NEWSLETTER")
   logger.info(json.dumps(newsletter))
