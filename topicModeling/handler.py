@@ -269,12 +269,15 @@ def query_documents(queryDocumentsRequest):
   #   )
   # )
 
-  # if doc_scores == [] or doc_ids == [] or error != None:
-  #   return QueryDocumentsResponse(
-  #     doc_scores=doc_scores,
-  #     doc_ids=doc_ids,
-  #     error=ValueError("No documents returned by search"),
-  #   )
+  if doc_scores == [] or doc_ids == [] or error != None:
+    return QueryDocumentsResponse(
+      doc_scores=doc_scores,
+      doc_ids=doc_ids,
+      error=ValueError("No documents returned by search"),
+    )
+
+  # Create thread to compute the ROUGE, tf-idf and overlap scores btwn the 3 different indices
+  # Log statement with all of the scores
 
   return QueryDocumentsResponse(
     doc_scores=doc_scores,
@@ -370,10 +373,19 @@ def search_topics(searchTopicsRequest):
   logger.info(topic_nums)
   logger.info(topic_scores)
 
+  fetchTopicInfosBatchRes = fetch_topic_infos_batch(
+    FetchTopicInfoBatchRequest(
+      topicNames=[words[0] for words in topic_words],
+    )
+  )
+  if fetchTopicInfosBatchRes.error != None:
+    logger.info("Failed to fetch topic infos batch")
+
   return SearchTopicsResponse(
-    topics_words=set([words[0] for words in topic_words]),
+    topics_words=[words[0] for words in topic_words],
     topic_scores=None,
     topic_nums=None,
+    topic_infos=fetchTopicInfosBatchRes.topics,
     error=None
   )
 

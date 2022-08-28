@@ -287,6 +287,7 @@ class SearchTopicsResponse:
   topics_words: List[str]
   topic_scores: List[float]
   topic_nums: List[int]
+  topic_infos: Optional[List[TopicInfo]]
   error: Exception
 
 # Same
@@ -295,7 +296,7 @@ class AddDocumentRequest:
   documents: List[str]
   doc_ids: List[int]
   tokenizer: str
-  use_embedding_model_tokenizer: bool
+  use_embedding_model_token: bool
 
 @dataclass_json
 @dataclass
