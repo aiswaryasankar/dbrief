@@ -6,7 +6,6 @@ import logging
 from articleRec import handler as articleRecHandler
 from articleRec.repository import fetchArticlesByDateRange
 from topicFeed.repository import *
-from topicFeed.handler import handler as topicFeedHandler
 from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
@@ -19,13 +18,6 @@ handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
 logger.handlers = [handler]
 logger.setLevel(logging.INFO)
-
-
-def getTopicPageCached(getTopicPageRequest):
-  """
-
-  """
-
 
 
 
@@ -44,17 +36,21 @@ def getTopicPage(getTopicPageRequest):
   """
 
   # Check if the page is cached to begin with
-  # fetchTopicPageByTopicRes = topicFeedHandler.fetchTopicPageByTopic(
-  #     fetchTopicPageByTopicRequest=FetchTopicPageRequest(
-  #       topic=topic,
-  #     )
-  #   )
-  #   logger.info("Fetch topic page cached: ")
-  #   logger.info(fetchTopicPageByTopicRes)
-  #   if fetchTopicPageByTopicRes.error == None and fetchTopicPageByTopicRes.topic_page !=  None:
-  #     topicPages.append(fetchTopicPageByTopicRes)
-  #   else:
-  #     logger.warn("Failed to hydrate topic page: " + str(fetchTopicPageByTopicRes.error))
+  fetchTopicPageByTopicRes = fetchTopicPage(
+      fetchTopicPageRequest=FetchTopicPageRequest(
+        topic=getTopicPageRequest.topicName,
+        topicPageId=getTopicPageRequest.topicId,
+      )
+    )
+  logger.info("Fetch topic page cached: ")
+  logger.info(fetchTopicPageByTopicRes)
+  if fetchTopicPageByTopicRes.error == None and fetchTopicPageByTopicRes.topic_page !=  None:
+    return GetTopicPageResponse(
+      topic_page=fetchTopicPageByTopicRes.topic_page,
+      error=None,
+    )
+  else:
+    logger.warn("Failed to hydrate topic page: " + str(fetchTopicPageByTopicRes.error))
 
   startTime = datetime.now()
 

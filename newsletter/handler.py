@@ -223,10 +223,9 @@ def send_newsletter(sendNewsletterRequest):
   # Will fetch the relevant information by passing the topic into getTopicPage
   topicPages = []
   for topic in newsletterTopicsRes.topics:
-    fetchTopicPageRes = fetchTopicPage(
-      FetchTopicPageRequest(
-        topic="",
-        topicPageId=topic.TopicID,
+    fetchTopicPageRes = getTopicPage(
+      GetTopicPageRequest(
+        topicName=topic.TopicName,
       )
     )
     if fetchTopicPageRes.error != None:
@@ -364,7 +363,7 @@ def hydrate_newsletter(hydrateNewsletterRequest):
       "Opinion_Link2": topicPages[0].Opinions[1].Quote.SourceURL,
     }
   else:
-    return HydrateArticleResponse(
+    return HydrateNewsletterResponse(
       newsletter=None,
       error="No topic pages to hydrate"
     )

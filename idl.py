@@ -587,6 +587,7 @@ class GetTopicPageRequest:
   articleId: int = 0
   text: str = ""
   topicName: str = ""
+  topicId: int = 0
   savePage : bool = False
 
 

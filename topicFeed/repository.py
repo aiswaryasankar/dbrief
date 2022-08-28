@@ -72,7 +72,11 @@ def fetchTopicPage(fetchTopicPageRequest):
   """
 
   try:
-    topicPageRes = TopicPageModel.objects.get(topic=fetchTopicPageRequest.topic)
+    if fetchTopicPageRequest.topic != "":
+      topicPageRes = TopicPageModel.objects.get(topic=fetchTopicPageRequest.topic)
+
+    elif fetchTopicPageRequest.topicPageId != 0:
+      topicPageRes = TopicPageModel.objects.get(topicId=fetchTopicPageRequest.topicPageId)
 
     topicPage = TopicPage(
       Title = topicPageRes.title,
