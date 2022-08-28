@@ -255,10 +255,13 @@ def send_newsletter(sendNewsletterRequest):
   sg = SendGridAPIClient('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')
 
   message = Mail()
+  toEmail = getUserRes.User.Email
+  recipientName = getUserRes.User.FirstName + " " + getUserRes.User.LastName
+
   message.to = [
     To(
-        email="aiswarya.s@berkeley.edu",
-        name="Aiswarya Sankar",
+        email=toEmail,
+        name=recipientName,
         p=0
     )
   ]
@@ -280,7 +283,6 @@ def send_newsletter(sendNewsletterRequest):
     ),
     subscription_tracking=SubscriptionTracking(False)
   )
-
 
   message.template_id = template_id
 

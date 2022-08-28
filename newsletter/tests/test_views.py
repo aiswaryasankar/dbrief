@@ -28,6 +28,18 @@ class NewsletterViewTest(TestCase):
     self.assertEqual(response.status_code, 200)
 
 
+  def test_send_newsletter_batch(self):
+
+    response = self.client.post('/sendNewsletterBatch/',
+			data={
+					"timeOfDay":"MORNING",
+					"day":0
+				}
+		, content_type="application/json")
+    self.assertIsNotNone(response.content)
+    self.assertEqual(response.status_code, 200)
+
+
 """
 Create_newsletter_config_for_user
 
@@ -41,6 +53,4 @@ Create_newsletter_config_for_user
 		"TopicsFollowed": [1]
 	}
 }
-
-
 """
