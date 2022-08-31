@@ -48,6 +48,7 @@ class NewsletterConfigV1:
   IsEnabled: bool
   TopicsFollowed: List[TopicInfo]
   NewsletterConfigId: Optional[int]=""
+  DayOfWeek: Optional[int]=0
 
 @dataclass_json
 @dataclass
