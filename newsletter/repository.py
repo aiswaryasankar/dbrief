@@ -65,6 +65,7 @@ def updateNewsletterConfig(updateNewsletterConfigRequest):
         'deliveryTime': newsletterConfig.DeliveryTime,
         'recurrenceType' : newsletterConfig.RecurrenceType,
         'isEnabled': newsletterConfig.IsEnabled,
+        'dayOfWeek': newsletterConfig.DayOfWeek,
       },
     )
     if created:
