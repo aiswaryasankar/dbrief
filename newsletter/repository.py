@@ -31,6 +31,7 @@ def createNewsletterConfig(createNewsletterConfigRequest):
       deliveryTime = newsletterConfig.DeliveryTime,
       recurrenceType = newsletterConfig.RecurrenceType,
       isEnabled = newsletterConfig.IsEnabled,
+      dayOfWeek = newsletterConfig.DayOfWeek,
     )
     newsletterConfigEntry.save()
     print("Saved newsletter config")
@@ -102,6 +103,7 @@ def getNewsletterConfig(getNewsletterConfigRequest):
       DeliveryTime=newsletterConfig.deliveryTime,
       RecurrenceType=newsletterConfig.recurrenceType,
       IsEnabled=newsletterConfig.isEnabled,
+      DayOfWeek=newsletterConfig.dayOfWeek,
       TopicsFollowed=[]
     )
     logger.info(newsletterConfig)
