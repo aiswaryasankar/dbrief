@@ -1,4 +1,4 @@
-import logging
+import logging, os
 import numpy as np
 import pandas as pd
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
@@ -191,22 +191,89 @@ def add_document(addDocumentRequest):
 #   #document_store.write_documents(elasticSearchDict)
 
 
-def query_documents_v2(queryDocumentsRequest):
+def add_documents_FAISS(addDocumentsFAISSRequest):
+  if not os.path.exists("./modelWeights/document_store"):
+    document_store = FAISSDocumentStore(sql_url="sqlite:///modelWeights/haystack_test_faiss.db")
+  else:
+    document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
+                                             config_path="./modelWeights/document_store.json")
+  logger.info(f'Loaded document store')
+
+  try:
+    retriever = EmbeddingRetriever(document_store=document_store, embedding_model="deepset/sentence_bert", use_gpu=False)
+    documents = addDocumentsFAISSRequest.documents
+
+    document_store.write_documents(documents)
+    document_store.update_embeddings(retriever)
+
+    logger.info(f'Writing to document store done.')
+
+    document_store.save("./modelWeights/document_store")
+  except Exception as e:
+    res = AddDocumentsFAISSResponse(num_documents_added=None, error=e)
+    return res
+
+  return AddDocumentsFAISSResponse(num_documents_added=len(documents), error=None)
+
+
+def query_documents_FAISS(queryDocumentsFAISSRequest):
   """
-    Implement a BM25 retriever
+    Implement a document retriever using dense embeddings
   """
-  document_store = FAISSDocumentStore.load(faiss_file_path="testfile_path", sql_url="sqlite:///haystack_test_faiss.db")
+
+  assert os.path.exists("./modelWeights/document_store")
+
+  document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
+                                             config_path="./modelWeights/document_store.json")
   retriever = EmbeddingRetriever(document_store=document_store,
                                  embedding_model="deepset/sentence_bert", use_gpu=False)
 
+  logger.info(f'document store and retriever loaded.')
+
   candidate_documents = retriever.retrieve(
-      query=queryDocumentsRequest.query,
-      top_k=queryDocumentsRequest.num_docs,
+      query=queryDocumentsFAISSRequest.query,
+      top_k=queryDocumentsFAISSRequest.num_docs,
   )
 
   logger.info("Faiss Retriever docs" + str(candidate_documents))
   return candidate_documents
 
+
+def delete_documents_FAISS(deleteDocumentsFAISSRequest):
+
+  try:
+    assert os.path.exists("./modelWeights/document_store")
+
+    document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
+                                             config_path="./modelWeights/document_store.json")
+
+    logger.info(f'Document store loaded for deletion.')
+
+    # TODO: some logic to check if we can delete and not actually delete
+
+    article_ids = deleteDocumentsFAISSRequest.article_ids
+    total_article_ids = len(article_ids)
+
+    assert isinstance(article_ids,list) and len(article_ids)>0 and isinstance(article_ids[0],int)
+
+    document_store.delete_documents(
+      filters = {
+        "id" : article_ids
+      }
+    )
+
+    document_store.save("./modelWeights/document_store")
+
+  except Exception as e:
+    return DeleteDocumentsFAISSResponse(
+      num_articles_deleted = 0,
+      error = e
+    )
+
+  return DeleteDocumentsFAISSResponse(
+    num_articles_deleted = total_article_ids,
+    error = None
+  )
 
 def query_documents(queryDocumentsRequest):
   """
@@ -249,8 +316,8 @@ def query_documents(queryDocumentsRequest):
   logger.info(doc_scores)
 
   # Call the v2 model as well and log the results for offline evaluation purposes
-  queryDocumentsV2Res = query_documents_v2(
-    queryDocumentsRequest= QueryDocumentsV2Request(
+  queryDocumentsV2Res = query_documents_FAISS(
+    queryDocumentsRequest= QueryDocumentsFAISSRequest(
       query=queryDocumentsRequest.query,
       num_docs=queryDocumentsRequest.num_docs,
     )

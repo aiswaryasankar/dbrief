@@ -302,6 +302,32 @@ class AddDocumentRequest:
 class AddDocumentResponse:
   error: Exception
 
+@dataclass
+class AddDocumentsFAISSRequest:
+  documents: List[dict]
+
+@dataclass_json
+@dataclass
+class AddDocumentsFAISSResponse:
+  num_documents_added : int
+  error : Exception
+
+@dataclass
+class QueryDocumentsFAISSRequest:
+  query: str
+  num_docs: int
+
+
+@dataclass
+class DeleteDocumentsFAISSRequest:
+  article_ids : List[int]
+
+@dataclass_json
+@dataclass
+class DeleteDocumentsFAISSResponse:
+  num_articles_deleted : int
+  error : Exception
+
 # Same
 @dataclass
 class QueryDocumentsRequest:
