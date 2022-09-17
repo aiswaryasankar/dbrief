@@ -5,11 +5,13 @@ Welcome to Dbrief.AI!
 1) Create a virtual env `virtualenv ~/eb-new`
 2) Activate by running `source ~/eb-new/bin/activate`
 3) Clone repository and install `brew install git-lfs`
-4) Import all the requirements from requirements.txt
-5) Run python manage.py runserver
-6) Install mysql and create a password
-7) Update the password in settings.py
-8) Run the migrate commands
+4) Import all the requirements from requirements.txt through `pip install -r requirements.txt`
+5) Run `python manage.py runserver`
+6) Install / set up docker
+7) Pull the elastic search docker image (commands included in the elastic search section)
+8) Install mysql and create a password
+9) Update the password in settings.py
+10) Run the migrate commands
 
 
 ## Testing Process
