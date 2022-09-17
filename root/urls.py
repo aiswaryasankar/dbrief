@@ -23,6 +23,7 @@ from passageRetrievalModel import views as passageRetrievalModelView
 from homeFeed import views as homeFeedView
 from newsletter import views as newsletterView
 from userPreferences import views as userPreferencesView
+from mdsModel import views as mdsView
 
 from django.urls import path
 
@@ -91,5 +92,10 @@ urlpatterns = [
     path('getNewsletterConfig/', newsletterView.get_newsletter_config_for_user_view),
     path('sendNewsletter/', newsletterView.send_newsletter_view),
     path('sendNewslettersBatch/', newsletterView.send_newsletters_batch_view),
+
+    # MDS endpoints
+    path('mdsV1/', mdsView.get_mds_summary_view),
+    path('mdsV2/', mdsView.get_mds_summary_v2_view),
+    path('mdsV3/', mdsView.get_mds_summary_v3_view),
 ]
 

@@ -30,7 +30,7 @@ class NewsletterViewTest(TestCase):
 
   def test_send_newsletter_batch(self):
 
-    response = self.client.post('/sendNewsletterBatch/',
+    response = self.client.post('/sendNewslettersBatch/',
 			data={
 					"timeOfDay":"MORNING",
 					"day":0

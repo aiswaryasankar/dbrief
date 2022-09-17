@@ -2,7 +2,7 @@ from articleRec.repository import fetchArticlesByUrl
 from .models import TopicPageModel
 import logging
 from idl import *
-from topicFeed import handler as tfHandler
+from .utils import *
 from logtail import LogtailHandler
 from datetime import datetime
 
@@ -78,6 +78,11 @@ def fetchTopicPage(fetchTopicPageRequest):
     elif fetchTopicPageRequest.topicPageId != 0:
       topicPageRes = TopicPageModel.objects.get(topicId=fetchTopicPageRequest.topicPageId)
 
+    else:
+      return FetchTopicPageResponse(
+        topic_page=None,
+        error=Exception("Invalid request"),
+      )
     topicPage = TopicPage(
       Title = topicPageRes.title,
       ImageURL = topicPageRes.imageURL,
@@ -106,7 +111,7 @@ def fetchTopicPage(fetchTopicPageRequest):
       )
 
     for article in fetchArticlesByUrlRes.articleList:
-      source = tfHandler.parseSource(article.url)
+      source = parseSource(article.url)
 
       if article.topFact != None and len(article.topFact) > 100:
         facts.append(Fact(

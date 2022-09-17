@@ -131,14 +131,13 @@ def index_document_vectors_view(request):
   pass
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def generate_topic_pairs_view(request):
   """
     This endpoint will generate the topic pairs v2 for now to test out if it is better or not.  It better be though! At the very least it picks from a pre-determined list of topics so that should prove to be stronger than coming up with everything from scratch.
   """
 
   res = generate_topic_pairs_v2(request)
-  print("FINISHED CALLING GENERATE TOPIC PAIRS V2")
   return Response()
 
 
@@ -153,7 +152,7 @@ def get_document_topic_view(request):
     return Response(req.errors)
 
   getDocumentTopicRequest = req.validated_data
-  res = get_document_topic(getDocumentTopicRequest)
+  res = get_document_topic_batch(getDocumentTopicRequest)
 
   return Response(res.to_json())
 

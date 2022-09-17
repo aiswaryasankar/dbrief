@@ -1,4 +1,5 @@
 from hashlib import new
+from typing import Text
 from django.http.response import JsonResponse
 from rest_framework.response import Response
 import logging
@@ -225,7 +226,7 @@ def send_newsletter(sendNewsletterRequest):
   for topic in newsletterTopicsRes.topics:
     fetchTopicPageRes = getTopicPage(
       GetTopicPageRequest(
-        topicName=topic.TopicName,
+        text=topic.TopicName,
       )
     )
     if fetchTopicPageRes.error != None:

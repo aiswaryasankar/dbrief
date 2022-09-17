@@ -5,7 +5,7 @@
 import logging
 from articleRec import handler as articleRecHandler
 from articleRec.repository import fetchArticlesByDateRange
-from topicFeed.repository import *
+from topicFeed.repository import fetchTopicPage
 from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
@@ -13,6 +13,7 @@ import idl
 import threading
 import random
 from multiprocessing.pool import ThreadPool, Pool
+from .utils import *
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -34,6 +35,8 @@ def getTopicPage(getTopicPageRequest):
 
     Determine whether or not to display a timeline or the opinion format.
   """
+  logger.info("get topic page request")
+  logger.info(getTopicPageRequest)
 
   # Check if the page is cached to begin with
   fetchTopicPageByTopicRes = fetchTopicPage(
@@ -45,11 +48,11 @@ def getTopicPage(getTopicPageRequest):
   logger.info("Fetch topic page cached: ")
   logger.info(fetchTopicPageByTopicRes)
   if fetchTopicPageByTopicRes.error == None and fetchTopicPageByTopicRes.topic_page !=  None:
-    return GetTopicPageResponse(
-      topic_page=fetchTopicPageByTopicRes.topic_page,
-      error=None,
-    )
-  else:
+  #   return GetTopicPageResponse(
+  #     topic_page=fetchTopicPageByTopicRes.topic_page,
+  #     error=None,
+  #   )
+  # else:
     logger.warn("Failed to hydrate topic page: " + str(fetchTopicPageByTopicRes.error))
 
   startTime = datetime.now()
@@ -507,77 +510,6 @@ def whatsHappening(whatsHappeningRequest):
     articles=articleInfo,
     error = None,
   )
-
-
-def parseSource(url):
-  """
-    Massive switch condition to tie the url with the source
-  """
-  source = ""
-  if "techcrunch" in url:
-    source = "Tech Crunch"
-  if "technologyreview" in url:
-    source = "Technology Review"
-  if "arstechnica" in url:
-    source = "Ars Technica"
-  if "venturebeat" in url:
-    source = "Venture Beat"
-  if "vox" in url:
-    source = "Vox"
-  if "wired" in url:
-    source = "Wired"
-  if "theverge" in url:
-    source = "The Verge"
-  if "Ieee" in url:
-    source = "IEEE"
-  if "cnet" in url:
-    source = "CNet"
-  if "businessinsider" in url:
-    source = "BusinessInsider"
-  if "TechSpot" in url:
-    source = "Tech Spot"
-  if "hackernoon" in url:
-    source = "Hacker Noon"
-  if "appleinsider" in url:
-    source = "Apple Insider"
-  if "latimes" in url:
-    source = "LA Times"
-  if "cnn" in url:
-    source = "CNN"
-  if "huffpost" in url:
-    source = "Huffington Post"
-  if "usatoday" in url:
-    source = "USA Today"
-  if "foxnews" in url:
-    source = "Fox News"
-  if "breitbart" in url:
-    source = "Breitbart"
-  if "washingtontimes" in url:
-    source = "Washington Times"
-  if "thehill" in url:
-    source = "The Hill"
-  if "apnews" in url:
-    source = "AP News"
-  if "npr" in url:
-    source = "NPR"
-  if "nytimes" in url:
-    source = "NY Times"
-  if "washingtonpost" in url:
-    source = "Washington Post"
-  if "apnews" in url:
-    source = "AP News"
-  if "nationalreview" in url:
-    source = "National Review"
-  if "dj" in url:
-    source = "Al Jazeera"
-  if "bbc" in url:
-    source = "BBC"
-  if "politico" in url:
-    source = "Politico"
-  if "economist" in url:
-    source = "Economist"
-
-  return source
 
 
 def fetchTopicPageByTopic(fetchTopicPageByTopicRequest):

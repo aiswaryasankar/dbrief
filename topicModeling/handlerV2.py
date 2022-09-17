@@ -73,9 +73,9 @@ def retrain_topic_model_v2(request):
   doc_ids = [article.id for article in articles]
 
   # Train Top2Vec
-  startTime = datetime.datetime.now()
+  startTime = datetime.now()
   model = Top2Vec(documents=data, speed="deep-learn", embedding_model='universal-sentence-encoder', workers=4, document_ids=doc_ids)
-  endTime = datetime.datetime.now()
+  endTime = datetime.now()
 
   docIndex = Top2Vec.index_document_vectors(model)
   wordIndex = Top2Vec.index_word_vectors(model)

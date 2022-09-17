@@ -50,7 +50,6 @@ def getUser(getUserRequest):
     Will get the user from the db
   """
 
-  logger.info("GETTING USER")
   try:
     if getUserRequest.firebaseAuthId != "":
       user = UserModel.objects.get(firebaseAuthId=getUserRequest.firebaseAuthId)
@@ -174,6 +173,7 @@ def getTopicsYouFollow(getTopicsYouFollowRequest):
     )
 
   for topic in followedTopics:
+    logger.info("FETCHED FROM REPO: " + str(topic))
     topicList.append(topic.topicId)
     topicInfos.append(topic)
 

@@ -32,17 +32,17 @@ class TopicModelingViewTest(TestCase):
 
 
   def test_query_documents_V2(self):
-    response = self.client.post('/queryDocuments/', data={"query":"Joe Biden has Corona", "num_docs":10} content_type="application/json")
+    response = self.client.post('/queryDocumentsV2/', data={"query":"Joe Biden has Corona", "num_docs":10}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
 
 
   def test_search_documents_by_topic(self):
-    response = self.client.post('/searchDocumentsByTopic/', content_type="application/json")
+    response = self.client.post('/searchDocumentsByTopic/', data={"topic_num": 1, "num_topics": 5}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
 
 
   def test_search_topics(self):
-    response = self.client.post('/searchTopics/', content_type="application/json")
+    response = self.client.post('/searchTopics/', data={"keywords":"tennis", "num_topics": 5}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
 
 
@@ -50,25 +50,26 @@ class TopicModelingViewTest(TestCase):
     response = self.client.post('/generateTopicPairs/')
     self.assertEqual(response.status_code, 200)
 
-  def test_get_topics(self):
-    response = self.client.get('/getTopics/')
+
+  def test_get_document_topics(self):
+    response = self.client.post('/getDocumentTopic/', data={"doc_ids":[1], "num_topics":1}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
 
 
   ### Topic Model V2 Tests
-  def test_retrain_topic_model_v2(self):
-    response = self.client.get('/trainTopicModelV2/')
-    self.assertEqual(response.status_code, 200)
+  # def test_retrain_topic_model_v2(self):
+  #   response = self.client.get('/trainTopicModelV2/')
+  #   self.assertEqual(response.status_code, 200)
 
-  def test_get_document_topic_v2(self):
-    response = self.client.post('/getDocumentTopicV2/', data={"document":"China is going to take over the world"}, content_type="application/json")
-    self.assertEqual(response.status_code, 200)
+  # def test_get_document_topic_v2(self):
+  #   response = self.client.post('/getDocumentTopicV2/', data={"document":"China is going to take over the world"}, content_type="application/json")
+  #   self.assertEqual(response.status_code, 200)
 
-  def test_search_topics_v2(self):
-    response = self.client.post('/searchTopicsV2', content_type="application/json")
-    self.assertEqual(response.status_code, 200)
+  # def test_search_topics_v2(self):
+  #   response = self.client.post('/searchTopicsV2', content_type="application/json")
+  #   self.assertEqual(response.status_code, 200)
 
-  def test_get_topics_v2(self):
-    response = self.client.get('/getTopicsV2', content_type="application/json")
-    self.assertEqual(response.status_code, 200)
+  # def test_get_topics_v2(self):
+  #   response = self.client.get('/getTopicsV2', content_type="application/json")
+  #   self.assertEqual(response.status_code, 200)
 

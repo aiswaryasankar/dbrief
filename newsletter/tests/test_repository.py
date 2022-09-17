@@ -57,7 +57,7 @@ class NewsletterRepoTest(TestCase):
     )
     logger.info(fetchedNewsletterConfigRes)
     self.assertIsNone(fetchedNewsletterConfigRes.error)
-    self.assertEqual(fetchedNewsletterConfigRes.newsletterConfig.deliveryTime, "EVENING")
+    self.assertEqual(fetchedNewsletterConfigRes.newsletterConfig.DeliveryTime, "EVENING")
 
 
   def test_query_newsletter_config(self):
@@ -72,6 +72,7 @@ class NewsletterRepoTest(TestCase):
       RecurrenceType="DAILY",
       IsEnabled=True,
       TopicsFollowed=[1],
+      DayOfWeek=0,
     )
 
     req = CreateNewsletterConfigForUserRequest(
@@ -88,6 +89,7 @@ class NewsletterRepoTest(TestCase):
       RecurrenceType="DAILY",
       IsEnabled=True,
       TopicsFollowed=[4],
+      DayOfWeek=0,
     )
 
     req = CreateNewsletterConfigForUserRequest(
@@ -97,10 +99,18 @@ class NewsletterRepoTest(TestCase):
     self.assertIsNone(res2.error)
     self.assertEqual(res2.newsletterId, 3)
 
+    fetchedNewsletterConfigRes = getNewsletterConfig(
+      GetNewsletterConfigForUserRequest(
+        userId=1,
+      )
+    )
+    self.assertIsNone(fetchedNewsletterConfigRes.error)
+    self.assertEqual(fetchedNewsletterConfigRes.newsletterConfig.DeliveryTime, "MORNING")
+
     # Query for the config
     req = QueryNewsletterConfigRequest(
-      deliveryTime=["MORNING"],
-      day=0
+      deliveryTime="MORNING",
+      day=0,
     )
     queryRes = queryNewsletterConfig(req)
     self.assertIsNone(queryRes.error)

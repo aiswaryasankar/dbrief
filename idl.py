@@ -313,6 +313,13 @@ class QueryDocumentsRequest:
   use_index: bool
   ef: int
 
+@dataclass_json
+@dataclass
+class QueryDocumentsResponse:
+  doc_scores: List[int]
+  doc_ids: List[int]
+  error: Exception
+
 @dataclass
 class QueryDocumentsV2Request:
   query: str
@@ -320,9 +327,8 @@ class QueryDocumentsV2Request:
 
 @dataclass_json
 @dataclass
-class QueryDocumentsResponse:
-  doc_scores: List[int]
-  doc_ids: List[int]
+class QueryDocumentsV2Response:
+  docs: str
   error: Exception
 
 # Will have a V2 endpoint with a few additional fields
@@ -834,7 +840,7 @@ class UpdateNewsletterConfigForUserResponse:
 @dataclass
 class SendNewslettersBatchRequest:
   timeOfDay: typing.Literal['MORNING', 'AFTERNOON', 'EVENING']
-  day: int
+  day: Optional[int]=0
 
 @dataclass_json
 @dataclass
@@ -864,7 +870,7 @@ class HydrateNewsletterResponse:
 @dataclass
 class QueryNewsletterConfigRequest:
   deliveryTime: typing.Literal['MORNING', 'AFTERNOON', 'EVENING']
-  day: typing.Literal['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY']
+  day: Optional[int]=0
 
 @dataclass
 class QueryNewsletterConfigResponse:

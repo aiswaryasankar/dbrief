@@ -4,7 +4,6 @@ from django.test import TestCase
 from idl import *
 from topicModeling.repository import *
 from datetime import datetime
-from .models import TopicModel
 
 """
   This file will handle testing out all the repository functions and making sure they behave under multiple writes, reads, updates, deletes and invalid data cases.
@@ -56,11 +55,11 @@ class TopicModelRepoTest(TestCase):
     )
     t2.save()
 
-    deletedTopicIds, err = deleteTopicsByTimeRange(
+    deletedTopicsByDateRangeRes = deleteTopicsByTimeRange(
       DeleteTopicsByDateRangeRequest(
         num_days=numDays,
       )
     )
-    self.assertEqual(deletedTopicIds, [t2.id])
-    self.assertIsNone(err)
+    self.assertEqual(deletedTopicsByDateRangeRes.num_topics_deleted, 1)
+    self.assertIsNone(deletedTopicsByDateRangeRes.error)
 

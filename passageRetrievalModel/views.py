@@ -22,7 +22,7 @@ def get_top_passage_view(request):
   getTopPassageRequest = req.validated_data
   res = get_top_passage(getTopPassageRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 
 
 @api_view(['POST'])
@@ -38,5 +38,5 @@ def get_facts_view(request):
   getFactsRequest = req.validated_data
   res = get_facts(getFactsRequest)
 
-  return Response(res)
+  return Response(res.to_json())
 

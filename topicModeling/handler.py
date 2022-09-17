@@ -120,16 +120,24 @@ def get_document_topic(getDocumentTopicRequest):
     This endpoint will query the topic model using the doc_ids, reduced, and num_topics parameters.
   """
   top2vecModel = Top2Vec.load(topicModelFile)
-  topic_num, topic_score, topic_word, _, error = top2vecModel.get_documents_topics(
+  getDocumentTopicRes = top2vecModel.get_documents_topics( # topic_num, topic_score, topic_word, _, error
     getDocumentTopicRequest.doc_ids,
     getDocumentTopicRequest.reduced,
     getDocumentTopicRequest.num_topics,
   )
+  if getDocumentTopicRes.error != None:
+    return GetDocumentTopicResponse(
+      topic_num = None,
+      topic_score = None,
+      topic_word = None,
+      error = getDocumentTopicRes.error,
+    )
+
   return GetDocumentTopicResponse(
-    topic_num = topic_num,
-    topic_score = topic_score,
-    topic_word = topic_word,
-    error = error,
+    topic_num = getDocumentTopicRes.topic_num,
+    topic_score = getDocumentTopicRes.topic_score,
+    topic_word = getDocumentTopicRes.topic_word,
+    error = getDocumentTopicRes.error,
   )
 
 
@@ -167,11 +175,22 @@ def delete_documents_v2(deleteDocumentRequest):
   pass
 
 
-def add_documents_v2(addDocumentRequest):
-  """
-    This will add an individual document to the Elastic Search index.
-  """
-  pass
+# def add_documents_elastic_search(addDocumentRequest):
+#   """
+#     This will add an individual document to the Elastic Search index.
+#   """
+#   elasticSearchDict = []
+#   article = addDocumentRequest.article
+#     elasticSearchDict.append(
+#       {
+#         'content': article.text,
+#         'meta': {
+#           'url': article.url,
+#         }
+#       }
+#     )
+
+#   document_store.write_documents(elasticSearchDict)
 
 
 def add_documents_batch_v2(addDocumentRequest):
@@ -218,7 +237,10 @@ def query_documents_v2(queryDocumentsRequest):
   )
 
   logger.info("BM25 Retriever docs" + str(candidate_documents))
-  return candidate_documents
+  return QueryDocumentsV2Response(
+    docs=candidate_documents,
+    error=None,
+  )
 
 
 def query_documents(queryDocumentsRequest):
@@ -269,12 +291,12 @@ def query_documents(queryDocumentsRequest):
   #   )
   # )
 
-  if doc_scores == [] or doc_ids == [] or error != None:
-    return QueryDocumentsResponse(
-      doc_scores=doc_scores,
-      doc_ids=doc_ids,
-      error=ValueError("No documents returned by search"),
-    )
+  # if doc_scores == [] or doc_ids == [] or error != None:
+  #   return QueryDocumentsResponse(
+  #     doc_scores=doc_scores,
+  #     doc_ids=doc_ids,
+  #     error=ValueError("No documents returned by search"),
+  #   )
 
   # Create thread to compute the ROUGE, tf-idf and overlap scores btwn the 3 different indices
   # Log statement with all of the scores
