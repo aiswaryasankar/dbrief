@@ -145,7 +145,7 @@ else:
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'ebdb',
             'USER': 'root',
-            'PASSWORD': 'uber',
+            'PASSWORD': 'dbrief',
             'HOST': 'localhost',
             'PORT': '3306',
         }
