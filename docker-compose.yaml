@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    command: ["--port", "3307"]
+    ports:
+      - 3307:3307
+    environment:
+      - "MYSQL_ROOT_PASSWORD=uberr"
+      - "MYSQL_USER=uber"
+      - "MYSQL_PASSWORD=uber"
+      - "MYSQL_DATABASE=ebdb"
+
+
+    # build:
+    #   context: .
+    #   dockerfile: ./docker/mysql/Dockerfile
+    # volumes:
+    #   - mysql_data:/var/lib/mysql
+    #   - ./mysql/init:/docker-entrypoint-initdb.d/:ro
+    # restart: unless-stopped
+    # environment:
+    #   - MYSQL_HOST=localhost
+    #   - MYSQL_PORT=3306  # cannot change this port to other number
+    #   - MYSQL_DATABASE=test
+    #   - MYSQL_USER=root
+    #   - MYSQL_PASSWORD=S0&&C2p^E,FVY,dP2Bis301?8X*1jrF?
+    #   - MYSQL_ROOT_PASSWORD=S0&&C2p^E,FVY,dP2Bis301?8X*1jrF?
+    # ports:
+    #   - "3306:3306"
+
+#   backend:
+#     build:
+#       context: .
+#       dockerfile: docker/django/Dockerfile
+#     env_file: .env
+#     restart: always
+#     volumes:
+#       - ./mysql/data:/var/lib/mysql
+#       - ./mysql/init:/docker-entrypoint-initdb.d/:ro
+#     depends_on:
+#       - db
+#     working_dir: "/"
+#     expose:
+#       - 8000
+#     ports:
+#       - "8000:8000"
+#     command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+volumes:
+  mysql_data:
