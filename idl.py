@@ -214,6 +214,70 @@ class SearchTopicsResponseV2:
 #
 ###
 
+
+@dataclass
+class AddDocumentsElasticSearchRequest:
+  documents: List[dict]
+
+@dataclass_json
+@dataclass
+class AddDocumentsElasticSearchResponse:
+  num_documents_added : int
+  error : Exception
+
+@dataclass
+class DeleteDocumentsElasticSearchRequest:
+  article_ids : List[int]
+
+@dataclass_json
+@dataclass
+class DeleteDocumentsElasticSearchResponse:
+  num_articles_deleted : int
+  error : Exception
+
+@dataclass
+class QueryDocumentsElasticSearchRequest:
+  query: str
+  num_docs: int
+
+@dataclass_json
+@dataclass
+class QueryDocumentsElasticSearchResponse:
+  candidate_documents: List[dict]
+  error: Exception
+
+@dataclass
+class AddDocumentsFaissRequest:
+  documents: List[dict]
+
+@dataclass_json
+@dataclass
+class AddDocumentsFaissResponse:
+  num_documents_added : int
+  error : Exception
+
+@dataclass
+class QueryDocumentsFaissRequest:
+  query: str
+  num_docs: int
+
+@dataclass_json
+@dataclass
+class QueryDocumentsFaissResponse:
+  candidate_documents: List[dict]
+  error: Exception
+
+
+@dataclass
+class DeleteDocumentsFaissRequest:
+  article_ids : List[int]
+
+@dataclass_json
+@dataclass
+class DeleteDocumentsFAISSResponse:
+  num_articles_deleted : int
+  error : Exception
+
 @dataclass
 class DeleteDocumentsRequest:
   docIds: List[int]
@@ -493,6 +557,8 @@ class DeleteArticlesRequest:
 class DeleteArticlesResponse:
   num_articles_deleted: int
   error: Exception
+
+
 
 ###
 #

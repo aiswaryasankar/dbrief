@@ -150,6 +150,8 @@ def populate_articles_batch(populateArticlesBatch):
   articleIds, articles = [], []
   num_duplicates = 0
 
+  documents = []
+
   for url in populateArticlesBatch.urls:
 
     # First try fetching the article by URL - if present skip since it should already be fully hydrated
@@ -196,10 +198,32 @@ def populate_articles_batch(populateArticlesBatch):
       )
     )
 
+    # create document for document store
+    d = {
+      'content': article.text,
+      'meta': {
+        'id': None,
+        'url': url,
+        'title': article.title,
+        'date': article.publish_date,
+        'imageURL': article.top_image,
+        'authors': " ".join(article.authors).strip(),
+        'topic': None,
+        'parentTopic': None,
+        'polarizationScore': None,
+        'topPassage': None,
+        'topFact': None,
+      }
+    }
+
     # Failed to save article to database
     if saveArticleResponse.error != None:
       logger.warn("Failed to save article to database " + url)
+      return PopulateArticlesResponse(num_duplicates=num_duplicates, num_articles_populated=0, num_errors=len(articleIds))
+
     elif saveArticleResponse.created:
+      d['meta']['id'] = saveArticleResponse.id
+      documents.append(d)
       articleIds.append(saveArticleResponse.id)
       articles.append(article.text)
 
@@ -220,12 +244,25 @@ def populate_articles_batch(populateArticlesBatch):
       logger.warn("Failed to add articles to the index")
       return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articleIds))
 
+  # thread to hydrate model calls for articles
   articleBackfill = threading.Thread(target=article_backfill_controller, args=(
     ArticleBackfillRequest(
       force_update= False,
       fields = ["topic", "top_passage", "top_fact", "polarization_score"]
     )))
   articleBackfill.start()
+
+  # thread to add articles to the FAISS document store
+  addArticleFAISS = threading.Thread(target=tpHandler.add_documents_faiss, args=(
+    AddDocumentsFAISSRequest(documents=documents),)
+  )
+  addArticleFAISS.start()
+
+  # thread to add articles to elastic search document store
+  addArticleElasticSearch = threading.Thread(target=tpHandler.add_documents_elastic_search, args=(
+    AddDocumentsElasticSearchRequest(documents=documents),)
+  )
+  addArticleElasticSearch.start()
 
   res = PopulateArticlesResponse(
     num_articles_populated=len(articleIds),
@@ -236,10 +273,6 @@ def populate_articles_batch(populateArticlesBatch):
 
   return res
 
-  # if articleBackfill.error != None:
-  #   return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articles))
-
-  # return PopulateArticlesResponse(num_articles_populated=len(articles), num_errors=0)
 
 
 def hydrateModelOutputsForArticle(article, articleId, url, created):
@@ -418,11 +451,9 @@ def hydrate_article_controller(url):
     dictionary = json.loads("".join(soup.find("script", {"type":"application/ld+json"}).contents))
     date_published = [value for (key, value) in dictionary.items() if key == 'datePublished']
     article_author = [value for (key, value) in dictionary.items() if key == 'author']
-    # print(article_author)
 
     # another method to extract the title
     article_title = [value for (key, value) in dictionary.items() if key == 'headline']
-    # print(article_title)
 
 
   except Exception as e:
@@ -525,7 +556,6 @@ def backfill(fields, articlesToUpdate):
       totalUpdates += len(updatedArticles)
       logger.info("Updated topic for %s articles", len(updatedArticles))
 
-
   if "polarization_score" in fields:
     getDocumentPolarityBatchResponse = polarityHandler.get_document_polarity_batch_v2(
       GetDocumentPolarityBatchRequest(
@@ -595,6 +625,33 @@ def delete_articles_controller(deleteArticlesRequest):
   deletedArticles, err = deleteArticles(deleteArticlesRequest.num_days, actuallyDelete=False)
   if err != None:
     return DeleteArticlesResponse(num_articles_deleted=0, error=err)
+
+
+  # Remove articles from document store
+  deleteDocumentsFAISSRes = tpHandler.delete_documents_FAISS(
+    DeleteDocumentsFaissRequest(
+      article_ids=deletedArticles,
+    )
+  )
+
+  if deleteDocumentsFAISSRes.error != None:
+    return DeleteArticlesResponse(
+      num_articles_deleted=0,
+      error=deleteDocumentsFAISSRes.err,
+    )
+
+  # Remove articles from elastic search
+  deleteDocumentsElasticSearchRes = tpHandler.delete_documents_elastic_search(
+    DeleteDocumentsElasticSearchRequest(
+      article_ids=deletedArticles,
+    )
+  )
+
+  if deleteDocumentsElasticSearchRes.error != None:
+    return DeleteArticlesResponse(
+      num_articles_deleted=0,
+      error=deleteDocumentsElasticSearchRes.err,
+    )
 
   # Remove the articles from the topic model
   deleteDocumentsRes = tpHandler.delete_documents_batch(

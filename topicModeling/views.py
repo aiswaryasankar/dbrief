@@ -73,7 +73,7 @@ def query_documents_v2_view(request):
     return Response(req.errors)
 
   queryDocumentsRequest = req.validated_data
-  res = query_documents_v2(queryDocumentsRequest)
+  res = query_documents_faiss(queryDocumentsRequest)
 
   return Response(res.to_json())
 

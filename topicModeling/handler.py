@@ -14,9 +14,10 @@ from .repository import *
 # from bertopic import BERTopic
 # from sklearn.feature_extraction.text import CountVectorizer
 from django.conf import settings
+import os
 import tensorflow_hub as hub
-from haystack.nodes import BM25Retriever
-from haystack.document_stores import ElasticsearchDocumentStore
+from haystack.nodes import BM25Retriever, EmbeddingRetriever
+from haystack.document_stores import ElasticsearchDocumentStore, FAISSDocumentStore
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -32,8 +33,6 @@ else:
 
 
 embedding_model = None
-document_store = ElasticsearchDocumentStore()
-
 
 def retrain_topic_model():
   """
@@ -168,67 +167,156 @@ def add_document(addDocumentRequest):
   return AddDocumentResponse(error=None)
 
 
-def delete_documents_v2(deleteDocumentRequest):
+def add_documents_faiss(addDocumentsFAISSRequest):
   """
-    This will delete the documents by document id from the search index.
+    Adds documents to the FAISS index.
   """
-  pass
+  if not os.path.exists("./modelWeights/es_document_store"):
+    document_store = FAISSDocumentStore(sql_url="sqlite:///modelWeights/haystack_test_faiss.db")
+  else:
+    document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
+                                             config_path="./modelWeights/document_store.json")
+  logger.info(f'Loaded document store')
+
+  try:
+    retriever = EmbeddingRetriever(document_store=document_store, embedding_model="deepset/sentence_bert", use_gpu=False)
+    documents = addDocumentsFAISSRequest.documents
+
+    document_store.write_documents(documents)
+    document_store.update_embeddings(retriever)
+
+    logger.info(f'Writing to document store done.')
+
+    document_store.save("./modelWeights/document_store")
+  except Exception as e:
+    res = AddDocumentsFAISSResponse(num_documents_added=None, error=e)
+    return res
+
+  return AddDocumentsFAISSResponse(num_documents_added=len(documents), error=None)
 
 
-# def add_documents_elastic_search(addDocumentRequest):
-#   """
-#     This will add an individual document to the Elastic Search index.
-#   """
-#   elasticSearchDict = []
-#   article = addDocumentRequest.article
-#     elasticSearchDict.append(
-#       {
-#         'content': article.text,
-#         'meta': {
-#           'url': article.url,
-#         }
-#       }
-#     )
+def delete_documents_faiss(deleteDocumentsFAISSRequest):
 
-#   document_store.write_documents(elasticSearchDict)
+  try:
+    assert os.path.exists("./modelWeights/document_store")
 
+    document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
+                                             config_path="./modelWeights/document_store.json")
 
-def add_documents_batch_v2(addDocumentRequest):
-  """
-    Will add all documents to Elastic Search in batch. This is used essentially to entirely refresh the
-    index of articles in the database.
-  """
-  fetchAllArticlesResponse = articleRecHandler.fetch_articles(
-    FetchArticlesRequest(articleIds=[])
-  )
-  if fetchAllArticlesResponse.error != None:
-    return TrainAndIndexTopicModelResponse(
-      error=ValueError(fetchAllArticlesResponse.error, "Failed to fetch articles from the articleRec db")
-    )
+    logger.info(f'Document store loaded for deletion.')
 
-  articles = fetchAllArticlesResponse.articleList
-  logger.info("Number of articles to index %s", len(articles))
+    # TODO: some logic to check if we can delete and not actually delete
 
+    article_ids = deleteDocumentsFAISSRequest.article_ids
+    total_article_ids = len(article_ids)
 
-  elasticSearchDict = []
-  for article in articles:
-    elasticSearchDict.append(
-      {
-        'content': article.text,
-        'meta': {
-          'url': article.url,
-        }
+    assert isinstance(article_ids,list) and len(article_ids)>0 and isinstance(article_ids[0],int)
+
+    document_store.delete_documents(
+      filters = {
+        "id" : article_ids
       }
     )
 
-  document_store.write_documents(elasticSearchDict)
+    document_store.save("./modelWeights/document_store")
+
+  except Exception as e:
+    return DeleteDocumentsFAISSResponse(
+      num_articles_deleted = 0,
+      error = e
+    )
+
+  return DeleteDocumentsFAISSResponse(
+    num_articles_deleted = total_article_ids,
+    error = None
+  )
 
 
-def query_documents_v2(queryDocumentsRequest):
+def query_documents_faiss(queryDocumentsFAISSRequest):
   """
-    Implement a BM25 retriever
+    Implement a document retriever using dense embeddings
   """
-  # document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
+
+  if not os.path.exists("./modelWeights/es_document_store"):
+    document_store = FAISSDocumentStore(sql_url="sqlite:///modelWeights/haystack_test_faiss.db")
+  else:
+    document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
+                                             config_path="./modelWeights/document_store.json")
+  logger.info(f'Loaded document store')
+
+  retriever = EmbeddingRetriever(document_store=document_store,
+                                 embedding_model="deepset/sentence_bert", use_gpu=False)
+
+  logger.info(f'document store and retriever loaded.')
+
+  candidate_documents = retriever.retrieve(
+      query=queryDocumentsFAISSRequest.query,
+      top_k=queryDocumentsFAISSRequest.num_docs,
+  )
+
+  logger.info("Faiss Retriever docs" + str(candidate_documents))
+  return QueryDocumentsFaissResponse (
+    candidate_documents = candidate_documents,
+    error=None,
+  )
+
+
+def add_documents_elastic_search(addElasticSearchDocumentRequest):
+  """
+    Will add all documents to Elastic Search in batch. This is used essentially to entirely refresh the index of articles in the database.
+  """
+  try:
+    document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
+    documents = addElasticSearchDocumentRequest.documents
+    document_store.write_documents(documents)
+
+    logger.info(f'Writing to document store done.')
+
+  except Exception as e:
+    res = AddDocumentsElasticSearchResponse(num_documents_added=None, error=e)
+    return res
+
+  return AddDocumentsElasticSearchResponse(num_documents_added=len(documents), error=None)
+
+
+def delete_documents_elastic_search(deleteDocumentsElasticSearchRequest):
+  """
+    Delete article IDs from elastic search.
+  """
+
+  try:
+    document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
+
+    logger.info(f'Document store loaded for deletion.')
+
+    article_ids = deleteDocumentsElasticSearchRequest.article_ids
+    total_article_ids = len(article_ids)
+
+    assert isinstance(article_ids,list) and len(article_ids)>0 and isinstance(article_ids[0],int)
+
+    document_store.delete_documents(
+      filters = {
+        "id" : article_ids
+      }
+    )
+
+  except Exception as e:
+    return DeleteDocumentsElasticSearchResponse(
+      num_articles_deleted = 0,
+      error = e
+    )
+
+  return DeleteDocumentsElasticSearchResponse(
+    num_articles_deleted = total_article_ids,
+    error = None
+  )
+
+
+def query_documents_elastic_search(queryDocumentsRequest):
+  """
+    Implement a BM25 retriever for elastic search retrieval
+  """
+  document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
   retriever = BM25Retriever(document_store)
 
   candidate_documents = retriever.retrieve(
@@ -237,7 +325,7 @@ def query_documents_v2(queryDocumentsRequest):
   )
 
   logger.info("BM25 Retriever docs" + str(candidate_documents))
-  return QueryDocumentsV2Response(
+  return QueryDocumentsElasticSearchResponse(
     docs=candidate_documents,
     error=None,
   )
@@ -276,27 +364,47 @@ def query_documents(queryDocumentsRequest):
     ef=queryDocumentsRequest.ef,
     embedding_model = embedding_model,
   )
-  logger.info("Documents returned", extra={
+  if doc_scores == [] or doc_ids == [] or error != None:
+    return QueryDocumentsResponse(
+      doc_scores=doc_scores,
+      doc_ids=doc_ids,
+      error=ValueError("No documents returned by search"),
+    )
+
+  logger.info("Documents returned HNSWlib", extra={
     'doc_ids': doc_ids,
     'doc_scores': doc_scores,
   })
   logger.info(doc_ids)
   logger.info(doc_scores)
 
-  # Call the v2 model as well and log the results for offline evaluation purposes
-  # queryDocumentsV2Res = query_documents_v2(
-  #   queryDocumentsRequest= QueryDocumentsV2Request(
-  #     query=queryDocumentsRequest.query,
-  #     num_docs=queryDocumentsRequest.num_docs,
-  #   )
-  # )
+  # Query docs from FAISS and log the results for offline evaluation purposes
+  queryDocumentsFaissRes = query_documents_faiss(
+    QueryDocumentsFaissRequest (
+      query=queryDocumentsRequest.query,
+      num_docs=queryDocumentsRequest.num_docs,
+    )
+  )
+  if queryDocumentsFaissRes.error != None:
+    logger.warn("Failed to query documents through FAISS: " + str(queryDocumentsFaissRes.error))
+  else:
+    logger.info("Documents returned FAISS", extra={
+      'documents': queryDocumentsFaissRes.candidate_documents,
+    })
 
-  # if doc_scores == [] or doc_ids == [] or error != None:
-  #   return QueryDocumentsResponse(
-  #     doc_scores=doc_scores,
-  #     doc_ids=doc_ids,
-  #     error=ValueError("No documents returned by search"),
-  #   )
+  # Query docs from Elastic Search and log results for eval
+  queryDocumentsElasticSearchRes = query_documents_elastic_search(
+    queryDocumentsRequest= QueryDocumentsElasticSearchRequest (
+      query=queryDocumentsRequest.query,
+      num_docs=queryDocumentsRequest.num_docs,
+    )
+  )
+  if queryDocumentsElasticSearchRes.error != None:
+    logger.warn("Failed to query documents through Elastic Search: " + str(queryDocumentsElasticSearchRes.error))
+  else:
+    logger.info("Documents returned Elastic Search", extra={
+      'documents': queryDocumentsElasticSearchRes.candidate_documents,
+    })
 
   # Create thread to compute the ROUGE, tf-idf and overlap scores btwn the 3 different indices
   # Log statement with all of the scores
@@ -489,3 +597,4 @@ def fetch_all_topics():
     Fetch all the topics for the database.
   """
   return fetchAllTopics()
+
