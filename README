@@ -19,22 +19,27 @@ Welcome to Dbrief.AI!
 We currently set up a few different directories for tests including repositories and handlers.  The repository tests check the read / write operations with the database and the view tests make calls directly to the /endpoint and check that it runs with a 200 response.  All databases can be pre populated using a fixtures file which includes dummy data and is loaded into the db prior to running the tests. An example can be found in articleRec/fixtures.  In order to run all of the tests, run ```./manage.py test```. In order to run tests in a particular directory, run ```./manage.py rest topicModeling``` for example.
 
 
-## Link to Documentation
-This document consists of a running
-
 
 ## Logging
-We currently use logtail for all logging purposes from our production system. Please log into in order to access the logs.
+We currently use logtail for all logging purposes from our production system. Please log into in order to access the logs.  Please ask for permissions to access logging.
 
 
-## Deployment to AWS
-Deployment to AWS is a 2 step process - you can
+## Deployment
+In order to contribute to this repo, first create a branch and commit your changes to that branch.
+`git checkout [branchName]`
+`git add -A`
+`git commit -m ''`
+`git push origin [branchName]`
+Don't add any of the files in \modelWeights since those are specific to your locally trained model and won't work / will break production temporarily.
+Once your change is approved, we will merge and deploy to AWS Beanstalk through `eb deploy --staged`.  This requires prod deployment credentials and shouldn't be done without asking.
 
 
 ## Mysql Migration
+In order to migrate database changes you need to run `python manage.py makemigrations` which will generate all the make migration files. After that you can run `python manage.py migrate` in order to map those migrations to the db tables. You can handle migrations per service through `python manage.py migrate [serviceName]`.
 
 
 ## Checking prod Mysql
+In order to check production mysql, you can log into http://infra.eba-ydmy6xs3.us-west-2.elasticbeanstalk.com/admin.  For now the login is `admin` and password is `admin`. This will be updated in the near future. Do not use this for anything other than reads.
 
 
 ## Elastic Search
