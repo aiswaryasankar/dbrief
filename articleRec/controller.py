@@ -219,7 +219,7 @@ def populate_articles_batch(populateArticlesBatch):
     # Failed to save article to database
     if saveArticleResponse.error != None:
       logger.warn("Failed to save article to database " + url)
-      return PopulateArticlesResponse(num_duplicates=num_duplicates, num_articles_populated=0, num_errors=len(articleIds))
+      continue
 
     elif saveArticleResponse.created:
       d['meta']['id'] = saveArticleResponse.id
@@ -236,13 +236,30 @@ def populate_articles_batch(populateArticlesBatch):
         documents=articles,
         doc_ids=articleIds,
         tokenizer=None,
-        use_embedding_model_tokenizer=None,
       )
     )
     if addedToTopicModel.error != None:
       # How should you most appropriately handle this error?
       logger.warn("Failed to add articles to the index")
-      return PopulateArticlesResponse(num_articles_populated=0, num_errors=len(articleIds))
+      return PopulateArticlesResponse(num_articles_populated=0, num_duplicates=0, num_errors=len(articleIds))
+
+
+  # For local testing when latency isn't an issue
+  # addDocumentsFaissResponse = tpHandler.add_documents_faiss(
+  #   AddDocumentsFaissRequest(documents=documents)
+  # )
+  # if addDocumentsFaissResponse.error != None:
+  #   logger.warn("Failed to add docs to FAISS")
+  #   logger.warn(addDocumentsFaissResponse.error)
+  #   return PopulateArticlesResponse(num_articles_populated=0, num_duplicates=0, num_errors=len(articleIds))
+
+  # addDocumentsElasticSearchResponse = tpHandler.add_documents_elastic_search(
+  #   AddDocumentsElasticSearchRequest(documents=documents)
+  # )
+  # if addDocumentsElasticSearchResponse.error != None:
+  #   logger.warn("Failed to add docs to elastic search")
+  #   logger.warn(addDocumentsElasticSearchResponse.error)
+  #   return PopulateArticlesResponse(num_articles_populated=0, num_duplicates=0, num_errors=len(articleIds))
 
   # thread to hydrate model calls for articles
   articleBackfill = threading.Thread(target=article_backfill_controller, args=(
@@ -254,7 +271,7 @@ def populate_articles_batch(populateArticlesBatch):
 
   # thread to add articles to the FAISS document store
   addArticleFAISS = threading.Thread(target=tpHandler.add_documents_faiss, args=(
-    AddDocumentsFAISSRequest(documents=documents),)
+    AddDocumentsFaissRequest(documents=documents),)
   )
   addArticleFAISS.start()
 
@@ -674,5 +691,4 @@ def delete_articles_controller(deleteArticlesRequest):
     num_articles_deleted=len(deletedArticles),
     error=None,
   )
-
 
