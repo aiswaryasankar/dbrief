@@ -361,7 +361,6 @@ class AddDocumentRequest:
   documents: List[str]
   doc_ids: List[int]
   tokenizer: str
-  use_embedding_model_token: bool
 
 @dataclass_json
 @dataclass

@@ -171,7 +171,10 @@ def add_documents_faiss(addDocumentsFAISSRequest):
   """
     Adds documents to the FAISS index.
   """
-  if not os.path.exists("./modelWeights/es_document_store"):
+
+  logger.info("Adding " + str(len(addDocumentsFAISSRequest.documents)) + " documents to FAISS")
+
+  if not os.path.exists("./modelWeights/document_store"):
     document_store = FAISSDocumentStore(sql_url="sqlite:///modelWeights/haystack_test_faiss.db")
   else:
     document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
@@ -188,11 +191,12 @@ def add_documents_faiss(addDocumentsFAISSRequest):
     logger.info(f'Writing to document store done.')
 
     document_store.save("./modelWeights/document_store")
+
   except Exception as e:
-    res = AddDocumentsFAISSResponse(num_documents_added=None, error=e)
+    res = AddDocumentsFaissResponse(num_documents_added=None, error=e)
     return res
 
-  return AddDocumentsFAISSResponse(num_documents_added=len(documents), error=None)
+  return AddDocumentsFaissResponse(num_documents_added=len(documents), error=None)
 
 
 def delete_documents_faiss(deleteDocumentsFAISSRequest):
@@ -237,7 +241,7 @@ def query_documents_faiss(queryDocumentsFAISSRequest):
     Implement a document retriever using dense embeddings
   """
 
-  if not os.path.exists("./modelWeights/es_document_store"):
+  if not os.path.exists("./modelWeights/document_store"):
     document_store = FAISSDocumentStore(sql_url="sqlite:///modelWeights/haystack_test_faiss.db")
   else:
     document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
@@ -265,12 +269,15 @@ def add_documents_elastic_search(addElasticSearchDocumentRequest):
   """
     Will add all documents to Elastic Search in batch. This is used essentially to entirely refresh the index of articles in the database.
   """
+
+  logger.info("Adding " + str(len(addElasticSearchDocumentRequest.documents)) + " documents to elastic search")
+
   try:
     document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
     documents = addElasticSearchDocumentRequest.documents
     document_store.write_documents(documents)
 
-    logger.info(f'Writing to document store done.')
+    logger.info(f'Successfully wrote ' + str(len(addElasticSearchDocumentRequest.documents) + " to elastic search"))
 
   except Exception as e:
     res = AddDocumentsElasticSearchResponse(num_documents_added=None, error=e)
@@ -326,7 +333,7 @@ def query_documents_elastic_search(queryDocumentsRequest):
 
   logger.info("BM25 Retriever docs" + str(candidate_documents))
   return QueryDocumentsElasticSearchResponse(
-    docs=candidate_documents,
+    candidate_documents=candidate_documents,
     error=None,
   )
 
@@ -388,9 +395,8 @@ def query_documents(queryDocumentsRequest):
   if queryDocumentsFaissRes.error != None:
     logger.warn("Failed to query documents through FAISS: " + str(queryDocumentsFaissRes.error))
   else:
-    logger.info("Documents returned FAISS", extra={
-      'documents': queryDocumentsFaissRes.candidate_documents,
-    })
+    logger.info("Documents returned FAISS")
+    logger.info([doc.meta['url'] for doc in queryDocumentsFaissRes.candidate_documents])
 
   # Query docs from Elastic Search and log results for eval
   queryDocumentsElasticSearchRes = query_documents_elastic_search(
@@ -402,16 +408,16 @@ def query_documents(queryDocumentsRequest):
   if queryDocumentsElasticSearchRes.error != None:
     logger.warn("Failed to query documents through Elastic Search: " + str(queryDocumentsElasticSearchRes.error))
   else:
-    logger.info("Documents returned Elastic Search", extra={
-      'documents': queryDocumentsElasticSearchRes.candidate_documents,
-    })
+    logger.info("Documents returned Elastic Search")
+    logger.info("documents: " + str(queryDocumentsElasticSearchRes.candidate_documents))
+    logger.info([doc.meta['url'] for doc in queryDocumentsElasticSearchRes.candidate_documents])
 
   # Create thread to compute the ROUGE, tf-idf and overlap scores btwn the 3 different indices
   # Log statement with all of the scores
 
   return QueryDocumentsResponse(
-    doc_scores=doc_scores,
-    doc_ids=doc_ids,
+    doc_scores=[float(score) for score in doc_scores],
+    doc_ids=[float(doc_id) for doc_id in doc_ids],
     error=None,
   )
 
@@ -445,11 +451,8 @@ def generate_topic_pairs_v2(request):
     print("Embedding model is none in query documents")
     embedding_model = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
 
-  print("INSIDE GENERATE TOPIC PAIRS V2")
   top2vecModel = Top2Vec.load(topicModelFile)
   topicPairs = top2vecModel.generate_topic_parent_topic_pairs_v2(embedding_model)
-  logger.info("smart topic pairs")
-  logger.info(topicPairs)
   return GenerateTopicPairsResponse(
     topic_pairs=topicPairs,
   )
@@ -565,7 +568,7 @@ def delete_documents_batch(deleteDocumentsRequest):
   if err != None:
     logger.info("Failed to delete %s documents", len(deleteDocumentsRequest.docIds))
     logger.warn(err)
-    print(err)
+
     return DeleteDocumentsResponse(
       numArticlesDeleted=0,
       error=err,
