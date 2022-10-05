@@ -1,3 +1,4 @@
+from imaplib import _Authenticator
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -86,41 +87,15 @@ def populate_article(populateArticleRequest):
 
   # Hydrate article
   url = populateArticleRequest.url
-  hydrateArticleResponse = hydrate_article_controller(url)
+  hydrateArticleResponse = hydrate_article_controller(Article(url=url))
   if hydrateArticleResponse.error != None:
     return PopulateArticleResponse(article=None, url=url, id=None, error=str(hydrateArticleResponse.error))
 
-  article=hydrateArticleResponse.article
+  article = hydrateArticleResponse.article
 
-    # Hydrate the article date
-  if article.publish_date == "" or article.publish_date is None:
-    logger.info("Article doesn't have date info using current date %s", datetime.date())
-    article.publish_date = datetime.now()
-
-  # Hydrate article author
-  if article.authors == []:
-    article.authors = [topicFeedHandler.parseSource(url)]
-
-  text = clean_text(article.text)
-
-  # Save to database and fetch article id
-  a = Article(
-    id=None,
-    url=url,
-    text=text,
-    title=article.title,
-    date=article.publish_date,
-    imageURL=article.top_image,
-    authors=article.authors,
-    topic=None,
-    parentTopic=None,
-    polarizationScore=None,
-    topPassage=None,
-    topFact=None,
-  )
   saveArticleResponse = saveArticle(
     SaveArticleRequest(
-      article=a,
+      article=article,
     )
   )
 
@@ -161,40 +136,16 @@ def populate_articles_batch(populateArticlesBatch):
       continue
 
     logger.info(url)
-    hydrateArticleResponse = hydrate_article_controller(url)
+    hydrateArticleResponse = hydrate_article_controller(Article(url=url))
     if hydrateArticleResponse.error != None:
       logger.warn("Failed to hydrate article " + url)
       continue
 
     article=hydrateArticleResponse.article
 
-    # Hydrate the article date
-    if article.publish_date == "" or article.publish_date is None:
-      logger.info("Article doesn't have date info using current date")
-      article.publish_date = datetime.now()
-
-    # Hydrate article author
-    if article.authors == []:
-      article.authors = [topicFeedHandler.parseSource(url)]
-
-    # Save to database and fetch article id
-    a = Article(
-      id=None,
-      url=url,
-      text=article.text,
-      title=article.title,
-      date=article.publish_date,
-      imageURL=article.top_image,
-      authors=article.authors,
-      topic=None,
-      parentTopic=None,
-      polarizationScore=None,
-      topPassage=None,
-      topFact=None,
-    )
     saveArticleResponse = saveArticle(
       SaveArticleRequest(
-        article=a,
+        article=article,
       )
     )
 
@@ -436,19 +387,25 @@ def process_rss_feed():
   return urlMap
 
 
-def hydrate_articles_batch(urls):
+def hydrate_articles_batch(hydrateArticlesBatchRequest):
   """
     Given a list of urls, will return a list of hydrated Article objects
   """
-  articleEntities = []
+  articles = []
 
-  for url in urls:
-    articleEntities.append(hydrate_article_controller(url))
+  for article in hydrateArticlesBatchRequest.articles:
+    hydrateArticleResponse = hydrate_article_controller(article)
+    if hydrateArticleResponse.error != None:
+      continue
+    articles.append(hydrateArticleResponse.article)
 
-  return articleEntities
+  return HydrateArticlesBatchResponse(
+    articles=articles,
+    error=None,
+  )
 
 
-def hydrate_article_controller(url):
+def hydrate_article_controller(articleModel):
   """
     Given a url, will return a hydrated Article object
   """
@@ -458,6 +415,7 @@ def hydrate_article_controller(url):
   config.browser_user_agent = user_agent
   config.request_timeout = 15
 
+  url = articleModel.url
   logger.info(url)
   article = ArticleAPI(url, config=config)
 
@@ -488,8 +446,53 @@ def hydrate_article_controller(url):
       error=("Article doesn't have valid text"),
     )
 
+  # Hydrate the article date
+  if article.publish_date == "" or article.publish_date is None:
+    logger.info("Article doesn't have date info using current date")
+    article.publish_date = datetime.now()
+
+  logger.info("author before cleaning: " + str(article.authors))
+
+  # If no author present, use the source
+  if article.authors == []:
+    authors = topicFeedHandler.parseSource(article.url)
+
+  # If only 1 author, ensure name is only 2 words
+  elif len(article.authors) == 1:
+    authors = " ".join(article.authors[0].split(" ")[:2])
+
+  # If multiple authors, only choose the first author name
+  if len(article.authors) > 1:
+    authors = article.authors[0]
+
+    # If the author name is longer than 2 words, truncate at the first two
+    if len(authors.split(" ")) > 2:
+      authors = " ".join(authors.split(" ")[:2])
+
+  article.authors = authors
+
+  logger.info("author after cleaning: " + str(article.authors))
+
+  text = clean_text(article.text)
+
+  # Create an article object
+  a = Article(
+    id=articleModel.id,
+    url=article.url,
+    text=text,
+    title=article.title,
+    date=article.publish_date,
+    imageURL=article.top_image,
+    authors=article.authors,
+    topic=None,
+    parentTopic=None,
+    polarizationScore=None,
+    topPassage=None,
+    topFact=None,
+  )
+
   return HydrateArticleResponse(
-    article=article,
+    article=a,
     url=article.url,
     error=None,
   )
@@ -552,6 +555,7 @@ def article_backfill_controller(articleBackfillRequest):
 
 
 def backfill(fields, articlesToUpdate):
+
   # Based on the field that is requested, it will call the appropriate method
   # Should operate in batch to get the appropriate values back
   totalUpdates = 0
@@ -623,6 +627,25 @@ def backfill(fields, articlesToUpdate):
       res = ArticleModel.objects.bulk_update(updatedArticles, ["top_fact"])
       totalUpdates += len(updatedArticles)
       logger.info("Updated top fact for %s articles", len(updatedArticles))
+
+  if "author" in fields:
+      # Parse the author from the hydrated article controller
+      print("article.ids")
+      print([Article(id=article.id, url=article.url) for article in articlesToUpdate])
+      hydrateArticlesBatchResponse = hydrate_articles_batch(
+        HydrateArticlesBatchRequest(
+          articles=[Article(id=article.id, url=article.url) for article in articlesToUpdate]
+        )
+      )
+      if getTopFactsBatchResponse.error != None:
+        logger.warn("Failed to hydrate articles for batch request %s", str(hydrateArticlesBatchResponse.error))
+      else:
+        updatedArticles = [ArticleModel(articleId=a.article_id, author=a.author) for a in getTopFactsBatchResponse.articles]
+
+        # TODO: Move this into a repository function
+        res = ArticleModel.objects.bulk_update(updatedArticles, ["author"])
+        totalUpdates += len(updatedArticles)
+        logger.info("Updated author for %s articles", len(updatedArticles))
 
 
   # Populate the new fields into the db with an upsert operation
