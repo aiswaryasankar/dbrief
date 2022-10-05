@@ -16,7 +16,7 @@ class ArticleRecViewTest(TestCase):
 
 
   def test_hydrate_article(self):
-    response = self.client.post('/hydrateArticle/', data={"url": "https://www.nytimes.com/2022/01/03/world/europe/eu-hungary-threat.html"}, content_type="application/json")
+    response = self.client.post('/hydrateArticle/', data={"url": "https://www.nytimes.com/2022/09/16/us/politics/trump-special-master-justice-dept.html"}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
 
   # def test_populate_articles_batch(self):
@@ -24,7 +24,7 @@ class ArticleRecViewTest(TestCase):
   #   self.assertEqual(response.status_code, 200)
 
   def test_populate_article_by_url(self):
-    response = self.client.post('/populateArticle/', data={"url":"https://www.nytimes.com/2022/01/03/world/europe/eu-hungary-threat.html"}, content_type="application/json")
+    response = self.client.post('/populateArticle/', data={"url":"https://www.nytimes.com/2022/09/16/us/politics/trump-special-master-justice-dept.html"}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
     print(response.data)
 
@@ -72,5 +72,10 @@ class ArticleRecViewTest(TestCase):
 
   def test_article_backfill_polarity(self):
     response = self.client.post('/articleBackfill/', data={"force_update": False, "fields": ["polarization_score"]}, content_type="application/json")
+    self.assertEqual(response.status_code, 200)
+
+
+  def test_article_backfill_author(self):
+    response = self.client.post('/articleBackfill/', data={"force_update": False, "fields": ["author"]}, content_type="application/json")
     self.assertEqual(response.status_code, 200)
 

@@ -526,6 +526,17 @@ class HydrateArticleResponse:
   error: Exception
 
 @dataclass
+class HydrateArticlesBatchRequest:
+  articles: Optional[List[Article]]
+
+@dataclass_json
+@dataclass
+class HydrateArticlesBatchResponse:
+  articles: Optional[List[Article]]
+  error: Exception
+  urls: Optional[List[str]] = field(default_factory=list)
+
+@dataclass
 class ArticleBackfillRequest:
   force_update: bool
   fields: Optional[List[str]]
