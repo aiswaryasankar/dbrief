@@ -630,23 +630,20 @@ def backfill(fields, articlesToUpdate):
 
   if "author" in fields:
       # Parse the author from the hydrated article controller
-      print("article.ids")
-      print([Article(id=article.id, url=article.url) for article in articlesToUpdate])
       hydrateArticlesBatchResponse = hydrate_articles_batch(
         HydrateArticlesBatchRequest(
           articles=[Article(id=article.id, url=article.url) for article in articlesToUpdate]
         )
       )
-      if getTopFactsBatchResponse.error != None:
+      if hydrateArticlesBatchResponse.error != None:
         logger.warn("Failed to hydrate articles for batch request %s", str(hydrateArticlesBatchResponse.error))
       else:
-        updatedArticles = [ArticleModel(articleId=a.article_id, author=a.author) for a in getTopFactsBatchResponse.articles]
+        updatedArticles = [ArticleModel(articleId=a.article_id, author=a.author) for a in hydrateArticlesBatchResponse.articles]
 
         # TODO: Move this into a repository function
         res = ArticleModel.objects.bulk_update(updatedArticles, ["author"])
         totalUpdates += len(updatedArticles)
         logger.info("Updated author for %s articles", len(updatedArticles))
-
 
   # Populate the new fields into the db with an upsert operation
   # This should call the create_or_update article repo function and update the fields that are new
