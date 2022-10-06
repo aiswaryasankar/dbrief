@@ -83,6 +83,7 @@ def fetchTopicPage(fetchTopicPageRequest):
         topic_page=None,
         error=Exception("Invalid request"),
       )
+
     topicPage = TopicPage(
       Title = topicPageRes.title,
       ImageURL = topicPageRes.imageURL,
@@ -156,5 +157,96 @@ def fetchTopicPage(fetchTopicPageRequest):
       topic_page=None,
       error=str(e),
     )
+
+
+def fetchTopicPageBatch(fetchTopicPageBatchRequest):
+  """
+    This endpoint handles paginating topic pages based on the limit and offset specified. This enables the front end to paginate the results and query for the next set of topic pages ordered by time.
+  """
+
+  offset = fetchTopicPageBatchRequest.offset
+  pageSize = fetchTopicPageBatchRequest.pageSize
+  topicPages = []
+
+  try:
+    topicPageRes = TopicPageModel.objects.all().order_by('-createdAt')[offset:offset+pageSize]
+
+    for tp in topicPageRes:
+
+      topicPage = TopicPage(
+        Title = tp.title,
+        ImageURL = tp.imageURL,
+        MDSSummary = tp.summary,
+        Facts = [],
+        Opinions = [],
+        TopArticleID = tp.topArticleId,
+        TopicID= tp.topicId,
+        TopicName=tp.topic,
+        IsTimeline=tp.isTimeline,
+        CreatedAt=tp.createdAt,
+      )
+
+      # Hydrate the appropriate facts and opinions by querying articles from the articleRec table
+      facts = []
+      opinions = []
+      urls = tp.urls.split(",")
+      urls = [url.strip() for url in urls]
+      fetchArticlesByUrlRes = fetchArticlesByUrl(urls)
+
+      if fetchArticlesByUrlRes.error != None:
+        logger.warn("Failed to hydrate facts and opinion in the topic page")
+        return FetchTopicPageResponse(
+          topic_page=None,
+          error=fetchArticlesByUrlRes.error,
+        )
+
+      for article in fetchArticlesByUrlRes.articleList:
+        source = parseSource(article.url)
+
+        if article.topFact != None and len(article.topFact) > 100:
+          facts.append(Fact(
+            Quote(
+              Text=article.topFact,
+              Author=article.authors,
+              SourceName=source,
+              SourceURL=article.url,
+              ImageURL=article.imageURL,
+              Polarization=article.polarizationScore,
+              Timestamp=article.date,
+              ArticleID=article.id,
+            )
+          ))
+
+        if article.topPassage != None and len(article.topPassage) > 100:
+          opinions.append(Opinion(
+            Quote(
+              Text=article.topPassage,
+              Author=article.authors,
+              SourceName=source,
+              SourceURL=article.url,
+              ImageURL=article.imageURL,
+              Polarization=article.polarizationScore,
+              Timestamp=article.date,
+              ArticleID=article.id,
+            )
+          ))
+
+      topicPage.Facts = facts
+      topicPage.Opinions = opinions
+
+    topicPages.append(topicPage)
+
+  except Exception as e:
+    logger.warn("Failed to fetch topic page batch")
+
+    return FetchTopicPageBatchResponse(
+      topicPages=None,
+      error=str(e),
+    )
+
+  return FetchTopicPageBatchResponse(
+    topicPages=topicPages,
+    error=str(e),
+  )
 
 

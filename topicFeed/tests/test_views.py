@@ -47,4 +47,13 @@ class TopicFeedViewTest(TestCase):
     self.assertIsNotNone(response.content)
 
 
+  def test_fetch_topic_pages_batch(self):
+    response = self.client.post('/getTopicPagesBatch/', data={"limit": 10, "offset": 5}, content_type="application/json")
+    self.assertIsNotNone(response.content)
+    self.assertEqual(response.status_code, 200)
+
+
+
+
+
 

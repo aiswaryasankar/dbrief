@@ -46,6 +46,7 @@ urlpatterns = [
     path('getTopicPage/', topicFeedView.get_topic_page_view),
     path('whatsHappening/', topicFeedView.whats_happening_view),
     path('hydrateTopicPages/', topicFeedView.hydrate_topic_pages_view),
+    path('getTopicPagesBatch/', topicFeedView.fetch_topic_page_batch_view),
 
     # TopicModeling endpoints
     path('trainTopicModel/', topicModelView.retrain_topic_model_view),
