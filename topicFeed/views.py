@@ -72,7 +72,7 @@ def fetch_topic_page_batch_view(request):
     return Response(req.errors)
 
   fetchTopicPageBatchRequest = req.validated_data
-  res = fetchTopicPageBatch(fetchTopicPageBatchRequest)
+  res = fetchTopicPagesBatch(fetchTopicPageBatchRequest)
 
   return Response(res.to_json())
 

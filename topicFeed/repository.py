@@ -233,8 +233,7 @@ def fetchTopicPageBatch(fetchTopicPageBatchRequest):
 
       topicPage.Facts = facts
       topicPage.Opinions = opinions
-
-    topicPages.append(topicPage)
+      topicPages.append(topicPage)
 
   except Exception as e:
     logger.warn("Failed to fetch topic page batch")
@@ -246,7 +245,7 @@ def fetchTopicPageBatch(fetchTopicPageBatchRequest):
 
   return FetchTopicPageBatchResponse(
     topicPages=topicPages,
-    error=str(e),
+    error=None,
   )
 
 
