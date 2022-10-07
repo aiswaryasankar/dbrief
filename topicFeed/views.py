@@ -61,6 +61,20 @@ def hydrate_topic_pages_view(request):
   return Response(res.to_json())
 
 
+@api_view(['POST'])
+def fetch_topic_page_batch_view(request):
+  """
+    This function will return a batch of paginated topic pages.
+  """
+
+  req = FetchTopicPageBatchRequestSerializer(data=request.data)
+  if not req.is_valid():
+    return Response(req.errors)
+
+  fetchTopicPageBatchRequest = req.validated_data
+  res = fetchTopicPagesBatch(fetchTopicPageBatchRequest)
+
+  return Response(res.to_json())
 
 
 

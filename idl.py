@@ -732,7 +732,9 @@ class FetchTopicPageResponse:
 
 @dataclass
 class FetchTopicPageBatchRequest:
-  topics: List[str]
+  offset: int
+  pageSize: int
+  topics: Optional[List[str]]
   topicPageId: Optional[List[int]] = field(default_factory=list)
 
 @dataclass_json

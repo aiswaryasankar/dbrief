@@ -5,7 +5,7 @@
 import logging
 from articleRec import handler as articleRecHandler
 from articleRec.repository import fetchArticlesByDateRange
-from topicFeed.repository import fetchTopicPage
+from topicFeed.repository import *
 from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
@@ -583,3 +583,22 @@ def hydrateTopicPages(hydrateTopicPagesRequest):
     numPagesHydrated=len(topicsToHydrateList),
     error=None
   )
+
+
+def fetchTopicPagesBatch(fetchTopicPageBatchRequest):
+  """
+    This endpoint handles pagination for topic pages including a limit and offset and directly querying by the time the topic page was created.
+  """
+
+  fetchTopicPageBatchRes = fetchTopicPageBatch(fetchTopicPageBatchRequest)
+
+  if fetchTopicPageBatchRes.error != None:
+    return FetchTopicPageBatchResponse(
+      topicPages=None,
+      error=fetchTopicPageBatchRes.error
+    )
+
+  return fetchTopicPageBatchRes
+
+
+
