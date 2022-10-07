@@ -446,6 +446,16 @@ def hydrate_article_controller(articleModel):
       error=("Article doesn't have valid text"),
     )
 
+  # Filter out gruesome news stories
+  gruesome_words = ['Death', 'Died', "Shooting", "Die", "Murder", "Killed", "Kill", "Shoot", "Shot", "Stab", "Homicide", "Murder", "Execution"]
+  for word in gruesome_words:
+    if word in article.title:
+      return HydrateArticleResponse(
+        article=None,
+        url=None,
+        error="Article filtered out due to gruesome content",
+      )
+
   # Hydrate the article date
   if article.publish_date == "" or article.publish_date is None:
     logger.info("Article doesn't have date info using current date")
