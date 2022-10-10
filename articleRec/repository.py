@@ -184,12 +184,11 @@ def fetchAllArticles():
   )
 
 
-def fetchArticlesById(fetchArticlesRequest):
+def fetchArticlesById(articleIds):
   """
     Will fetch articles by the article Id and populate the Article entity
   """
   hydratedArticles = []
-  articleIds = fetchArticlesRequest.articleIds
 
   for id in articleIds:
     try:

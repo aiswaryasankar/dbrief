@@ -242,7 +242,6 @@ def populate_articles_batch(populateArticlesBatch):
   return res
 
 
-
 def hydrateModelOutputsForArticle(article, articleId, url, created):
   """
     HydrateModelOutputsForArticle will always be handled asynchronously since it is more time consuming and no live process should wait for it

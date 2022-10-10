@@ -379,9 +379,9 @@ class QueryDocumentsRequest:
 @dataclass_json
 @dataclass
 class QueryDocumentsResponse:
-  elastic_search_urls = List[str]
-  faiss_urls = List[str]
-  hnswlib_urls = List[str]
+  elastic_search_urls: List[str]
+  faiss_urls: List[str]
+  hnswlib_urls: List[str]
   doc_scores: List[int]
   doc_ids: List[int]
   error: Exception
