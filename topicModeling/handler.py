@@ -377,12 +377,25 @@ def query_documents(queryDocumentsRequest):
       error=ValueError("No documents returned by search"),
     )
 
+  # Retrieve docs from the db
+  hnswlib_urls = []
+  fetchArticlesRes = articleRecHandler.fetch_articles(
+    FetchArticlesRequest(
+      articleIds=doc_ids,
+    )
+  )
+  if fetchArticlesRes.error != None:
+    logger.warn("Failed to fetch doc id from mysql")
+  else:
+    hnswlib_urls = [article.url for article in fetchArticlesRes.articleList]
+
   logger.info("Documents returned HNSWlib", extra={
     'doc_ids': doc_ids,
     'doc_scores': doc_scores,
   })
   logger.info(doc_ids)
   logger.info(doc_scores)
+  logger.info("HNSWLIB urls: " + str(hnswlib_urls))
 
   # Query docs from FAISS and log the results for offline evaluation purposes
   queryDocumentsFaissRes = query_documents_faiss(
@@ -419,7 +432,7 @@ def query_documents(queryDocumentsRequest):
   return QueryDocumentsResponse(
     elastic_search_urls = es_urls,
     faiss_urls = faiss_urls,
-    hnswlib_urls = [],
+    hnswlib_urls = hnswlib_urls,
     doc_scores=[float(score) for score in doc_scores],
     doc_ids=[float(doc_id) for doc_id in doc_ids],
     error=None,
