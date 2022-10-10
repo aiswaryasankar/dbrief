@@ -16,6 +16,7 @@ import os
 import tensorflow_hub as hub
 from haystack.nodes import BM25Retriever, EmbeddingRetriever
 from haystack.document_stores import ElasticsearchDocumentStore, FAISSDocumentStore
+# BaseElasticsearchDocumentStore
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -32,6 +33,7 @@ else:
 
 
 embedding_model = None
+
 
 def retrain_topic_model():
   """
@@ -166,6 +168,54 @@ def add_document(addDocumentRequest):
   return AddDocumentResponse(error=None)
 
 
+def add_all_documents_faiss(request):
+  """
+    This endpoint hydrates all articles into faiss in the case it is not up to date.
+  """
+  # Query all documents in mysql
+  fetchArticlesResponse = articleRecHandler.fetch_articles(
+    FetchArticlesRequest()
+  )
+  if fetchArticlesResponse.error != None:
+    return AddDocumentsFaissResponse(
+      num_documents_added=0,
+      error = fetchArticlesResponse.error,
+    )
+
+  logger.info("Writing " + str(len(fetchArticlesResponse.articleList)) + " articles to FAISS")
+
+  # create document for document store
+  documents = []
+  for article in fetchArticlesResponse.articleList:
+    d = {
+      'content': article.text,
+      'meta': {
+        'id': article.url,
+        'url': article.url,
+        'title': article.title,
+        'date': article.date,
+        'imageURL': article.imageURL,
+        'authors': article.authors[0],
+        'topic': None,
+        'parentTopic': None,
+        'polarizationScore': None,
+        'topPassage': None,
+        'topFact': None,
+      }
+    }
+    documents.append(d)
+
+  addDocumentsFaissRes = add_documents_faiss(
+    AddDocumentsFaissRequest(
+      documents=documents
+    )
+  )
+  if addDocumentsFaissRes.error != None:
+    logger.warn("Failed to batch add articles to FAISS")
+
+  return addDocumentsFaissRes
+
+
 def add_documents_faiss(addDocumentsFAISSRequest):
   """
     Adds documents to the FAISS index.
@@ -174,7 +224,7 @@ def add_documents_faiss(addDocumentsFAISSRequest):
   logger.info("Adding " + str(len(addDocumentsFAISSRequest.documents)) + " documents to FAISS")
 
   if not os.path.exists("./modelWeights/document_store"):
-    document_store = FAISSDocumentStore(sql_url="sqlite:///modelWeights/haystack_test_faiss.db")
+    document_store = FAISSDocumentStore(sql_url="sqlite:///modelWeights/haystack_faiss.db")
   else:
     document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
                                              config_path="./modelWeights/document_store.json")
@@ -184,7 +234,7 @@ def add_documents_faiss(addDocumentsFAISSRequest):
     retriever = EmbeddingRetriever(document_store=document_store, embedding_model="deepset/sentence_bert", use_gpu=False)
     documents = addDocumentsFAISSRequest.documents
 
-    document_store.write_documents(documents)
+    document_store.write_documents(documents=documents, duplicate_documents='overwrite')
     document_store.update_embeddings(retriever)
 
     logger.info(f'Writing to document store done.')
@@ -264,6 +314,96 @@ def query_documents_faiss(queryDocumentsFAISSRequest):
   )
 
 
+def add_all_documents_elastic_search(request):
+  """
+    This endpoint serves to backfill all documents into elastic search.
+  """
+
+  # Query all documents in mysql
+  fetchArticlesResponse = articleRecHandler.fetch_articles(
+    FetchArticlesRequest()
+  )
+  if fetchArticlesResponse.error != None:
+    return AddDocumentsElasticSearchResponse(
+      num_documents_added=0,
+      error = fetchArticlesResponse.error,
+    )
+
+  logger.info("Writing " + str(len(fetchArticlesResponse.articleList)) + " articles to elastic search")
+
+  # create document for document store
+  documents = []
+  for article in fetchArticlesResponse.articleList:
+    d = {
+      'content': article.text,
+      'meta': {
+        'id': article.url,
+        'url': article.url,
+        'title': article.title,
+        'date': article.date,
+        'imageURL': article.imageURL,
+        'authors': article.authors[0],
+        'topic': None,
+        'parentTopic': None,
+        'polarizationScore': None,
+        'topPassage': None,
+        'topFact': None,
+      }
+    }
+    documents.append(d)
+
+  addDocumentsElasticSearchRes = add_documents_elastic_search(
+    AddDocumentsElasticSearchRequest(
+      documents=documents
+    )
+  )
+  if addDocumentsElasticSearchRes.error != None:
+    logger.warn("Failed to batch add articles to elastic search")
+
+  return addDocumentsElasticSearchRes
+
+
+def query_doc_counts(request):
+  """
+    This endpoint serves as a sanity check to ensure all 4 indices have the same number of articles.
+  """
+  numMysql, numHNSWLib, numFAISS, numES = 0, 0, 0, 0
+
+  # Fetch all docs from mysql
+  fetchArticlesResponse = articleRecHandler.fetch_articles(
+    FetchArticlesRequest()
+  )
+  if fetchArticlesResponse.error != None:
+    logger.warn("Failed to fetch all articles from mysql")
+  else:
+    numMysql = len(fetchArticlesResponse.articleList)
+
+  # Fetch all docs from hnswlib
+  top2vecModel = Top2Vec.load(topicModelFile)
+  numHNSWLib = len(top2vecModel.documents)
+
+  # Fetch all docs from elastic search
+  es_docs = query_all_documents_elastic_search()
+  numES = es_docs
+
+  # Fetch all docs from FAISS
+  faiss_docs = query_all_documents_faiss()
+  numFAISS = len(faiss_docs)
+
+  # Report all counts
+  logger.info("Number of articles mysql: " + str(numMysql))
+  logger.info("Number of articles hnswlib: " + str(numHNSWLib))
+  logger.info("Number of articles elastic search: " + str(numES))
+  logger.info("Number of articles FAISS: " + str(numFAISS))
+
+  return QueryDocCountsResponse(
+    numDocsMysql=numMysql,
+    numDocsES= numES,
+    numDocsFAISS=numFAISS,
+    numDocsHNSWLib=numHNSWLib,
+  )
+
+
 def add_documents_elastic_search(addElasticSearchDocumentRequest):
   """
     Will add all documents to Elastic Search in batch. This is used essentially to entirely refresh the index of articles in the database.
@@ -274,7 +414,9 @@ def add_documents_elastic_search(addElasticSearchDocumentRequest):
   try:
     document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
     documents = addElasticSearchDocumentRequest.documents
-    document_store.write_documents(documents)
+    document_store.write_documents(
+      documents=documents,
+      duplicate_documents='overwrite')
 
     logger.info(f'Successfully wrote ' + str(len(addElasticSearchDocumentRequest.documents) + " to elastic search"))
 
@@ -335,6 +477,36 @@ def query_documents_elastic_search(queryDocumentsRequest):
     candidate_documents=candidate_documents,
     error=None,
   )
+
+
+def query_all_documents_elastic_search():
+  """
+    Returns all docs from elastic search.
+  """
+  document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
+  # retriever = BM25Retriever(document_store, custom_query="""
+  #   'query': {
+  #       'match_all' : {}
+  #   }
+  # """)
+  docCount = document_store.get_document_count()
+
+  return docCount
+
+
+def query_all_documents_faiss():
+  """
+    Returns all docs from elastic search.
+  """
+  if not os.path.exists("./modelWeights/document_store"):
+    document_store = FAISSDocumentStore(sql_url="sqlite:///modelWeights/haystack_test_faiss.db")
+  else:
+    document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
+                                             config_path="./modelWeights/document_store.json")
+
+  all_docs = document_store.get_all_documents_generator()
+
+  return all_docs
 
 
 def query_documents(queryDocumentsRequest):

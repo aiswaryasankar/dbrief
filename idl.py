@@ -451,6 +451,14 @@ class GetDocumentTopicBatchResponse:
 class GenerateTopicPairsResponse:
   topic_pairs: List[TopicInfo]
 
+@dataclass_json
+@dataclass
+class QueryDocCountsResponse:
+  numDocsMysql: int
+  numDocsFAISS: int
+  numDocsHNSWLib: int
+  numDocsES: int
+
 
 ###
 #

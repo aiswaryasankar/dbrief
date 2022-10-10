@@ -39,11 +39,31 @@ def add_document_view(request):
 
 
 @api_view(['POST'])
-def add_documents_v2_view(request):
+def add_documents_faiss_view(request):
   """
-    This endpoint will add all documents to Elastic Search
+    This endpoint will add all documents to FAISS
   """
-  res = add_documents_batch(request)
+  res = add_all_documents_faiss(request)
+
+  return Response(res.to_json())
+
+
+@api_view(['POST'])
+def add_documents_es_view(request):
+  """
+    This endpoint will add all documents to FAISS
+  """
+  res = add_all_documents_elastic_search(request)
+
+  return Response(res.to_json())
+
+
+@api_view(['GET'])
+def query_doc_counts_view(request):
+  """
+    This endpoint will add all documents to FAISS
+  """
+  res = query_doc_counts(request)
 
   return Response(res.to_json())
 
