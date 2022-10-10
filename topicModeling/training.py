@@ -16,7 +16,6 @@ from sklearn.preprocessing import normalize
 from scipy.special import softmax
 import hnswlib
 from sentence_transformers import SentenceTransformer
-import logging
 from logtail import LogtailHandler
 
 

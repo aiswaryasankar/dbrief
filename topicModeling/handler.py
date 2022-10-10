@@ -11,8 +11,6 @@ from idl import *
 from articleRec import handler as articleRecHandler
 from idl import *
 from .repository import *
-# from bertopic import BERTopic
-# from sklearn.feature_extraction.text import CountVectorizer
 from django.conf import settings
 import os
 import tensorflow_hub as hub
@@ -22,8 +20,9 @@ from haystack.document_stores import ElasticsearchDocumentStore, FAISSDocumentSt
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
-logger.handlers = [handler]
+logger.handlers = []
 logger.setLevel(logging.INFO)
+logger.addHandler(handler)
 
 embeddingModelPath = "./modelWeights/tfhub_cache"
 if settings.TESTING:
@@ -395,8 +394,9 @@ def query_documents(queryDocumentsRequest):
   if queryDocumentsFaissRes.error != None:
     logger.warn("Failed to query documents through FAISS: " + str(queryDocumentsFaissRes.error))
   else:
+    faiss_urls = [doc.meta['url'] for doc in queryDocumentsFaissRes.candidate_documents]
     logger.info("Documents returned FAISS")
-    logger.info([doc.meta['url'] for doc in queryDocumentsFaissRes.candidate_documents])
+    logger.info(faiss_urls)
 
   # Query docs from Elastic Search and log results for eval
   queryDocumentsElasticSearchRes = query_documents_elastic_search(
@@ -408,14 +408,18 @@ def query_documents(queryDocumentsRequest):
   if queryDocumentsElasticSearchRes.error != None:
     logger.warn("Failed to query documents through Elastic Search: " + str(queryDocumentsElasticSearchRes.error))
   else:
+    es_urls = [doc.meta['url'] for doc in queryDocumentsElasticSearchRes.candidate_documents]
     logger.info("Documents returned Elastic Search")
     logger.info("documents: " + str(queryDocumentsElasticSearchRes.candidate_documents))
-    logger.info([doc.meta['url'] for doc in queryDocumentsElasticSearchRes.candidate_documents])
+    logger.info(es_urls)
 
   # Create thread to compute the ROUGE, tf-idf and overlap scores btwn the 3 different indices
   # Log statement with all of the scores
 
   return QueryDocumentsResponse(
+    elastic_search_urls = es_urls,
+    faiss_urls = faiss_urls,
+    hnswlib_urls = [],
     doc_scores=[float(score) for score in doc_scores],
     doc_ids=[float(doc_id) for doc_id in doc_ids],
     error=None,
