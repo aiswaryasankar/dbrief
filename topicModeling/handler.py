@@ -388,7 +388,7 @@ def query_doc_counts(request):
 
   # Fetch all docs from FAISS
   faiss_docs = query_all_documents_faiss()
-  numFAISS = len(faiss_docs)
+  numFAISS =  faiss_docs
 
   # Report all counts
   logger.info("Number of articles mysql: " + str(numMysql))
@@ -504,7 +504,7 @@ def query_all_documents_faiss():
     document_store = FAISSDocumentStore.load(index_path="./modelWeights/document_store",
                                              config_path="./modelWeights/document_store.json")
 
-  all_docs = document_store.get_all_documents_generator()
+  all_docs = document_store.get_embedding_count()
 
   return all_docs
 
