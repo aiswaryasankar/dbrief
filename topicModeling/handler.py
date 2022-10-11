@@ -16,7 +16,6 @@ import os
 import tensorflow_hub as hub
 from haystack.nodes import BM25Retriever, EmbeddingRetriever
 from haystack.document_stores import ElasticsearchDocumentStore, FAISSDocumentStore
-# BaseElasticsearchDocumentStore
 
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
@@ -484,11 +483,7 @@ def query_all_documents_elastic_search():
     Returns all docs from elastic search.
   """
   document_store = ElasticsearchDocumentStore(host="localhost", username="", password="", index="document")
-  # retriever = BM25Retriever(document_store, custom_query="""
-  #   'query': {
-  #       'match_all' : {}
-  #   }
-  # """)
+
   docCount = document_store.get_document_count()
 
   return docCount
@@ -615,7 +610,12 @@ def index_document_vectors(request):
   """
     This endpoint is responsible for re-indexing the documents after the topic model has been regenerated. In the case of individual articles being added to the topic model, it will be handled through add_document.
   """
-  pass
+  global embedding_model
+  if embedding_model == None:
+    print("Embedding model is none in query documents")
+    embedding_model = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+
+  top2vecModel = Top2Vec.load(topicModelFile)
 
 
 def generate_topic_pairs():
