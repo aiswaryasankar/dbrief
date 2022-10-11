@@ -379,6 +379,9 @@ class QueryDocumentsRequest:
 @dataclass_json
 @dataclass
 class QueryDocumentsResponse:
+  elastic_search_urls: List[str]
+  faiss_urls: List[str]
+  hnswlib_urls: List[str]
   doc_scores: List[int]
   doc_ids: List[int]
   error: Exception
@@ -447,6 +450,14 @@ class GetDocumentTopicBatchResponse:
 @dataclass
 class GenerateTopicPairsResponse:
   topic_pairs: List[TopicInfo]
+
+@dataclass_json
+@dataclass
+class QueryDocCountsResponse:
+  numDocsMysql: int
+  numDocsFAISS: int
+  numDocsHNSWLib: int
+  numDocsES: int
 
 
 ###

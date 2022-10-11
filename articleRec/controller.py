@@ -158,7 +158,7 @@ def populate_articles_batch(populateArticlesBatch):
         'title': article.title,
         'date': article.publish_date,
         'imageURL': article.top_image,
-        'authors': " ".join(article.authors).strip(),
+        'authors': article.authors,
         'topic': None,
         'parentTopic': None,
         'polarizationScore': None,
@@ -240,7 +240,6 @@ def populate_articles_batch(populateArticlesBatch):
   logger.info(res)
 
   return res
-
 
 
 def hydrateModelOutputsForArticle(article, articleId, url, created):
