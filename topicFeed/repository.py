@@ -78,6 +78,9 @@ def fetchTopicPage(fetchTopicPageRequest):
     elif fetchTopicPageRequest.topicPageId != 0:
       topicPageRes = TopicPageModel.objects.get(topicId=fetchTopicPageRequest.topicPageId)
 
+    elif fetchTopicPageRequest.topArticleId != 0:
+      topicPageRes = TopicPageModel.objects.get(topArticleId=fetchTopicPageRequest.topArticleId)
+
     else:
       return FetchTopicPageResponse(
         topic_page=None,
