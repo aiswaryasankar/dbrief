@@ -734,6 +734,7 @@ class SaveTopicPageResponse:
 class FetchTopicPageRequest:
   topic: str
   topicPageId: Optional[int] = 0
+  topArticleId: Optional[int] = 0
 
 @dataclass_json
 @dataclass

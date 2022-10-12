@@ -43,17 +43,18 @@ def getTopicPage(getTopicPageRequest):
       fetchTopicPageRequest=FetchTopicPageRequest(
         topic=getTopicPageRequest.topicName,
         topicPageId=getTopicPageRequest.topicId,
+        topArticleId=getTopicPageRequest.articleId,
       )
     )
   logger.info("Fetch topic page cached: ")
   logger.info(fetchTopicPageByTopicRes)
-  if fetchTopicPageByTopicRes.error == None and fetchTopicPageByTopicRes.topic_page !=  None:
-  #   return GetTopicPageResponse(
-  #     topic_page=fetchTopicPageByTopicRes.topic_page,
-  #     error=None,
-  #   )
-  # else:
+  if fetchTopicPageByTopicRes.error != None and fetchTopicPageByTopicRes.topic_page ==  None:
     logger.warn("Failed to hydrate topic page: " + str(fetchTopicPageByTopicRes.error))
+  else:
+    return GetTopicPageResponse(
+      topic_page = fetchTopicPageByTopicRes.topic_page,
+      error = None,
+    )
 
   startTime = datetime.now()
 
