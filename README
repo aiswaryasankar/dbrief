@@ -16,7 +16,7 @@ Welcome to Dbrief.AI!
 
 
 ## Testing Process
-We currently set up a few different directories for tests including repositories and handlers.  The repository tests check the read / write operations with the database and the view tests make calls directly to the /endpoint and check that it runs with a 200 response.  All databases can be pre populated using a fixtures file which includes dummy data and is loaded into the db prior to running the tests. An example can be found in articleRec/fixtures.  In order to run all of the tests, run ```./manage.py test```. In order to run tests in a particular directory, run ```./manage.py rest topicModeling``` for example.
+We currently set up a few different directories for tests including repositories and handlers.  The repository tests check the read / write operations with the database and the view tests make calls directly to the /endpoint and check that it runs with a 200 response.  All databases can be pre populated using a fixtures file which includes dummy data and is loaded into the db prior to running the tests. An example can be found in articleRec/fixtures.  In order to run all of the tests, run ```./manage.py test```. In order to run tests in a particular directory, run ```./manage.py test topicModeling``` for example.
 
 
 

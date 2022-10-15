@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'homeFeed.apps.HomefeedConfig',
     'newsletter.apps.NewsletterConfig',
     'passageRetrievalModel.apps.PassageretrievalmodelConfig',
+    'newsInfoCard.apps.NewsinfocardConfig',
     'logtail',
     'corsheaders',
 ]
@@ -150,6 +151,12 @@ else:
             'PORT': '3306',
         }
     }
+
+DATABASE_OPTIONS = {
+    'unix_socket' : '/var/lib/mysql/mysql.sock',
+}
+
+DATABASE_HOST = '/var/lib/mysql/mysql.sock'
 
 SQL_MODE ='STRICT_TRANS_TABLES'
 

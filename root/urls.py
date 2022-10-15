@@ -24,6 +24,7 @@ from homeFeed import views as homeFeedView
 from newsletter import views as newsletterView
 from userPreferences import views as userPreferencesView
 from mdsModel import views as mdsView
+from newsInfoCard import views as newsInfoCardView
 
 from django.urls import path
 
@@ -41,6 +42,11 @@ urlpatterns = [
     path('hydrateArticle/', articleRecView.hydrate_article_view),
     path('articleBackfill/', articleRecView.article_backfill_view),
     path('deleteArticles/', articleRecView.delete_articles_view),
+
+    # NewsInfoCard endpoints
+    path('createNewsInfoCard/', newsInfoCardView.create_news_info_card_view),
+    path('createNewsInfoCardBatch/', newsInfoCardView.create_news_info_card_batch_view),
+    path('fetchNewsInfoCardFeed/', newsInfoCardView.fetch_news_info_card_batch_view),
 
     #TopicFeed endpoints
     path('getTopicPage/', topicFeedView.get_topic_page_view),
