@@ -170,6 +170,11 @@ def fetchNewsInfoCardBatchRepo(fetchNewsInfoCardBatchRequest):
   except Exception as e:
     logger.warn("Failed to fetch news info card batch: " + str(e))
 
+    return FetchNewsInfoCardBatchResponse(
+      newsInfoCards=None,
+      error=e,
+    )
+
   return FetchNewsInfoCardBatchResponse(
     newsInfoCards=newsInfoCards,
     error=None,

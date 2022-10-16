@@ -20,6 +20,7 @@ from passageRetrievalModel import handler as passageRetrievalHandler
 import multiprocessing as mp
 from datetime import datetime
 from newspaper.utils import BeautifulSoup
+from newsInfoCard import handler as newsInfoCardHandler
 import threading
 from multiprocessing.pool import ThreadPool
 import re
@@ -122,7 +123,7 @@ def populate_articles_batch(populateArticlesBatch):
     This will hydrate all the articles in batch.
   """
   logger.info("In populate articles batch")
-  articleIds, articles = [], []
+  articleIds, articlesText, articles = [], [], []
   num_duplicates = 0
 
   documents = []
@@ -176,7 +177,8 @@ def populate_articles_batch(populateArticlesBatch):
       d['meta']['id'] = saveArticleResponse.id
       documents.append(d)
       articleIds.append(saveArticleResponse.id)
-      articles.append(article.text)
+      articlesText.append(article.text)
+      articles.append(article)
 
   logger.info("Number of articles to populate: " + str(len(articleIds)))
 
@@ -211,6 +213,14 @@ def populate_articles_batch(populateArticlesBatch):
   #   logger.warn("Failed to add docs to elastic search")
   #   logger.warn(addDocumentsElasticSearchResponse.error)
   #   return PopulateArticlesResponse(num_articles_populated=0, num_duplicates=0, num_errors=len(articleIds))
+
+  # thread to create the news info cards
+  createNewsInfoCards = threading.Thread(target=newsInfoCardHandler.createNewsInfoCardBatch(
+    CreateNewsInfoCardBatchRequest(
+      articleList=articles
+    )
+  ))
+  createNewsInfoCards.start()
 
   # thread to hydrate model calls for articles
   articleBackfill = threading.Thread(target=article_backfill_controller, args=(
@@ -550,17 +560,6 @@ def article_backfill_controller(articleBackfillRequest):
   logger.info("Articles to update %s", len(articlesToUpdate))
 
   return backfill(articleBackfillRequest.fields, articlesToUpdate)
-  # x = threading.Thread(target=backfill, args=(
-  #       articleBackfillRequest.fields,
-  #       articlesToUpdate,
-  #     )
-  #   )
-  # x.start()
-
-  # return ArticleBackfillResponse(
-  #   num_updates=len(articlesToUpdate),
-  #   error=None,
-  # )
 
 
 def backfill(fields, articlesToUpdate):
