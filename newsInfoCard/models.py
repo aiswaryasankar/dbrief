@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 """
   All data models for the newsInfoCard service including the NewsInfoCard and the OpinionCard.
@@ -21,6 +22,7 @@ class NewsInfoCardModel (models.Model):
   rightOpinionCardUUID = models.CharField("RightOpinionCardUUID", max_length=36, null=True)
   articleUrlList = models.TextField("ArticleUrlList", null=True)
   articleTitleList = models.TextField("ArticleTitleList", null=True)
+  createdAt = models.TextField("CreatedAt", default=datetime.now)
 
   class Meta:
     app_label = "newsInfoCard"
@@ -30,6 +32,7 @@ class NewsInfoCardModel (models.Model):
 
 
 class OpinionCardModel (models.Model):
+
   id = models.AutoField(primary_key=True)
   uuid = models.CharField("UUID", unique=True, max_length=36)
   summary = models.TextField("Summary", null=True)

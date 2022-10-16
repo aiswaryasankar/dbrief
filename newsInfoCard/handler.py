@@ -229,8 +229,25 @@ def fetchNewsInfoCardBatch(fetchNewsInfoCardBatchRequest):
   """
     Fetch a batch of news info cards.
   """
-  # TODO: implement
-  pass
+  # Fetch all news info cards ordered by date according to the offset and limit
+  fetchNewsInfoCardsBatchRes = fetchNewsInfoCardBatchRepo(
+    FetchNewsInfoCardBatchRequest(
+      offset = fetchNewsInfoCardBatchRequest.offset,
+      pageSize = fetchNewsInfoCardBatchRequest.pageSize,
+    )
+  )
+  if fetchNewsInfoCardsBatchRes.error != None:
+    return FetchNewsInfoCardBatchResponse(
+      newsInfoCards=None,
+      error = fetchNewsInfoCardsBatchRes.error
+    )
+
+  return FetchNewsInfoCardBatchResponse(
+    newsInfoCards=fetchNewsInfoCardsBatchRes.newsInfoCards,
+    error=None
+  )
+
+
 
 
 

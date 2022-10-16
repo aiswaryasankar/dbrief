@@ -980,8 +980,8 @@ class QueryNewsletterConfigResponse:
 class OpinionCard:
   uuid: str
   summary: str
-  articleList: Optional[List[Article]] = field(default_factory=list)
-
+  articleURLList: Optional[List[str]] = field(default_factory=list)
+  articleTitleList: Optional[List[str]] = field(default_factory=list)
 
 @dataclass
 class NewsInfoCard:
@@ -1057,8 +1057,13 @@ class FetchNewsInfoCardBatchResponse:
   newsInfoCards: List[NewsInfoCard]
   error: Exception
 
+@dataclass
+class FetchOpinionCardRequest:
+  opinionCardUUID: str
 
-
-
-
+@dataclass_json
+@dataclass
+class FetchOpinionCardResponse:
+  opinionCard: OpinionCard
+  error: Exception
 
