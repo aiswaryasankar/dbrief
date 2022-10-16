@@ -90,7 +90,8 @@ def createNewsInfoCard(createNewsInfoCardRequest):
   # Create the right opinion card
   rightOpinionCardResponse = createOpinionCard(
     CreateOpinionCardRequest(
-      articleList = rightArticles
+      articleList = rightArticles,
+      polarity = 1,
     )
   )
   if rightOpinionCardResponse.error != None:
@@ -123,10 +124,10 @@ def createNewsInfoCard(createNewsInfoCardRequest):
       topic = article.topic,
       source = article.source,
       is_political = True,
-      leftOpinionCardUUID = leftOpinionCardUUID,
-      rightOpinionCardUUID = rightOpinionCardUUID,
-      articleUrlList = "",
-      articleTitleList = "",
+      left_opinion_card_UUID = leftOpinionCardUUID,
+      right_opinion_card_UUID = rightOpinionCardUUID,
+      article_url_list = "",
+      article_title_list = "",
     )
   )
   if createNewsInfoCardRes.error != None:
