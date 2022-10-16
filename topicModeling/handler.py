@@ -541,6 +541,9 @@ def query_documents(queryDocumentsRequest):
     return QueryDocumentsResponse(
       doc_scores=doc_scores,
       doc_ids=doc_ids,
+      elastic_search_urls=[],
+      faiss_urls=[],
+      hnswlib_urls=[],
       error=ValueError("No documents returned by search"),
     )
 

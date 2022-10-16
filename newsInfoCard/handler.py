@@ -5,6 +5,7 @@
 import logging
 from articleRec import handler as articleRecHandler
 from mdsModel import handler as mdsHandler
+from topicFeed import handler as topicFeedHandler
 from .repository import *
 from topicModeling import handler as tpHandler
 from mdsModel.handler import *
@@ -61,7 +62,11 @@ def createNewsInfoCard(createNewsInfoCardRequest):
   # Query for related articles
   queryArticlesResponse = tpHandler.query_documents(
     QueryDocumentsRequest(
-      article.text
+      query=article.text,
+      num_docs=8,
+      use_index=True,
+      ef=200,
+      return_docs=False,
     )
   )
   if queryArticlesResponse.error != None:
@@ -83,8 +88,8 @@ def createNewsInfoCard(createNewsInfoCardRequest):
     )
 
   articles = fetchArticlesResponse.articleList
-  leftArticles = [article for article in articles if article.polarization_score < .5]
-  rightArticles = [article for article in articles if article.polarization_score >= .5]
+  leftArticles = [article for article in articles if article.polarizationScore < .5]
+  rightArticles = [article for article in articles if article.polarizationScore >= .5]
   rightOpinionCardUUID, leftOpinionCardUUID = 0, 0
 
   # Create the right opinion card
@@ -97,7 +102,7 @@ def createNewsInfoCard(createNewsInfoCardRequest):
   if rightOpinionCardResponse.error != None:
     logger.warn("Failed to create right opinion card")
   else:
-    rightOpinionCardUUID = rightOpinionCardResponse.OpinionCard.UUID
+    rightOpinionCardUUID = rightOpinionCardResponse.opinionCard.uuid
 
   # Create the left opinion card
   leftOpinionCardResponse = createOpinionCard(
@@ -109,20 +114,23 @@ def createNewsInfoCard(createNewsInfoCardRequest):
   if leftOpinionCardResponse.error != None:
     logger.warn("Failed to create left opinion card")
   else:
-    leftOpinionCardUUID = leftOpinionCardResponse.OpinionCard.UUID
+    leftOpinionCardUUID = leftOpinionCardResponse.opinionCard.uuid
 
   # Save the news info card
   # TODO: handle the non political news info card flow
+  # TODO: add summarization to articleModel
+  source = topicFeedHandler.parseSource(article.url)
+
   createNewsInfoCardRes = createNewsInfoCardRepo(
     CreateNewsInfoCardRepoRequest(
       url = article.url,
       title = article.title,
-      summary = article.summary,
-      author = article.author,
-      date = article.date,
+      summary = article.text,
+      author = article.authors,
+      publish_date = article.date,
       image = article.imageURL,
       topic = article.topic,
-      source = article.source,
+      source = source,
       is_political = True,
       left_opinion_card_UUID = leftOpinionCardUUID,
       right_opinion_card_UUID = rightOpinionCardUUID,
@@ -174,7 +182,7 @@ def createOpinionCard(createOpinionCardRequest):
     return createOpinionCardRes
 
   return CreateOpinionCardResponse(
-    opinionCard = createOpinionCardRes.OpinionCard,
+    opinionCard = createOpinionCardRes.opinionCard,
     error = None
   )
 

@@ -78,7 +78,7 @@ class Article:
   parentTopic: Optional[str] = ""
   text: Optional[str] = ""
   title: Optional[str] = ""
-  date: Optional[time.time] = ""
+  date: Optional[str] = ""
   imageURL: Optional[str] = ""
   polarizationScore: Optional[float] = 0.0
   topPassage: Optional[str]= ""
@@ -997,7 +997,7 @@ class NewsInfoCard:
 @dataclass
 class CreateNewsInfoCardRequest:
   article: Optional[Article]
-  articleURL: Optional[str]
+  articleURL: Optional[str] = ''
 
 
 @dataclass_json
@@ -1035,15 +1035,15 @@ class CreateNewsInfoCardBatchResponse:
 
 @dataclass
 class CreateOpinionCardRequest:
-  polarity = bool
-  articleList = List[Article]
-  summary = str
+  polarity : bool
+  articleList : List[Article]
+  summary : Optional[str] = ""
 
 @dataclass_json
 @dataclass
 class CreateOpinionCardResponse:
-  opinionCard = OpinionCard
-  error = Exception
+  opinionCard : OpinionCard
+  error : Exception
 
 @dataclass
 class FetchNewsInfoCardBatchRequest:

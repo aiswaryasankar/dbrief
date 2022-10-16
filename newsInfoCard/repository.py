@@ -28,11 +28,11 @@ def createOpinionCardRepo(createOpinionCardRequest):
   summary = createOpinionCardRequest.summary
   articleTitleList = [article.title for article in createOpinionCardRequest.articleList]
   articleUrlList = [article.url for article in createOpinionCardRequest.articleList]
-  uuid = str(uuid.uuid1())
+  opinionCardUUID = str(uuid.uuid1())
 
   try:
-    opinionCard, created = NewsInfoCardModel.objects.update_or_create(
-      uuid = uuid,
+    opinionCard, created = OpinionCardModel.objects.update_or_create(
+      uuid = opinionCardUUID,
       defaults={
         'summary': summary,
         'articleTitleList': articleTitleList,
@@ -45,7 +45,7 @@ def createOpinionCardRepo(createOpinionCardRequest):
   except Exception as e:
     logger.warn("Failed to save opinion card to the database: " + str(e))
 
-    return CreateOpinionCardResponse(opinionCard=opinionCard, error=e)
+    return CreateOpinionCardResponse(opinionCard=None, error=e)
 
   return CreateOpinionCardResponse(opinionCard=opinionCard, error=None)
 
@@ -66,10 +66,10 @@ def createNewsInfoCardRepo(createNewsInfoCardRepoRequest):
   source = createNewsInfoCardRepoRequest.source
   is_political = createNewsInfoCardRepoRequest.is_political
   topic = createNewsInfoCardRepoRequest.topic
-  leftOpinionCardUUID = createNewsInfoCardRepoRequest.leftOpinionCardUUID
-  rightOpinionCardUUID = createNewsInfoCardRepoRequest.rightOpinionCardUUID
-  articleUrlList = createNewsInfoCardRepoRequest.articleUrlList
-  articleTitleList = createNewsInfoCardRepoRequest.articleTitleList
+  leftOpinionCardUUID = createNewsInfoCardRepoRequest.left_opinion_card_UUID
+  rightOpinionCardUUID = createNewsInfoCardRepoRequest.right_opinion_card_UUID
+  articleUrlList = createNewsInfoCardRepoRequest.article_url_list
+  articleTitleList = createNewsInfoCardRepoRequest.article_title_list
 
 
   try:
@@ -97,7 +97,7 @@ def createNewsInfoCardRepo(createNewsInfoCardRepoRequest):
   except Exception as e:
     logger.warn("Failed to save news info card to the database: " + str(e))
 
-    return CreateNewsInfoCardResponse(newsInfoCard=newsInfoCard, error=e)
+    return CreateNewsInfoCardResponse(newsInfoCard=None, error=e)
 
   return CreateNewsInfoCardResponse(newsInfoCard=newsInfoCard, error=None)
 
