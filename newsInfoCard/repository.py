@@ -176,3 +176,4 @@ def fetchNewsInfoCardBatchRepo(fetchNewsInfoCardBatchRequest):
   )
 
 
+
