@@ -60,6 +60,8 @@ def fetchOpinionCardRepo(fetchOpinionCardRequest):
 
   try:
       opinionCardRes = OpinionCardModel.objects.get(uuid=opinionCardUUID)
+      logger.info("OPINION CARD RES")
+      logger.info(opinionCardRes)
       opinionCardEntity = OpinionCardModelToEntity(opinionCardRes)
 
   except Exception as e:
@@ -160,13 +162,13 @@ def fetchNewsInfoCardBatchRepo(fetchNewsInfoCardBatchRequest):
         isPolitical= infoCard.is_political,
         leftOpinionCard= leftOpinionCard,
         rightOpinionCard= rightOpinionCard,
-        articleList= infoCard.articleList,
+        articleList= [],
       )
 
       newsInfoCards.append(newsInfoCard)
 
   except Exception as e:
-    logger.warn("Failed to fetch news info card batch")
+    logger.warn("Failed to fetch news info card batch: " + str(e))
 
   return FetchNewsInfoCardBatchResponse(
     newsInfoCards=newsInfoCards,

@@ -19,11 +19,16 @@ def OpinionCardModelToEntity(opinionCardModel):
   """
     Will convert an opinion card db model to an internal/ external Opinion Card entity
   """
-  opinionCard = OpinionCard(
-    uuid = opinionCardModel.uuid,
-    summary = opinionCardModel.summary,
-    articleURLList = opinionCardModel.articleURLList,
-    articleTitleList = opinionCardModel.articleTitleList,
-  )
+  try:
+    opinionCard = OpinionCard(
+      uuid = opinionCardModel.uuid,
+      summary = opinionCardModel.summary,
+      articleURLList = opinionCardModel.articleUrlList,
+      articleTitleList = opinionCardModel.articleTitleList,
+    )
+  except Exception as e:
+    logger.warn("Failed to map opinion card: " + str(e))
+    return None, e
 
-  return opinionCard
+  return opinionCard, None
+
