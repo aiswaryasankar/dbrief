@@ -78,6 +78,21 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
 
   articleParagraphs = process_paragraph(paragraphs)
 
+  if len(articleParagraphs) == 0 or len(articleParagraphs[0]) < 100:
+    logger.warn("No paragraphs for summary")
+    return GetMDSSummaryAndTitleResponse(
+      summary="",
+      title="",
+      error= None,
+    )
+
+  if len(paragraphs) <= 1:
+    return GetMDSSummaryAndTitleResponse(
+      summary=paragraphs[0],
+      title="",
+      error= None,
+    )
+
   embeddedParagraphs = []
   for para in articleParagraphs:
     if para != '':
@@ -86,7 +101,10 @@ def get_mds_summary_v3_handler(getMDSSummaryRequest):
 
   # Create a matrix of facts and compute the dot product between the matrices
   dot_products = np.dot(embeddedParagraphs, embeddedParagraphs.T)
-  dot_product_sum = sum(dot_products)
+  if len(dot_products) > 1:
+    dot_product_sum = sum(dot_products)
+  else:
+    dot_product_sum = dot_products[0]
 
   # Take the indices of the top 10 passages so far
   topParagraphIndices = np.argpartition(dot_product_sum, -1)[-10:]

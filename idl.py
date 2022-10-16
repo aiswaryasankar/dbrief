@@ -78,7 +78,7 @@ class Article:
   parentTopic: Optional[str] = ""
   text: Optional[str] = ""
   title: Optional[str] = ""
-  date: Optional[time.time] = ""
+  date: Optional[str] = ""
   imageURL: Optional[str] = ""
   polarizationScore: Optional[float] = 0.0
   topPassage: Optional[str]= ""
@@ -966,6 +966,98 @@ class QueryNewsletterConfigRequest:
 class QueryNewsletterConfigResponse:
   newsletterConfigs: List[NewsletterConfigV1]
   error: Exception
+
+
+
+###
+#
+# NewsInfoCard
+#
+###
+
+
+@dataclass
+class OpinionCard:
+  uuid: str
+  summary: str
+  articleList: Optional[List[Article]] = field(default_factory=list)
+
+
+@dataclass
+class NewsInfoCard:
+  uuid: str
+  title: str
+  summary: str
+  isPolitical: bool
+  leftOpinionCard: Optional[OpinionCard]
+  rightOpinionCard: Optional[OpinionCard]
+  articleList: Optional[List[Article]] = field(default_factory=list)
+
+
+@dataclass
+class CreateNewsInfoCardRequest:
+  article: Optional[Article]
+  articleURL: Optional[str] = ''
+
+
+@dataclass_json
+@dataclass
+class CreateNewsInfoCardResponse:
+  newsInfoCard: NewsInfoCard
+  error: Exception
+
+@dataclass
+class CreateNewsInfoCardRepoRequest:
+  url : Optional[str]
+  title : Optional[str]
+  summary : Optional[str]
+  image : Optional[str]
+  source : Optional[str]
+  publish_date : Optional[time.time]
+  author : Optional[str]
+  is_political : Optional[bool]
+  topic : Optional[str]
+  left_opinion_card_UUID : Optional[str]
+  right_opinion_card_UUID : Optional[str]
+  article_url_list : Optional[str]
+  article_title_list : Optional[str]
+
+
+@dataclass
+class CreateNewsInfoCardBatchRequest:
+  articleURLs: List[str]
+
+@dataclass_json
+@dataclass
+class CreateNewsInfoCardBatchResponse:
+  newsInfoCards: List[NewsInfoCard]
+  error: Exception
+
+@dataclass
+class CreateOpinionCardRequest:
+  polarity : bool
+  articleList : List[Article]
+  summary : Optional[str] = ""
+
+@dataclass_json
+@dataclass
+class CreateOpinionCardResponse:
+  opinionCard : OpinionCard
+  error : Exception
+
+@dataclass
+class FetchNewsInfoCardBatchRequest:
+  offset: int
+  pageSize: int
+
+@dataclass_json
+@dataclass
+class FetchNewsInfoCardBatchResponse:
+  newsInfoCards: List[NewsInfoCard]
+  error: Exception
+
+
+
 
 
 
