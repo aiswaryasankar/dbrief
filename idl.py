@@ -1017,10 +1017,10 @@ class CreateNewsInfoCardRepoRequest:
   author : Optional[str]
   is_political : Optional[bool]
   topic : Optional[str]
-  leftOpinionCardUUID : Optional[str]
-  rightOpinionCardUUID : Optional[str]
-  articleUrlList : Optional[str]
-  articleTitleList : Optional[str]
+  left_opinion_card_UUID : Optional[str]
+  right_opinion_card_UUID : Optional[str]
+  article_url_list : Optional[str]
+  article_title_list : Optional[str]
 
 
 @dataclass
