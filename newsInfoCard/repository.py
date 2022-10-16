@@ -1,10 +1,10 @@
-from turtle import right
 from .models import *
 import logging
 from idl import *
 from logtail import LogtailHandler
 from datetime import datetime, timedelta
 import uuid
+from .mapper import *
 
 """
   This file will include all the basic database CRUD operations including:
@@ -49,6 +49,32 @@ def createOpinionCardRepo(createOpinionCardRequest):
 
   return CreateOpinionCardResponse(opinionCard=opinionCard, error=None)
 
+
+
+def fetchOpinionCardRepo(fetchOpinionCardRequest):
+  """
+    Will fetch the appropriate opinion card
+  """
+  opinionCardUUID = fetchOpinionCardRequest.opinionCardUUID
+  opinionCardEntity = None
+
+  try:
+      opinionCardRes = OpinionCardModel.objects.get(uuid=opinionCardUUID)
+      logger.info("OPINION CARD RES")
+      logger.info(opinionCardRes)
+      opinionCardEntity = OpinionCardModelToEntity(opinionCardRes)
+
+  except Exception as e:
+    logger.warn("Failed to fetch opinion card with uuid: " + str(opinionCardUUID))
+    return FetchOpinionCardResponse(
+      opinionCard=None,
+      error=e,
+    )
+
+  return FetchOpinionCardResponse(
+    opinionCard=opinionCardEntity,
+    error=None,
+  )
 
 
 def createNewsInfoCardRepo(createNewsInfoCardRepoRequest):
@@ -103,14 +129,50 @@ def createNewsInfoCardRepo(createNewsInfoCardRepoRequest):
 
 
 
-
-def fetchNewsInfoCardRepo(fetchNewsInfoCardRequest):
+def fetchNewsInfoCardBatchRepo(fetchNewsInfoCardBatchRequest):
   """
-    Fetches a news info card
+    Fetches a news info card and hydrates both opinion cards as well
   """
-  pass
+  offset = fetchNewsInfoCardBatchRequest.offset
+  pageSize = fetchNewsInfoCardBatchRequest.pageSize
+  newsInfoCards = []
 
+  try:
+    newsInfoCardsRes = NewsInfoCardModel.objects.all().order_by('-createdAt')[offset:offset+pageSize]
 
+    for infoCard in newsInfoCardsRes:
 
+      # Hydrate the right and left opinion cards
+      rightOpinionCard = fetchOpinionCardRepo(
+        FetchOpinionCardRequest(
+          opinionCardUUID=infoCard.rightOpinionCardUUID
+        )
+      )
+
+      leftOpinionCard = fetchOpinionCardRepo(
+        FetchOpinionCardRequest(
+          opinionCardUUID=infoCard.leftOpinionCardUUID
+        )
+      )
+
+      newsInfoCard = NewsInfoCard(
+        uuid= infoCard.uuid,
+        title= infoCard.title,
+        summary= infoCard.summary,
+        isPolitical= infoCard.is_political,
+        leftOpinionCard= leftOpinionCard,
+        rightOpinionCard= rightOpinionCard,
+        articleList= [],
+      )
+
+      newsInfoCards.append(newsInfoCard)
+
+  except Exception as e:
+    logger.warn("Failed to fetch news info card batch: " + str(e))
+
+  return FetchNewsInfoCardBatchResponse(
+    newsInfoCards=newsInfoCards,
+    error=None,
+  )
 
 
