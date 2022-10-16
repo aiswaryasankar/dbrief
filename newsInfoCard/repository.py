@@ -4,7 +4,7 @@ from idl import *
 from logtail import LogtailHandler
 from datetime import datetime, timedelta
 import uuid
-from mapper import *
+from .mapper import *
 
 """
   This file will include all the basic database CRUD operations including:
