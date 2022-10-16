@@ -1025,7 +1025,8 @@ class CreateNewsInfoCardRepoRequest:
 
 @dataclass
 class CreateNewsInfoCardBatchRequest:
-  articleURLs: List[str]
+  articleUrls: Optional[List[str]] = field(default_factory=list)
+  articleList: Optional[List[Article]] = field(default_factory=list)
 
 @dataclass_json
 @dataclass

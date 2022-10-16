@@ -192,8 +192,36 @@ def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
   """
     Creates a batch of news info cards.
   """
-  # TODO: implement batch backfill
-  pass
+  newsInfoCards = []
+  # Hydrate a batch of news info cards
+  if len(createNewsInfoCardBatchRequest.articleList) > 0:
+    for article in createNewsInfoCardBatchRequest.articleList:
+      createOpinionCardResponse = createNewsInfoCard(
+        CreateNewsInfoCardRequest(
+          article = article,
+        )
+      )
+      if createOpinionCardResponse.error != None:
+        continue
+      else:
+        newsInfoCards.append(createOpinionCardResponse.newsInfoCard)
+
+  if len(createNewsInfoCardBatchRequest.articleUrls) > 0:
+    for url in createNewsInfoCardBatchRequest.articleUrls:
+      createOpinionCardResponse = createNewsInfoCard(
+        CreateNewsInfoCardRequest(
+          articleURL = url,
+        )
+      )
+      if createOpinionCardResponse.error != None:
+        continue
+      else:
+        newsInfoCards.append(createOpinionCardResponse.newsInfoCard)
+
+  return CreateNewsInfoCardBatchResponse(
+    newsInfoCards=newsInfoCards,
+    error = None,
+  )
 
 
 
