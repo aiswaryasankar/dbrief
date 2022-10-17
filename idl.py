@@ -865,6 +865,7 @@ class GetMDSSummaryResponse:
 @dataclass
 class GetMDSSummaryAndTitleRequest:
   articles: str
+  include_title: Optional[bool] = True
 
 
 @dataclass_json

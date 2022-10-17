@@ -159,8 +159,9 @@ def createOpinionCard(createOpinionCardRequest):
 
   # Generate a summary from all of the articles
   getMDSSummaryResponseV2 = mdsHandler.get_mds_summary_v3_handler(
-      GetMDSSummaryRequest(
-        articles=articles
+      GetMDSSummaryAndTitleRequest(
+        articles=articles,
+        include_title=False,
       )
     )
   if getMDSSummaryResponseV2.error != None:

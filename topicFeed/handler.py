@@ -298,8 +298,9 @@ def getTopicPage(getTopicPageRequest):
   beforeMDSV2 = datetime.now()
   if getTopicPageRequest.savePage:
     getMDSSummaryResponseV2 = get_mds_summary_v3_handler(
-      GetMDSSummaryRequest(
-        articles=articles
+      GetMDSSummaryAndTitleRequest(
+        articles=articles,
+        include_title=True,
       )
     )
     title = getMDSSummaryResponseV2.title
