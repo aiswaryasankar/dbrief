@@ -11,7 +11,7 @@ from idl import *
 @api_view(['POST'])
 def create_organization_view(request):
   """
-    Creates an organzation
+    Creates an organization
   """
   req = CreateOrganizationRequestSerializer(data=request.data)
 
@@ -29,13 +29,13 @@ def generate_recommended_orgs_for_news_info_card_view(request):
   """
     Generate recommended orgs for a news info card
   """
-  req = GenerateRecommendedOrgsForNewsInfoCardSerializer(data=request.data)
+  req = GenerateRecommendedOrgsForNewsInfoCardRequestSerializer(data=request.data)
 
   if not req.is_valid():
     return JsonResponse(req.errors)
 
-  createNewsInfoCardRequest = req.validated_data
-  res = createNewsInfoCard(createNewsInfoCardRequest)
+  generateRecommendedOrgsForNewsInfoCardRequest = req.validated_data
+  res = generateRecommendedOrgsForNewsInfoCard(generateRecommendedOrgsForNewsInfoCardRequest)
 
   return Response(res.to_json())
 

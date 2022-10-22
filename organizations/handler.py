@@ -1,5 +1,5 @@
 """
-  This service is primarily responsible for creating the NewsInfo cards.
+  This service is primarily responsible for creating new organizations.
 """
 
 import logging
@@ -61,4 +61,14 @@ def createOrganization(createOrganizationRequest):
 
   else:
     return CreateOrganizationResponse
+
+
+def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest):
+  """
+    Generates recommended orgs for each news info card
+  """
+  pass
+
+
+
 
