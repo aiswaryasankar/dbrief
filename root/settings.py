@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'newsletter.apps.NewsletterConfig',
     'passageRetrievalModel.apps.PassageretrievalmodelConfig',
     'newsInfoCard.apps.NewsinfocardConfig',
+    'organizations.apps.OrganizationsConfig',
     'logtail',
     'corsheaders',
 ]
