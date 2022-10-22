@@ -48,6 +48,10 @@ urlpatterns = [
     path('createNewsInfoCardBatch/', newsInfoCardView.create_news_info_card_batch_view),
     path('fetchNewsInfoCardFeed/', newsInfoCardView.fetch_news_info_card_batch_view),
 
+    # Organization endpoints
+    path('createOrganization/', organizationView.create_organization_view),
+    path('generateRecommendedOrgsForNewsInfoCard/', organizationView.generate_recommended_orgs_for_news_info_card_view)
+
     #TopicFeed endpoints
     path('getTopicPage/', topicFeedView.get_topic_page_view),
     path('whatsHappening/', topicFeedView.whats_happening_view),

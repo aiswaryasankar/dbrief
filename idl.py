@@ -1068,3 +1068,64 @@ class FetchOpinionCardResponse:
   opinionCard: OpinionCard
   error: Exception
 
+
+###############
+#
+#  Organizations
+#
+###############
+
+@dataclass
+class Organization:
+  name: str
+  image: str
+  backgroundImage: str
+  link: str
+  description: str
+  locationUUID: str
+
+
+@dataclass
+class Location:
+  name: str
+  street: str
+  city: str
+  state: str
+  zip: int
+  country: str
+
+
+@dataclass
+class CreateOrganizationRequest:
+  name: str
+  description: str
+  image: str
+  backgroundImage: str
+  location: str
+  url: str
+
+
+@dataclass_json
+@dataclass
+class CreateOrganizationResponse:
+  organizationUUID: str
+  error: Exception
+  organization: Optional[Organization] = None
+
+
+@dataclass
+class GenerateRecommendedOrgsForNewsInfoCardRequest:
+  newsInfoCardUUID: Optional[str] = ""
+  newsInfoCard: Optional[NewsInfoCard] = None
+
+@dataclass_json
+@dataclass
+class GenerateRecommendedOrgsForNewsInfoCardResponse:
+  orgList: List[Organization]
+  error: Exception
+
+
+
+
+
+
