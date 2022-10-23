@@ -48,8 +48,50 @@ def createOrganization(createOrganizationRequest):
       error="Organization is missing a location"
     )
 
+  # Check if the location exists already, if not create a new location
+  location = None
+  locationRes = fetchLocationRepo(
+    FetchLocationRequest = FetchLocationRequest(
+      name=createOrganizationRequest.Location.name,
+      street = createOrganizationRequest.Location.street,
+      city = createOrganizationRequest.Location.city
+    )
+  )
+  if locationRes.error != None:
+    logger.info("Failed to fetch location at: " + str(createOrganizationRequest.Location.street) + ", " + str(createOrganizationRequest.Location.city))
+
+    # Create new location
+    createLocationRes = createLocationRepo(
+      CreateLocationRequest = CreateLocationRequest(
+        name=createOrganizationRequest.Location.name,
+        street=createOrganizationRequest.Location.street,
+        city=createOrganizationRequest.Location.city,
+        state=createOrganizationRequest.Location.state,
+        zip = createOrganizationRequest.Location.zip,
+        country = createOrganizationRequest.Location.country,
+      )
+    )
+    if createLocationRes.error != None:
+      return CreateOrganizationResponse(
+        organizationUUID=None,
+        organization=None,
+        error=createLocationRes.error
+      )
+    location = createLocationRes.Location
+
+  else:
+    location = locationRes.Location
+
+
   createOrganizationRes = createOrganizationRepo(
-    CreateOrganizationRequest=createOrganizationRequest
+    CreateOrganizationRequest=CreateOrganizationRequest(
+      name=createOrganizationRequest.name,
+      description=createOrganizationRequest.description,
+      image=createOrganizationRequest.image,
+      backgroundImage=createOrganizationRequest.backgroundImage,
+      location=location,
+      url=createOrganizationRequest.url,
+    )
   )
 
   if createOrganizationRes.error != None:

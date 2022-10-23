@@ -1101,7 +1101,7 @@ class CreateOrganizationRequest:
   description: str
   image: str
   backgroundImage: str
-  location: str
+  location: Location
   url: str
 
 
@@ -1125,7 +1125,35 @@ class GenerateRecommendedOrgsForNewsInfoCardResponse:
   error: Exception
 
 
+@dataclass
+class CreateLocationRequest:
+  name: str
+  street: str
+  city: str
+  state: str
+  zip: int
+  country: str
 
 
+@dataclass_json
+@dataclass
+class CreateLocationResponse:
+  uuid: str
+  location: Location
+  error: Exception
 
+
+@dataclass
+class FetchLocationRequest:
+  name: Optional[str] = ""
+  street: Optional[str] = ""
+  city: Optional[str] = ""
+
+
+@dataclass_json
+@dataclass
+class FetchLocationResponse:
+  uuid: str
+  location: Location
+  error: Exception
 
