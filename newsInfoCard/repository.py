@@ -181,3 +181,29 @@ def fetchNewsInfoCardBatchRepo(fetchNewsInfoCardBatchRequest):
   )
 
 
+def setUserEngagementForNewsInfoCardRepo(setEngagementForNewsInfoCardRequest):
+  """
+    Will save user engagement for news info card
+  """
+
+  interactionUUID = str(uuid.uuid1())
+
+  try:
+    interaction, created = UserNewsInfoCardInteractionModel.objects.update_or_create(
+      uuid = interactionUUID,
+      defaults={
+        'newsInfoCardUUID': setEngagementForNewsInfoCardRequest.newsInfoCardUUID,
+        'userUUID': setEngagementForNewsInfoCardRequest.userUUID,
+        'interaction': setEngagementForNewsInfoCardRequest.engagementType,
+      },
+    )
+    if created:
+      logger.info('Saved user interaction')
+
+  except Exception as e:
+    logger.warn("Failed to save user interaction to the database: " + str(e))
+
+    return SetUserEngagementForNewsInfoCardResponse(error=e)
+
+  return SetUserEngagementForNewsInfoCardResponse(error=None)
+

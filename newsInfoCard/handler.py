@@ -256,6 +256,15 @@ def fetchNewsInfoCardBatch(fetchNewsInfoCardBatchRequest):
     error=None
   )
 
+def setUserEngagementForNewsInfoCard(setUserEngagementForNewsInfoCardRequest):
+  """
+    Set user engagement for news info card.
+  """
+
+  return setUserEngagementForNewsInfoCardRepo(
+    SetUserEngagementForNewsInfoCardRequest=setUserEngagementForNewsInfoCardRequest
+  )
+
 
 
 

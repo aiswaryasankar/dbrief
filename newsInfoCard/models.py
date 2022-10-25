@@ -45,3 +45,19 @@ class OpinionCardModel (models.Model):
   def __str__(self):
     return self.uuid
 
+
+class UserNewsInfoCardInteractionModel (models.Model):
+
+  id = models.AutoField(primary_key = True)
+  uuid = models.CharField("UUID", unique=True, max_length=36)
+  newsInfoCardUUID = models.CharField("NewsInfoCardUUID", max_length=36)
+  interaction = models.TextField("Interaction", null=True)
+
+  class Meta:
+    app_label = "newsInfoCard"
+
+  def __str__(self):
+    return self.uuid
+
+
+

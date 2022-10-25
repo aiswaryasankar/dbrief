@@ -47,6 +47,7 @@ urlpatterns = [
     path('createNewsInfoCard/', newsInfoCardView.create_news_info_card_view),
     path('createNewsInfoCardBatch/', newsInfoCardView.create_news_info_card_batch_view),
     path('fetchNewsInfoCardFeed/', newsInfoCardView.fetch_news_info_card_batch_view),
+    path('setUserEngagementForNewsInfoCard/', newsInfoCardView.set_user_engagement_for_news_info_card_view),
 
     # Organization endpoints
     path('createOrganization/', organizationView.create_organization_view),
