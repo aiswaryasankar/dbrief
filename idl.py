@@ -1157,6 +1157,13 @@ class FetchLocationResponse:
   location: Location
   error: Exception
 
+@dataclass_json
+@dataclass
+class FetchLocationResponse:
+  uuid: str
+  location: Location
+  error: Exception
+
 
 @dataclass
 class SetUserEngagementForNewsInfoCardRequest:
