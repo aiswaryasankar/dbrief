@@ -48,7 +48,6 @@ def createLocationRepo(createLocationRequest):
   return CreateLocationResponse(locationUUID=location.uuid, location=location, error=None)
 
 
-
 def fetchLocationRepo(fetchLocationRequest):
   """
     Will fetch a location from the db given unique key of street
@@ -109,6 +108,119 @@ def createOrganizationRepo(createOrganizationRequest):
     return CreateOrganizationResponse(organizationUUID=None, organization=None, error=e)
 
   return CreateOrganizationResponse(organizationUUID=org.uuid, organization=org, error=None)
+
+
+def fetchOrganizationsRepo(fetchOrganizationsRequest):
+  """
+    Fetch an organization given UUID or a list of causes
+  """
+  orgList = []
+
+  if fetchOrganizationsRequest.uuid != []:
+    try:
+      organizationRes = OrganizationModel.objects.get(uuid=fetchOrganizationsRequest.uuid)
+      org = Organization(
+          uuid=organization.uuid,
+          name=organization.name,
+          description=organization.description,
+          link=organization.url,
+          image=organization.image,
+          backgroundImage= organization.backgroundImage,
+          locationUUID=organization.locationUUID,
+        )
+      orgList.append(org)
+
+    except Exception as e:
+      logger.warn("Failed to fetch organization with uuid: " + str(uuid)  + " error: " + str(e))
+
+  elif fetchOrganizationsRequest.causes != []:
+    try:
+      # Fetch all orgUUIDs that have a cause in the cause list
+      causesRes = OrganizationCausesModel.objects.filter(cause__in=fetchOrganizationsRequest.causes)
+
+      # Fetch orgs corresponding to the UUIDs
+      for org in causesRes:
+        try:
+          organization = OrganizationModel.objects.get(uuid=org.uuid)
+          org = Organization(
+            uuid=organization.uuid,
+            name=organization.name,
+            description=organization.description,
+            link=organization.url,
+            image=organization.image,
+            backgroundImage= organization.backgroundImage,
+            locationUUID=organization.locationUUID,
+          )
+          orgList.append(org)
+
+        except Exception as e:
+          logger.warn("Failed to fetch organizations with uuid: " + str(org.uuid)  + " error: " + str(e))
+
+    except Exception as e:
+      logger.warn("Failed to fetch causes for organization with cause: " + str(fetchOrganizationsRequest.causes)  + " error: " + str(e))
+
+  return FetchAllOrganizationsResponse(
+    orgList=orgList,
+    error=None,
+  )
+
+
+def fetchAllOrganizationsRepo(fetchAllOrganizationsRequest):
+  """
+    Returns a hydrated list of all organizations
+  """
+  allOrgs = []
+
+  for organization in OrganizationModel.objects.all():
+    try:
+      org = Organization(
+          uuid=organization.uuid,
+          name=organization.name,
+          description=organization.description,
+          link=organization.url,
+          image=organization.image,
+          backgroundImage= organization.backgroundImage,
+          locationUUID=organization.locationUUID,
+        )
+
+      allOrgs.append(org)
+
+    except Exception as e:
+      logger.warn("Failed to fetch organization from database")
+      print(e)
+
+  return FetchAllOrganizationsResponse(
+    orgList=allOrgs,
+    error=None,
+  )
+
+
+def createRecommendedOrgsForNewsInfoCardRepo(recommendedOrgsForNewsInfoCardRequest):
+  """
+    Stores the recommended orgs for each news info card
+  """
+  recUuid = str(uuid.uuid1())
+  try:
+    _, created = RecommendedOrgsForNewsInfoCardModel.objects.update_or_create(
+      uuid = recUuid,
+      defaults={
+        'newsInfoCardUUID': recommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID,
+        'organizationUUID': recommendedOrgsForNewsInfoCardRequest.organizationUUID,
+        'rank': recommendedOrgsForNewsInfoCardRequest.rank,
+      },
+    )
+    if created:
+      logger.info('Saved org recommendation')
+
+  except Exception as e:
+    logger.warn("Failed to save recommendation to the database: " + str(e))
+
+    return CreateRecommendedOrgsForNewsInfoCardRepoResponse(error=e)
+
+  return CreateRecommendedOrgsForNewsInfoCardRepoResponse(error=None)
+
+
+
 
 
 

@@ -57,3 +57,20 @@ def fetch_news_info_card_batch_view(request):
 
   return Response(res.to_json())
 
+
+@api_view(['GET'])
+def set_user_engagement_for_news_info_card_view(request):
+  """
+    Set user engagement for news info card
+  """
+
+  req = SetUserEngagementForNewsInfoCardRequestSerializer(data=request.data)
+  if not req.is_valid():
+    return Response(req.errors)
+
+  setUserEngagementForNewsInfoCardRequest = req.validated_data
+
+  res = setUserEngagementForNewsInfoCard(setUserEngagementForNewsInfoCardRequest)
+
+  return Response(res.to_json())
+

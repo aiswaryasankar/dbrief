@@ -40,5 +40,21 @@ def generate_recommended_orgs_for_news_info_card_view(request):
   return Response(res.to_json())
 
 
+@api_view(['POST'])
+def get_recommended_orgs_for_news_info_card_view(request):
+  """
+    Returns a list of the recommended orgs for each news info card
+  """
+  req = GetRecommendedOrgsForNewsInfoCardRequestSerializer(data=request.data)
+
+  if not req.is_valid():
+    return JsonResponse(req.errors)
+
+  getRecommendedOrgsForNewsInfoCardRequest = req.validated_data
+  res = getRecommendedOrgsForNewsInfoCard(getRecommendedOrgsForNewsInfoCardRequest)
+
+  return Response(res.to_json())
+
+
 
 

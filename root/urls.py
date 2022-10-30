@@ -25,6 +25,7 @@ from newsletter import views as newsletterView
 from userPreferences import views as userPreferencesView
 from mdsModel import views as mdsView
 from newsInfoCard import views as newsInfoCardView
+from organizations import views as organizationView
 
 from django.urls import path
 
@@ -47,10 +48,12 @@ urlpatterns = [
     path('createNewsInfoCard/', newsInfoCardView.create_news_info_card_view),
     path('createNewsInfoCardBatch/', newsInfoCardView.create_news_info_card_batch_view),
     path('fetchNewsInfoCardFeed/', newsInfoCardView.fetch_news_info_card_batch_view),
+    path('setUserEngagementForNewsInfoCard/', newsInfoCardView.set_user_engagement_for_news_info_card_view),
 
     # Organization endpoints
     path('createOrganization/', organizationView.create_organization_view),
-    path('generateRecommendedOrgsForNewsInfoCard/', organizationView.generate_recommended_orgs_for_news_info_card_view)
+    path('generateRecommendedOrgsForNewsInfoCard/', organizationView.generate_recommended_orgs_for_news_info_card_view),
+    path('getRecommendedOrgsForNewsInfoCard/', organizationView.get_recommended_orgs_for_news_info_card_view),
 
     #TopicFeed endpoints
     path('getTopicPage/', topicFeedView.get_topic_page_view),

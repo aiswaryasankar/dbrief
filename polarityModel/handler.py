@@ -8,6 +8,12 @@ from .training import *
 from logtail import LogtailHandler
 from topicFeed.handler import *
 import pandas as pd
+import re
+import tensorflow_hub as hub
+import numpy as np
+import logging
+import nltk
+from constants import *
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
@@ -168,4 +174,68 @@ def parsePolarity(url):
     polarity = .6
 
   return polarity
+
+
+def clean_text(text):
+  """
+    This function will go ahead and perform sanity checks on the text to clean it up of known issues - e.g. Advertisement type words.
+  """
+
+  stop_words = ['Advertisement', 'ADVERTISEMENT', 'Read more', 'Read More', "{{description}}", "Close", "CLICK HERE TO GET THE FOX NEWS APP", "Cash4Life", "Share this newsletter", "Sign up", "Sign Me Up", "Enter email address", "Email check failed, please try again", "Your Email Address", "Your Name", "See more", "Listen to this story.", "Save time by listening to our audio articles as you multitask", "OK", "[MUSIC PLAYING]", "Story at a glance", "Show caption", "Hide caption", "Originally broadcast", "You can now listen to FOX news articles!", "FIRST ON FOX", ""]
+
+  num_stop_words = 0
+  num_urls = 0
+  for word in stop_words:
+    text_clean = text.replace(word, "")
+    if text != text_clean:
+      num_stop_words += 1
+
+  clean_text = re.sub(r'http\S+', '', text_clean)
+  clean_text = re.sub(r'\([^)]*\)', '', clean_text)
+
+  if clean_text != text_clean:
+    num_urls += 1
+
+  return clean_text
+
+
+def get_document_cause(getDocumentCauseRequest):
+  """
+    This is an initial model to get the cause of a document.
+  """
+  # Embed the original document text
+  text = getDocumentCauseRequest.query
+
+  # Filter / clean the input text
+  clean_text = clean_text(text)
+
+  # Embed each of the causes
+  embeddingModel = hub.load(module)
+  embeddedCauses = []
+  for cause in causesList:
+    if cause != '':
+      embeddedCauses.append(embeddingModel([cause]))
+  embeddedCauses = np.squeeze(embeddedCauses)
+
+
+  # Compute the similarity score btwn the two
+  embeddedArticle = embeddingModel([clean_text])
+  articleEmbeddingMatrix = [embeddedArticle for i in range(len(causesList))]
+
+
+  # Create a matrix of paragraphs and compute the dot product between the matrices
+  dot_products = np.dot(embeddedCauses, articleEmbeddingMatrix.T)
+
+  # Return the top 3 causes
+  dot_product_sum = sum(dot_products)
+  top_causes_indices = np.argpartition(dot_product_sum, -3)[-3:]
+
+  # Top causes
+  top_causes = [causesList[index] for index in top_causes_indices]
+
+  return GetDocumentCausesResponse(
+    causeList=top_causes,
+    error= None,
+  )
+
 

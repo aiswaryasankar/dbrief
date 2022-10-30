@@ -77,6 +77,51 @@ def fetchOpinionCardRepo(fetchOpinionCardRequest):
   )
 
 
+def fetchNewsInfoCardRepo(fetchNewsInfoCardRequest):
+  """
+    Will fetch the appropriate newsInfoCard
+  """
+  newsInfoCardUUID = fetchNewsInfoCardRequest.newsInfoCardUUID
+  newsInfoCardEntity = None
+
+  try:
+    infoCard = NewsInfoCardModel.objects.get(uuid=newsInfoCardUUID)
+    # Hydrate the right and left opinion cards
+    rightOpinionCard = fetchOpinionCardRepo(
+      FetchOpinionCardRequest(
+        opinionCardUUID=infoCard.rightOpinionCardUUID
+      )
+    )
+
+    leftOpinionCard = fetchOpinionCardRepo(
+      FetchOpinionCardRequest(
+        opinionCardUUID=infoCard.leftOpinionCardUUID
+      )
+    )
+
+    newsInfoCardEntity = NewsInfoCard(
+      uuid= infoCard.uuid,
+      title= infoCard.title,
+      summary= infoCard.summary,
+      isPolitical= infoCard.is_political,
+      leftOpinionCard= leftOpinionCard,
+      rightOpinionCard= rightOpinionCard,
+      articleList= [],
+    )
+
+  except Exception as e:
+    logger.warn("Failed to fetch news info card with uuid: " + str(newsInfoCardUUID))
+    return FetchNewsInfoCardResponse(
+      newsInfoCard=None,
+      error=e,
+    )
+
+  return FetchNewsInfoCardResponse(
+    newsInfoCard=newsInfoCardEntity,
+    error=None,
+  )
+
+
 def createNewsInfoCardRepo(createNewsInfoCardRepoRequest):
   """
     Creates a news info card
@@ -126,7 +171,6 @@ def createNewsInfoCardRepo(createNewsInfoCardRepoRequest):
     return CreateNewsInfoCardResponse(newsInfoCard=None, error=e)
 
   return CreateNewsInfoCardResponse(newsInfoCard=newsInfoCard, error=None)
-
 
 
 def fetchNewsInfoCardBatchRepo(fetchNewsInfoCardBatchRequest):
@@ -180,4 +224,30 @@ def fetchNewsInfoCardBatchRepo(fetchNewsInfoCardBatchRequest):
     error=None,
   )
 
+
+def setUserEngagementForNewsInfoCardRepo(setEngagementForNewsInfoCardRequest):
+  """
+    Will save user engagement for news info card
+  """
+
+  interactionUUID = str(uuid.uuid1())
+
+  try:
+    interaction, created = UserNewsInfoCardInteractionModel.objects.update_or_create(
+      uuid = interactionUUID,
+      defaults={
+        'newsInfoCardUUID': setEngagementForNewsInfoCardRequest.newsInfoCardUUID,
+        'userUUID': setEngagementForNewsInfoCardRequest.userUUID,
+        'interaction': setEngagementForNewsInfoCardRequest.engagementType,
+      },
+    )
+    if created:
+      logger.info('Saved user interaction')
+
+  except Exception as e:
+    logger.warn("Failed to save user interaction to the database: " + str(e))
+
+    return SetUserEngagementForNewsInfoCardResponse(error=e)
+
+  return SetUserEngagementForNewsInfoCardResponse(error=None)
 
