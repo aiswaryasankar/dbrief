@@ -17,3 +17,10 @@ class GenerateRecommendedOrgsForNewsInfoCardRequestSerializer(DataclassSerialize
   parser_classes = JSONParser
   class Meta:
     dataclass = GenerateRecommendedOrgsForNewsInfoCardRequest
+
+
+class GetRecommendedOrgsForNewsInfoCardRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = GenerateRecommendedOrgsForNewsInfoCardRequest
+

@@ -233,6 +233,17 @@ def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
   )
 
 
+def fetchNewsInfoCard(fetchNewsInfoCardRequest):
+  """
+    Fetch a specific news info card by UUID
+  """
+  # Fetch news info card from the repo
+  newsInfoCard = fetchNewsInfoCard(
+    FetchNewsInfoCardRequest(
+      newsInfoCardUUID=fetchNewsInfoCardRequest.newsInfoCardUUID
+    )
+  )
+
 
 def fetchNewsInfoCardBatch(fetchNewsInfoCardBatchRequest):
   """
@@ -255,6 +266,7 @@ def fetchNewsInfoCardBatch(fetchNewsInfoCardBatchRequest):
     newsInfoCards=fetchNewsInfoCardsBatchRes.newsInfoCards,
     error=None
   )
+
 
 def setUserEngagementForNewsInfoCard(setUserEngagementForNewsInfoCardRequest):
   """

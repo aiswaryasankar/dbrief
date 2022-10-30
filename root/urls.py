@@ -53,6 +53,7 @@ urlpatterns = [
     # Organization endpoints
     path('createOrganization/', organizationView.create_organization_view),
     path('generateRecommendedOrgsForNewsInfoCard/', organizationView.generate_recommended_orgs_for_news_info_card_view),
+    path('getRecommendedOrgsForNewsInfoCard/', organizationView.get_recommended_orgs_for_news_info_card_view),
 
     #TopicFeed endpoints
     path('getTopicPage/', topicFeedView.get_topic_page_view),

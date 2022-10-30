@@ -614,6 +614,17 @@ class GetDocumentPolarityBatchResponse:
   articlePolarities: Optional[List[ArticlePolarity]]
   error: Exception
 
+@dataclass
+class GetDocumentCauseRequest:
+  query: Optional[str]
+
+@dataclass_json
+@dataclass
+class GetDocumentCausesResponse:
+  causeList: List[str]
+  error: Exception
+
+
 ###
 #
 # PassageModel
@@ -1059,6 +1070,16 @@ class FetchNewsInfoCardBatchResponse:
   error: Exception
 
 @dataclass
+class FetchNewsInfoCardRequest:
+  newsInfoCardUUID: str
+
+@dataclass_json
+@dataclass
+class FetchNewsInfoCardResponse:
+  newsInfoCard: NewsInfoCard
+  error: Exception
+
+@dataclass
 class FetchOpinionCardRequest:
   opinionCardUUID: str
 
@@ -1083,7 +1104,7 @@ class Organization:
   link: str
   description: str
   locationUUID: str
-
+  uuid: Optional[str] = ""
 
 @dataclass
 class Location:
@@ -1093,6 +1114,49 @@ class Location:
   state: str
   zip: int
   country: str
+
+@dataclass
+class RankedOrganization:
+  organization: Organization
+  rank: int
+
+@dataclass
+class FetchOrgnizationsRequest:
+  uuids: Optional[List[str]] = []
+  causes: Optional[List[str]] = []
+
+@dataclass_json
+@dataclass
+class FetchOrganizationsResponse:
+  orgList: List[Organization]
+  error: Exception
+
+@dataclass
+class FetchAllOrganizationsResponse:
+  orgList: List[Organization]
+  error: Exception
+
+@dataclass
+class RankOrganizationsForNewsInfoCardRequest:
+  orgList: List[Organization]
+  newsInfoCard: NewsInfoCard
+
+@dataclass_json
+@dataclass
+class RankOrganizationsForNewsInfoCardResponse:
+  rankedOrganizations: List[RankedOrganization]
+  error: Exception
+
+@dataclass
+class CreateRecommendedOrgsForNewsInfoCardRepoRequest:
+  newsInfoCardUUID: str
+  organizationUUID: str
+  rank: int
+
+@dataclass_json
+@dataclass
+class CreateRecommendedOrgsForNewsInfoCardRepoResponse:
+  error: Exception
 
 
 @dataclass
@@ -1121,7 +1185,7 @@ class GenerateRecommendedOrgsForNewsInfoCardRequest:
 @dataclass_json
 @dataclass
 class GenerateRecommendedOrgsForNewsInfoCardResponse:
-  orgList: List[Organization]
+  orgList: List[RankedOrganization]
   error: Exception
 
 
