@@ -220,14 +220,19 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   """
 
   # Pull the description for each of the organizations
+  orgList = rankOrganizationsForNewsInfoCardRequest.orgList
+  logger.info("Number of orgs to rank: " + str(len(orgList)))
+
   embeddingModel = hub.load(module)
-  descriptions = [org.description for org in rankOrganizationsForNewsInfoCardRequest.orgList]
+  descriptions = [org.description for org in orgList]
   descriptionEmbed = [embeddingModel([description]) for description in descriptions]
+  logger.info("Description embedding: " + str(descriptionEmbed))
 
   # Compute the similarity with the given newsInfoCard summary
   summaryEmbed = [embeddingModel([rankOrganizationsForNewsInfoCardRequest.newsInfoCard.summary])]
   summaryEmbedMatrix = [summaryEmbed for i in range(len(descriptionEmbed))]
   summaryEmbedMatrix = np.squeeze(summaryEmbedMatrix)
+  logger.info("Summary embedding: " + str(summaryEmbedMatrix))
 
   # Create a matrix of facts and compute the dot product between the matrices
   dot_products = np.dot(descriptionEmbed, summaryEmbedMatrix.T)
@@ -241,7 +246,7 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   logger.info("Top_org_indices: " + str(top_org_indices))
 
   # Top orgs
-  top_orgs = [rankOrganizationsForNewsInfoCardRequest.orgList[index] for index in top_org_indices]
+  top_orgs = [orgList[index] for index in top_org_indices]
   logger.info("Top orgs: " + str(top_orgs))
 
   # Return the ranked list by similarity
