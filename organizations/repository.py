@@ -110,7 +110,7 @@ def fetchOrganizationsRepo(fetchOrganizationsRequest):
   """
   orgList = []
 
-  if fetchOrganizationsRequest.uuid != []:
+  if fetchOrganizationsRequest.uuids != []:
     try:
       organizationRes = OrganizationModel.objects.get(uuid=fetchOrganizationsRequest.uuid)
       org = Organization(

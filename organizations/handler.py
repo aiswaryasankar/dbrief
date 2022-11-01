@@ -162,6 +162,7 @@ def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest
   # Rank the returned list
   allOrgsRes = fetchOrganizationsRepo(
     FetchOrgnizationsRequest(
+      uuids=[],
       causes=causes,
     )
   )
