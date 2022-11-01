@@ -82,9 +82,9 @@ def createOrganizationRepo(createOrganizationRequest):
 
   try:
     org, created = OrganizationModel.objects.update_or_create(
-      uuid = organizationUUID,
+      name = createOrganizationRequest.name,
       defaults={
-        'name': createOrganizationRequest.name,
+        'uuid': organizationUUID,
         'description': createOrganizationRequest.description,
         'image': createOrganizationRequest.image,
         'backgroundImage': createOrganizationRequest.backgroundImage,
