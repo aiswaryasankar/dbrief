@@ -274,7 +274,7 @@ def setUserEngagementForNewsInfoCard(setUserEngagementForNewsInfoCardRequest):
   """
 
   return setUserEngagementForNewsInfoCardRepo(
-    SetUserEngagementForNewsInfoCardRequest=setUserEngagementForNewsInfoCardRequest
+    setUserEngagementForNewsInfoCardRequest
   )
 
 

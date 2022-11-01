@@ -1178,6 +1178,7 @@ class CreateOrganizationRepoRequest:
   backgroundImage: str
   locationUUID: str
   url: str
+  email: str
 
 @dataclass
 class CreateCausesForOrganizationRepoRequest:
