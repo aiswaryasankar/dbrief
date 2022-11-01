@@ -241,6 +241,7 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
 
   # Top orgs
   top_orgs = [rankOrganizationsForNewsInfoCardRequest.orgList[index] for index in top_org_indices]
+  logger.info("Top orgs: " + str(top_orgs))
 
   # Return the ranked list by similarity
   return RankOrganizationsForNewsInfoCardResponse(
