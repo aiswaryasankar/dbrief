@@ -160,7 +160,7 @@ def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest
   logger.info("Most relevant causes for newsInfoCard: " + str(causes))
 
   # Rank the returned list
-  allOrgsRes = fetchAllOrganizationsRepo(
+  allOrgsRes = fetchOrganizationsRepo(
     FetchOrgnizationsRequest(
       causes=causes,
     )
