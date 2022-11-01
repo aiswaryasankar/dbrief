@@ -41,7 +41,7 @@ def create_news_info_card_batch_view(request):
   return Response(res.to_json())
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def fetch_news_info_card_batch_view(request):
   """
     Fetch a batch of news info cards for the given day
@@ -58,7 +58,7 @@ def fetch_news_info_card_batch_view(request):
   return Response(res.to_json())
 
 
-@api_view(['GET'])
+@api_view(['POST'])
 def set_user_engagement_for_news_info_card_view(request):
   """
     Set user engagement for news info card
