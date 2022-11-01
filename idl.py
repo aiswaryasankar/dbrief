@@ -1168,7 +1168,7 @@ class CreateOrganizationRequest:
   location: Location
   url: str
   causes: List[str]
-
+  email: str
 
 @dataclass
 class CreateOrganizationRepoRequest:
