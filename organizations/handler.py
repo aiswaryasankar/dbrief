@@ -238,6 +238,7 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
     top_org_indices = np.argpartition(dot_product_sum, -10)[-10:]
   else:
     top_org_indices = [i for i in range(len(dot_product_sum))]
+  logger.info("Top_org_indices: " + str(top_org_indices))
 
   # Top orgs
   top_orgs = [rankOrganizationsForNewsInfoCardRequest.orgList[index] for index in top_org_indices]
