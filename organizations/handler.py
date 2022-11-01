@@ -103,8 +103,18 @@ def createOrganization(createOrganizationRequest):
       error= createOrganizationRes.error
     )
 
-  else:
-    return CreateOrganizationResponse
+  # Create the causes associated with the organization
+  for cause in createOrganizationRequest.causes:
+    createCauseRes = createCausesForOrganizationsRepo(
+      CreateCausesForOrganizationRepoRequest(
+        organizationUUID=createOrganizationRes.organizationUUID,
+        cause= cause
+      )
+    )
+    if createCauseRes.error != None:
+      logger.warn("Failed to set cause for organization")
+
+  return createOrganizationRes
 
 
 def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest):
