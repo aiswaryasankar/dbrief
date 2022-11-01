@@ -136,9 +136,12 @@ def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest
         orgList=None,
         error=fetchNewsInfoCardRes.error
       )
+    newsInfoCard = fetchNewsInfoCardRes.newsInfoCard
 
   elif generateRecOrgsForNewsInfoCardRequest.newsInfoCard != None:
     newsInfoCard = generateRecOrgsForNewsInfoCardRequest.newsInfoCard
+
+  print(newsInfoCard)
 
   # Get the top3 document causes
   getDocumentCausesResponse = get_document_cause(
@@ -222,7 +225,7 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   # Compute the similarity with the given newsInfoCard summary
   summaryEmbed = [embeddingModel([rankOrganizationsForNewsInfoCardRequest.newsInfoCard.summary])]
   summaryEmbedMatrix = [summaryEmbed for i in range(len(descriptionEmbed))]
-
+  summaryEmbedMatrix = np.squeeze(summaryEmbedMatrix)
 
   # Create a matrix of facts and compute the dot product between the matrices
   dot_products = np.dot(descriptionEmbed, summaryEmbedMatrix.T)

@@ -238,12 +238,21 @@ def fetchNewsInfoCard(fetchNewsInfoCardRequest):
     Fetch a specific news info card by UUID
   """
   # Fetch news info card from the repo
-  newsInfoCard = fetchNewsInfoCard(
+  newsInfoCardRes = fetchNewsInfoCardRepo(
     FetchNewsInfoCardRequest(
       newsInfoCardUUID=fetchNewsInfoCardRequest.newsInfoCardUUID
     )
   )
+  if newsInfoCardRes.error != None:
+    return FetchNewsInfoCardResponse(
+      newsInfoCard=None,
+      error=newsInfoCardRes.error
+    )
 
+  return FetchNewsInfoCardResponse(
+    newsInfoCard=newsInfoCardRes.newsInfoCard,
+    error=newsInfoCardRes.error
+  )
 
 def fetchNewsInfoCardBatch(fetchNewsInfoCardBatchRequest):
   """
