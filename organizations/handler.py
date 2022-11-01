@@ -53,24 +53,24 @@ def createOrganization(createOrganizationRequest):
   # Check if the location exists already, if not create a new location
   location = None
   locationRes = fetchLocationRepo(
-    FetchLocationRequest = FetchLocationRequest(
-      name=createOrganizationRequest.Location.name,
-      street = createOrganizationRequest.Location.street,
-      city = createOrganizationRequest.Location.city
+    FetchLocationRequest(
+      name=createOrganizationRequest.location.name,
+      street = createOrganizationRequest.location.street,
+      city = createOrganizationRequest.location.city
     )
   )
   if locationRes.error != None:
-    logger.info("Failed to fetch location at: " + str(createOrganizationRequest.Location.street) + ", " + str(createOrganizationRequest.Location.city))
+    logger.info("Failed to fetch location at: " + str(createOrganizationRequest.location.street) + ", " + str(createOrganizationRequest.location.city))
 
     # Create new location
     createLocationRes = createLocationRepo(
-      CreateLocationRequest = CreateLocationRequest(
-        name=createOrganizationRequest.Location.name,
-        street=createOrganizationRequest.Location.street,
-        city=createOrganizationRequest.Location.city,
-        state=createOrganizationRequest.Location.state,
-        zip = createOrganizationRequest.Location.zip,
-        country = createOrganizationRequest.Location.country,
+      CreateLocationRequest(
+        name=createOrganizationRequest.location.name,
+        street=createOrganizationRequest.location.street,
+        city=createOrganizationRequest.location.city,
+        state=createOrganizationRequest.location.state,
+        zip = createOrganizationRequest.location.zip,
+        country = createOrganizationRequest.location.country,
       )
     )
     if createLocationRes.error != None:
@@ -79,19 +79,19 @@ def createOrganization(createOrganizationRequest):
         organization=None,
         error=createLocationRes.error
       )
-    location = createLocationRes.Location
+    location = createLocationRes.location
 
   else:
-    location = locationRes.Location
+    location = locationRes.location
 
 
   createOrganizationRes = createOrganizationRepo(
-    CreateOrganizationRequest=CreateOrganizationRequest(
+    CreateOrganizationRepoRequest(
       name=createOrganizationRequest.name,
       description=createOrganizationRequest.description,
       image=createOrganizationRequest.image,
       backgroundImage=createOrganizationRequest.backgroundImage,
-      location=location,
+      locationUUID=location.uuid,
       url=createOrganizationRequest.url,
     )
   )

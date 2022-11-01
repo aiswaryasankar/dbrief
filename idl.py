@@ -1168,6 +1168,15 @@ class CreateOrganizationRequest:
   location: Location
   url: str
 
+@dataclass
+class CreateOrganizationRepoRequest:
+  name: str
+  description: str
+  image: str
+  backgroundImage: str
+  locationUUID: str
+  url: str
+
 
 @dataclass_json
 @dataclass

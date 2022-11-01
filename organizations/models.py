@@ -10,7 +10,7 @@ class OrganizationModel (models.Model):
 
   id = models.AutoField(primary_key=True)
   uuid = models.CharField("UUID", unique=True, max_length=36)
-  name = models.TextField("Name", unique=True)
+  name = models.TextField("Name", max_length=256)
   image = models.TextField("Image", null=True)
   backgroundImage = models.TextField("BackgroundImage", null=True)
   description = models.TextField("Description", null=True)
