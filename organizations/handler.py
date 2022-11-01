@@ -234,8 +234,8 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
 
   # Return the top row as the result
   dot_product_sum = sum(dot_products)
-  if len(dot_product_sum) >= 3:
-    top_org_indices = np.argpartition(dot_product_sum, -len(descriptions))[-len(descriptions):]
+  if len(dot_product_sum) >= 10:
+    top_org_indices = np.argpartition(dot_product_sum, -10)[-10:]
   else:
     top_org_indices = [i for i in range(len(dot_product_sum))]
 
