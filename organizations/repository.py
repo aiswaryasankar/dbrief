@@ -213,6 +213,29 @@ def createRecommendedOrgsForNewsInfoCardRepo(recommendedOrgsForNewsInfoCardReque
   return CreateRecommendedOrgsForNewsInfoCardRepoResponse(error=None)
 
 
+def createCausesForOrganizationsRepo(createCausesForOrganizationRepoRequest):
+  """
+    Set the causes associated with the organization.
+  """
+
+  causeUuid = str(uuid.uuid1())
+  try:
+    _, created = OrganizationCausesModel.objects.update_or_create(
+      uuid = causeUuid,
+      defaults={
+        'organizationUUID': createCausesForOrganizationRepoRequest.organizationUUID,
+        'cause': createCausesForOrganizationRepoRequest.cause,
+      },
+    )
+    if created:
+      logger.info('Saved cause for org')
+
+  except Exception as e:
+    logger.warn("Failed to save cause for org to the database: " + str(e))
+
+    return CreateCausesForOrganizationRepoResponse(error=e)
+
+  return CreateCausesForOrganizationRepoResponse(error=None)
 
 
 

@@ -1167,6 +1167,8 @@ class CreateOrganizationRequest:
   backgroundImage: str
   location: Location
   url: str
+  causes: List[str]
+
 
 @dataclass
 class CreateOrganizationRepoRequest:
@@ -1177,6 +1179,15 @@ class CreateOrganizationRepoRequest:
   locationUUID: str
   url: str
 
+@dataclass
+class CreateCausesForOrganizationRepoRequest:
+  organizationUUID: str
+  cause: str
+
+@dataclass_json
+@dataclass
+class CreateCausesForOrganizationRepoResponse:
+  error: Exception
 
 @dataclass_json
 @dataclass
