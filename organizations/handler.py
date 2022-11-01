@@ -237,5 +237,3 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   )
 
 
-
-

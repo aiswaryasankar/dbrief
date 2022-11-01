@@ -44,8 +44,8 @@ class RecommendedOrgsForNewsInfoCardModel (models.Model):
 
   id = models.AutoField(primary_key=True)
   uuid = models.CharField("UUID", unique=True, max_length=36)
-  newsInfoCardUUID = models.CharField("newsInfoCardUUID", null=True)
-  organizationUUID = models.CharField("organizationUUID", null=True)
+  newsInfoCardUUID = models.CharField("newsInfoCardUUID", max_length=36, null=True)
+  organizationUUID = models.CharField("organizationUUID", max_length=36, null=True)
   rank = models.IntegerField("rank", null=True)
 
   class Meta:

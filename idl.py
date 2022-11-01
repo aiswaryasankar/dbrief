@@ -1122,8 +1122,8 @@ class RankedOrganization:
 
 @dataclass
 class FetchOrgnizationsRequest:
-  uuids: Optional[List[str]] = []
-  causes: Optional[List[str]] = []
+  uuids: Optional[List[str]] = field(default_factory=list)
+  causes: Optional[List[str]] = field(default_factory=list)
 
 @dataclass_json
 @dataclass

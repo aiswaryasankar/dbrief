@@ -13,7 +13,7 @@ import tensorflow_hub as hub
 import numpy as np
 import logging
 import nltk
-from constants import *
+from .constants import *
 
 handler = LogtailHandler(source_token="tvoi6AuG8ieLux2PbHqdJSVR")
 logger = logging.getLogger(__name__)
