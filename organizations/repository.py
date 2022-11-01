@@ -90,6 +90,7 @@ def createOrganizationRepo(createOrganizationRequest):
         'backgroundImage': createOrganizationRequest.backgroundImage,
         'locationUUID': createOrganizationRequest.locationUUID,
         'url': createOrganizationRequest.url,
+        'email': createOrganizationRequest.email,
       },
     )
     if created:

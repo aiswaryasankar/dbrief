@@ -93,6 +93,7 @@ def createOrganization(createOrganizationRequest):
       backgroundImage=createOrganizationRequest.backgroundImage,
       locationUUID=location.uuid,
       url=createOrganizationRequest.url,
+      email=createOrganizationRequest.email,
     )
   )
 
