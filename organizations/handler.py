@@ -226,13 +226,14 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   embeddingModel = hub.load(module)
   descriptions = [org.description for org in orgList]
   descriptionEmbed = [embeddingModel([description]) for description in descriptions]
+  descriptionEmbed = np.squeeze(descriptionEmbed)
   logger.info("Description embedding: " + str(descriptionEmbed))
 
   # Compute the similarity with the given newsInfoCard summary
   summaryEmbed = [embeddingModel([rankOrganizationsForNewsInfoCardRequest.newsInfoCard.summary])]
   summaryEmbedMatrix = [summaryEmbed for i in range(len(descriptionEmbed))]
   summaryEmbedMatrix = np.squeeze(summaryEmbedMatrix)
-  logger.info("Summary embedding: " + str(summaryEmbedMatrix))
+  logger.info("Summary embedding: " + str(summaryEmbedMatrix.shape))
 
   # Create a matrix of facts and compute the dot product between the matrices
   dot_products = np.dot(descriptionEmbed, summaryEmbedMatrix.T)
