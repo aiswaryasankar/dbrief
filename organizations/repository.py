@@ -137,7 +137,7 @@ def fetchOrganizationsRepo(fetchOrganizationsRequest):
       # Fetch orgs corresponding to the UUIDs
       for org in causesRes:
         try:
-          organization = OrganizationModel.objects.get(uuid=org.uuid)
+          organization = OrganizationModel.objects.get(uuid=org.organizationUUID)
           org = Organization(
             uuid=organization.uuid,
             name=organization.name,
