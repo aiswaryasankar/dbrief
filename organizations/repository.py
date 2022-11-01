@@ -128,6 +128,8 @@ def fetchOrganizationsRepo(fetchOrganizationsRequest):
       logger.warn("Failed to fetch organization with uuid: " + str(uuid)  + " error: " + str(e))
 
   elif fetchOrganizationsRequest.causes != []:
+    logger.info("Fetching organizations for causes: " + str(fetchOrganizationsRequest.causes))
+
     try:
       # Fetch all orgUUIDs that have a cause in the cause list
       causesRes = OrganizationCausesModel.objects.filter(cause__in=fetchOrganizationsRequest.causes)
@@ -146,6 +148,7 @@ def fetchOrganizationsRepo(fetchOrganizationsRequest):
             locationUUID=organization.locationUUID,
           )
           orgList.append(org)
+          logger.info("Fetched %s orgs matching given causes", len(causesRes))
 
         except Exception as e:
           logger.warn("Failed to fetch organizations with uuid: " + str(org.uuid)  + " error: " + str(e))

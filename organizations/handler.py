@@ -157,6 +157,7 @@ def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest
 
   # Filter organizations based on the causes
   causes = getDocumentCausesResponse.causeList
+  logger.info("Most relevant causes for newsInfoCard: " + str(causes))
 
   # Rank the returned list
   allOrgsRes = fetchAllOrganizationsRepo(
