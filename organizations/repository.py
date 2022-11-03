@@ -217,6 +217,50 @@ def createRecommendedOrgsForNewsInfoCardRepo(recommendedOrgsForNewsInfoCardReque
   return CreateRecommendedOrgsForNewsInfoCardRepoResponse(error=None)
 
 
+def fetchRecommendedOrgsForNewsInfoCardRepo(fetchRecommendedOrgsForNewsInfoCardRequest):
+  """
+    Fetch the list of recommended orgs for a given news info card
+  """
+  rankedOrgList = []
+
+  if fetchRecommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID != None:
+    try:
+      # Get the ranked list of recommended orgs for the newsInfoCard
+      orgList = RecommendedOrgsForNewsInfoCardModel.objects.filter(newsInfoCardUUID__exact=fetchRecommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID)
+
+      # Fetch the organization corresponding to each orgUUID
+      for org in orgList:
+        fetchOrgRes = fetchOrganizationsRepo(
+          FetchOrgnizationsRequest(
+            uuids = [org.organizationUUID]
+          )
+        )
+        if fetchOrgRes.error != None:
+          logger.warn("Failed to fetch organization with uuid: " + str(org.organizationUUID))
+        else:
+          rankedOrg = RankedOrganization(
+            organization=fetchOrgRes.organization,
+            rank= org.rank,
+          )
+          rankedOrgList.append(rankedOrg)
+
+    except Exception as e:
+      logger.warn("Failed to fetch organization with uuid: " + str(uuid)  + " error: " + str(e))
+
+  else:
+    logger.warn("Failed to retrieve recommended orgs for newsInfoCard with uuid: " + str(fetchRecommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID))
+
+    return GetRecommendedOrgsForNewsInfoCardResponse(
+      orgList= None,
+      error = "No recommended orgs for newsInfoCard"
+    )
+
+  return GetRecommendedOrgsForNewsInfoCardResponse(
+      orgList= rankedOrgList,
+      error = None,
+    )
+
+
 def createCausesForOrganizationsRepo(createCausesForOrganizationRepoRequest):
   """
     Set the causes associated with the organization.

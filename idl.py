@@ -1209,6 +1209,17 @@ class GenerateRecommendedOrgsForNewsInfoCardResponse:
   orgList: List[RankedOrganization]
   error: Exception
 
+@dataclass
+class GetRecommendedOrgsForNewsInfoCardRequest:
+  newsInfoCardUUID: Optional[str] = ""
+  newsInfoCard: Optional[NewsInfoCard] = None
+
+@dataclass_json
+@dataclass
+class GetRecommendedOrgsForNewsInfoCardResponse:
+  orgList: List[RankedOrganization]
+  error: Exception
+
 
 @dataclass
 class CreateLocationRequest:

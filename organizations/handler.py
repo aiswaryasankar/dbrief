@@ -211,7 +211,13 @@ def getRecommendedOrgsForNewsInfoCard(getRecommendedOrgsForNewsInfoCardRequest):
   """
     Returns a list of the recommended orgs for each news info card
   """
-  pass
+  # Look up the list of recommended orgs in the db
+  return fetchRecommendedOrgsForNewsInfoCardRepo(
+    GetRecommendedOrgsForNewsInfoCardRequest(
+      newsInfoCardUUID=getRecommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID
+    )
+  )
+
 
 
 def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
