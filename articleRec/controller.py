@@ -285,6 +285,11 @@ def hydrateModelOutputsForArticle(article, articleId, url, created):
   if getDocumentTopicBatchResponse.error != None:
     return PopulateArticleResponse(article=None, url=url, id=articleId, error=str(getDocumentTopicBatchResponse.error))
 
+  # Hydrate the article date
+  if article.publish_date == "" or article.publish_date is None:
+    logger.info("Article doesn't have date info using current date")
+    article.publish_date = datetime.now()
+
   topic = getDocumentTopicBatchResponse.documentTopicInfos[0].topic
   parentTopic = getDocumentTopicBatchResponse.documentTopicInfos[0].parentTopic
   logger.info("Document topics")

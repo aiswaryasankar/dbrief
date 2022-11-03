@@ -1008,8 +1008,8 @@ class NewsInfoCard:
 
 @dataclass
 class CreateNewsInfoCardRequest:
-  article: Optional[Article]
   articleURL: Optional[str] = ''
+  article: Optional[Article] = None
 
 
 @dataclass_json

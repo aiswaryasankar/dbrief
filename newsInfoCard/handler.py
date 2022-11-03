@@ -10,6 +10,7 @@ from .repository import *
 from topicModeling import handler as tpHandler
 from mdsModel.handler import *
 from datetime import datetime
+from organizations import handler as orgHandler
 import idl
 import threading
 import random
@@ -34,9 +35,11 @@ def createNewsInfoCard(createNewsInfoCardRequest):
   """
 
   if createNewsInfoCardRequest.article != None:
+    logger.info(createNewsInfoCardRequest.article)
     article = createNewsInfoCardRequest.article
 
   elif createNewsInfoCardRequest.articleURL != None:
+    logger.info('Fetching the article')
     # Fetch the article
     fetchArticleResponse = articleRecHandler.fetch_articles(
       FetchArticlesRequest(
@@ -58,6 +61,9 @@ def createNewsInfoCard(createNewsInfoCardRequest):
         error = populateArticleResponse.error
       )
     article = populateArticleResponse.article
+
+  logger.info("Article")
+  logger.info(article)
 
   # Query for related articles
   queryArticlesResponse = tpHandler.query_documents(
@@ -144,6 +150,18 @@ def createNewsInfoCard(createNewsInfoCardRequest):
       error = createNewsInfoCardRes.error
     )
 
+  # Generate the list of recommended organizations for the newsInfoCard
+  generateRecommendedOrgsForNewsInfoCardRes = orgHandler.generateRecommendedOrgsForNewsInfoCard(
+    GenerateRecommendedOrgsForNewsInfoCardRequest(
+      newsInfoCard=createNewsInfoCardRes.newsInfoCard
+    )
+  )
+  if generateRecommendedOrgsForNewsInfoCardRes.error != None:
+    return CreateNewsInfoCardResponse(
+      newsInfoCard=createNewsInfoCardRes.newsInfoCard,
+      error= generateRecommendedOrgsForNewsInfoCardRes.error,
+    )
+
   return CreateNewsInfoCardResponse(
     newsInfoCard=createNewsInfoCardRes.newsInfoCard,
     error= None,
@@ -186,7 +204,6 @@ def createOpinionCard(createOpinionCardRequest):
     opinionCard = createOpinionCardRes.opinionCard,
     error = None
   )
-
 
 
 def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
@@ -253,6 +270,7 @@ def fetchNewsInfoCard(fetchNewsInfoCardRequest):
     newsInfoCard=newsInfoCardRes.newsInfoCard,
     error=newsInfoCardRes.error
   )
+
 
 def fetchNewsInfoCardBatch(fetchNewsInfoCardBatchRequest):
   """

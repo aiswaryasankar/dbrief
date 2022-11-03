@@ -9,7 +9,7 @@ from polarityModel.handler import *
 from topicFeed import handler as topicFeedHandler
 from .repository import *
 from topicModeling import handler as tpHandler
-from newsInfoCard.handler import *
+from newsInfoCard import handler as newsInfoCardHandler
 from organizations.handler import *
 from datetime import datetime
 import idl
@@ -124,9 +124,9 @@ def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest
   """
   newsInfoCard = None
 
-  if generateRecOrgsForNewsInfoCardRequest.newsInfoCardUUID != None:
+  if generateRecOrgsForNewsInfoCardRequest.newsInfoCardUUID != "":
     # Fetch the news info card with UUID
-    fetchNewsInfoCardRes = fetchNewsInfoCard(
+    fetchNewsInfoCardRes = newsInfoCardHandler.fetchNewsInfoCard(
       FetchNewsInfoCardRequest(
         newsInfoCardUUID=generateRecOrgsForNewsInfoCardRequest.newsInfoCardUUID
       )
@@ -244,7 +244,11 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   dot_products = np.dot(descriptionEmbed, summaryEmbedMatrix.T)
 
   # Return the top row as the result
-  dot_product_sum = sum(dot_products)
+  if not isinstance(dot_products, np.float32) :
+    dot_product_sum = sum(dot_products)
+  else:
+    dot_product_sum = dot_products
+
   if len(dot_product_sum) >= 10:
     top_org_indices = np.argpartition(dot_product_sum, -10)[-10:]
   else:
