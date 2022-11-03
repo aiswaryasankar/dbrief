@@ -207,7 +207,7 @@ def get_document_cause(getDocumentCauseRequest):
   text = getDocumentCauseRequest.query
 
   # Filter / clean the input text
-  clean_text = clean_text(text)
+  cleaned_text = clean_text(text)
 
   # Embed each of the causes
   embeddingModel = hub.load(module)
@@ -219,9 +219,9 @@ def get_document_cause(getDocumentCauseRequest):
 
 
   # Compute the similarity score btwn the two
-  embeddedArticle = embeddingModel([clean_text])
+  embeddedArticle = embeddingModel([cleaned_text])
   articleEmbeddingMatrix = [embeddedArticle for i in range(len(causesList))]
-
+  articleEmbeddingMatrix = np.squeeze(articleEmbeddingMatrix)
 
   # Create a matrix of paragraphs and compute the dot product between the matrices
   dot_products = np.dot(embeddedCauses, articleEmbeddingMatrix.T)

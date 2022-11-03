@@ -1178,6 +1178,7 @@ class CreateOrganizationRepoRequest:
   backgroundImage: str
   locationUUID: str
   url: str
+  email: str
 
 @dataclass
 class CreateCausesForOrganizationRepoRequest:
@@ -1205,6 +1206,17 @@ class GenerateRecommendedOrgsForNewsInfoCardRequest:
 @dataclass_json
 @dataclass
 class GenerateRecommendedOrgsForNewsInfoCardResponse:
+  orgList: List[RankedOrganization]
+  error: Exception
+
+@dataclass
+class GetRecommendedOrgsForNewsInfoCardRequest:
+  newsInfoCardUUID: Optional[str] = ""
+  newsInfoCard: Optional[NewsInfoCard] = None
+
+@dataclass_json
+@dataclass
+class GetRecommendedOrgsForNewsInfoCardResponse:
   orgList: List[RankedOrganization]
   error: Exception
 

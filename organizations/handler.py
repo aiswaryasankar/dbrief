@@ -136,11 +136,13 @@ def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest
         orgList=None,
         error=fetchNewsInfoCardRes.error
       )
+    newsInfoCard = fetchNewsInfoCardRes.newsInfoCard
 
   elif generateRecOrgsForNewsInfoCardRequest.newsInfoCard != None:
     newsInfoCard = generateRecOrgsForNewsInfoCardRequest.newsInfoCard
 
-  # Get the top3 document causes
+
+  # Get the top 3 document causes
   getDocumentCausesResponse = get_document_cause(
     GetDocumentCauseRequest(
       query=newsInfoCard.summary
@@ -154,10 +156,12 @@ def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest
 
   # Filter organizations based on the causes
   causes = getDocumentCausesResponse.causeList
+  logger.info("Most relevant causes for newsInfoCard: " + str(causes))
 
   # Rank the returned list
-  allOrgsRes = fetchAllOrganizationsRepo(
+  allOrgsRes = fetchOrganizationsRepo(
     FetchOrgnizationsRequest(
+      uuids=[],
       causes=causes,
     )
   )
@@ -206,7 +210,13 @@ def getRecommendedOrgsForNewsInfoCard(getRecommendedOrgsForNewsInfoCardRequest):
   """
     Returns a list of the recommended orgs for each news info card
   """
-  pass
+  # Look up the list of recommended orgs in the db
+  return fetchRecommendedOrgsForNewsInfoCardRepo(
+    GetRecommendedOrgsForNewsInfoCardRequest(
+      newsInfoCardUUID=getRecommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID
+    )
+  )
+
 
 
 def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
@@ -215,27 +225,35 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   """
 
   # Pull the description for each of the organizations
+  orgList = rankOrganizationsForNewsInfoCardRequest.orgList
+  logger.info("Number of orgs to rank: " + str(len(orgList)))
+
   embeddingModel = hub.load(module)
-  descriptions = [org.description for org in rankOrganizationsForNewsInfoCardRequest.orgList]
+  descriptions = [org.description for org in orgList]
   descriptionEmbed = [embeddingModel([description]) for description in descriptions]
+  descriptionEmbed = np.squeeze(descriptionEmbed)
+  logger.info("Description embedding: " + str(descriptionEmbed))
 
   # Compute the similarity with the given newsInfoCard summary
   summaryEmbed = [embeddingModel([rankOrganizationsForNewsInfoCardRequest.newsInfoCard.summary])]
   summaryEmbedMatrix = [summaryEmbed for i in range(len(descriptionEmbed))]
-
+  summaryEmbedMatrix = np.squeeze(summaryEmbedMatrix)
+  logger.info("Summary embedding: " + str(summaryEmbedMatrix.shape))
 
   # Create a matrix of facts and compute the dot product between the matrices
   dot_products = np.dot(descriptionEmbed, summaryEmbedMatrix.T)
 
   # Return the top row as the result
   dot_product_sum = sum(dot_products)
-  if len(dot_product_sum) >= 3:
-    top_org_indices = np.argpartition(dot_product_sum, -len(descriptions))[-len(descriptions):]
+  if len(dot_product_sum) >= 10:
+    top_org_indices = np.argpartition(dot_product_sum, -10)[-10:]
   else:
     top_org_indices = [i for i in range(len(dot_product_sum))]
+  logger.info("Top_org_indices: " + str(top_org_indices))
 
   # Top orgs
-  top_orgs = [rankOrganizationsForNewsInfoCardRequest.orgList[index] for index in top_org_indices]
+  top_orgs = [orgList[index] for index in top_org_indices]
+  logger.info("Top orgs: " + str(top_orgs))
 
   # Return the ranked list by similarity
   return RankOrganizationsForNewsInfoCardResponse(

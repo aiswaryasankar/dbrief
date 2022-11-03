@@ -116,6 +116,8 @@ def fetchNewsInfoCardRepo(fetchNewsInfoCardRequest):
       error=e,
     )
 
+  logger.info(newsInfoCardEntity)
+
   return FetchNewsInfoCardResponse(
     newsInfoCard=newsInfoCardEntity,
     error=None,

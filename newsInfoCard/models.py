@@ -50,6 +50,7 @@ class UserNewsInfoCardInteractionModel (models.Model):
 
   id = models.AutoField(primary_key = True)
   uuid = models.CharField("UUID", unique=True, max_length=36)
+  userUUID = models.CharField("UserUUID", max_length=36, null=True)
   newsInfoCardUUID = models.CharField("NewsInfoCardUUID", max_length=36)
   interaction = models.TextField("Interaction", null=True)
 

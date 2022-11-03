@@ -72,4 +72,3 @@ class LocationModel (models.Model):
     return self.street + " " + self.city + ", " + self.state
 
 
-
