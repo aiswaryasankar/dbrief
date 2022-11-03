@@ -141,9 +141,8 @@ def generateRecommendedOrgsForNewsInfoCard(generateRecOrgsForNewsInfoCardRequest
   elif generateRecOrgsForNewsInfoCardRequest.newsInfoCard != None:
     newsInfoCard = generateRecOrgsForNewsInfoCardRequest.newsInfoCard
 
-  print(newsInfoCard)
 
-  # Get the top3 document causes
+  # Get the top 3 document causes
   getDocumentCausesResponse = get_document_cause(
     GetDocumentCauseRequest(
       query=newsInfoCard.summary

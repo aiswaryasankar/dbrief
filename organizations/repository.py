@@ -3,7 +3,7 @@ import logging
 from idl import *
 from logtail import LogtailHandler
 from datetime import datetime, timedelta
-import uuid
+import uuid as u
 
 """
   This file will include all the basic database CRUD operations including:
@@ -78,7 +78,7 @@ def createOrganizationRepo(createOrganizationRequest):
     Will save the organization to the database.
   """
 
-  organizationUUID = str(uuid.uuid1())
+  organizationUUID = str(u.uuid1())
 
   try:
     org, created = OrganizationModel.objects.update_or_create(
@@ -112,17 +112,20 @@ def fetchOrganizationsRepo(fetchOrganizationsRequest):
 
   if fetchOrganizationsRequest.uuids != []:
     try:
-      organizationRes = OrganizationModel.objects.get(uuid=fetchOrganizationsRequest.uuid)
-      org = Organization(
-          uuid=organization.uuid,
-          name=organization.name,
-          description=organization.description,
-          link=organization.url,
-          image=organization.image,
-          backgroundImage= organization.backgroundImage,
-          locationUUID=organization.locationUUID,
-        )
-      orgList.append(org)
+      for orgUUID in fetchOrganizationsRequest.uuids:
+        logger.info("orgUUID: " + str(orgUUID))
+
+        organization = OrganizationModel.objects.get(uuid=orgUUID)
+        org = Organization(
+            uuid=organization.uuid,
+            name=organization.name,
+            description=organization.description,
+            link=organization.url,
+            image=organization.image,
+            backgroundImage= organization.backgroundImage,
+            locationUUID=organization.locationUUID,
+          )
+        orgList.append(org)
 
     except Exception as e:
       logger.warn("Failed to fetch organization with uuid: " + str(uuid)  + " error: " + str(e))
@@ -196,7 +199,7 @@ def createRecommendedOrgsForNewsInfoCardRepo(recommendedOrgsForNewsInfoCardReque
   """
     Stores the recommended orgs for each news info card
   """
-  recUuid = str(uuid.uuid1())
+  recUuid = str(u.uuid1())
   try:
     _, created = RecommendedOrgsForNewsInfoCardModel.objects.update_or_create(
       uuid = recUuid,
@@ -230,6 +233,7 @@ def fetchRecommendedOrgsForNewsInfoCardRepo(fetchRecommendedOrgsForNewsInfoCardR
 
       # Fetch the organization corresponding to each orgUUID
       for org in orgList:
+        logger.info("Org uuid: " + str(org.organizationUUID))
         fetchOrgRes = fetchOrganizationsRepo(
           FetchOrgnizationsRequest(
             uuids = [org.organizationUUID]
@@ -239,13 +243,13 @@ def fetchRecommendedOrgsForNewsInfoCardRepo(fetchRecommendedOrgsForNewsInfoCardR
           logger.warn("Failed to fetch organization with uuid: " + str(org.organizationUUID))
         else:
           rankedOrg = RankedOrganization(
-            organization=fetchOrgRes.organization,
+            organization=fetchOrgRes.orgList[0],
             rank= org.rank,
           )
           rankedOrgList.append(rankedOrg)
 
     except Exception as e:
-      logger.warn("Failed to fetch organization with uuid: " + str(uuid)  + " error: " + str(e))
+      logger.warn("Failed to fetch organizations for newsInfoCard: " + str(fetchRecommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID)  + " error: " + str(e))
 
   else:
     logger.warn("Failed to retrieve recommended orgs for newsInfoCard with uuid: " + str(fetchRecommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID))
@@ -266,7 +270,7 @@ def createCausesForOrganizationsRepo(createCausesForOrganizationRepoRequest):
     Set the causes associated with the organization.
   """
 
-  causeUuid = str(uuid.uuid1())
+  causeUuid = str(u.uuid1())
   try:
     _, created = OrganizationCausesModel.objects.update_or_create(
       uuid = causeUuid,
