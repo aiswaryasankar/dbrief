@@ -246,7 +246,11 @@ def get_top_passage(getTopPassageRequest):
   dot_products = np.dot(embeddedParagraphs, embeddedParagraphs.T)
 
   # Return the top row as the result
-  dot_product_sum = sum(dot_products)
+  if not isinstance(dot_products, np.float32) :
+    dot_product_sum = sum(dot_products)
+  else:
+    dot_product_sum = dot_products
+
   logger.info('dot product sum')
   logger.info(dot_product_sum)
   top_passage_index = np.argmax(dot_product_sum)
