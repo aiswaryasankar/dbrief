@@ -38,15 +38,12 @@ def fetch_articles_controller(fetchArticlesRequest):
   """
 
   if fetchArticlesRequest.articleIds != []:
-    print("articleIds")
     return fetchArticlesById(fetchArticlesRequest.articleIds)
 
   elif fetchArticlesRequest.numDays != 0:
-    print("fetching by date range")
     return fetchArticlesByDateRange(fetchArticlesRequest.numDays)
 
   elif fetchArticlesRequest.articleUrls != '':
-    print("articleUrls")
     return fetchArticlesByUrl(fetchArticlesRequest.articleUrls)
 
   else:

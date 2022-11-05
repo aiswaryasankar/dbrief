@@ -314,14 +314,17 @@ def createNewsInfoCardBackfill(createNewsInfoCardBackfillRequest):
     CreateNewsInfoCard backfill for any articles in the last 3 days that don't have a newsInfoCard tied to it.
   """
 
-  print(createNewsInfoCardBackfillRequest.numDays)
+  logger.info("Backfilling for " + str(createNewsInfoCardBackfillRequest.numDays) + " days")
+
   # Fetch all articles in last 3 days
   fetchArticlesRes = articleRecHandler.fetch_articles(
     FetchArticlesRequest(
       numDays=createNewsInfoCardBackfillRequest.numDays
     )
   )
-  print("Num articles: " + str(fetchArticlesRes.articleList))
+
+  logger.info("Num articles: " + str(fetchArticlesRes.articleList))
+
   if fetchArticlesRes.error != None:
     return CreateNewsInfoCardBackfillResponse(
       numHydrated=0,
