@@ -1001,6 +1001,7 @@ class NewsInfoCard:
   title: str
   summary: str
   isPolitical: bool
+  image: str
   leftOpinionCard: Optional[OpinionCard]
   rightOpinionCard: Optional[OpinionCard]
   articleList: Optional[List[Article]] = field(default_factory=list)
@@ -1087,6 +1088,16 @@ class FetchOpinionCardRequest:
 @dataclass
 class FetchOpinionCardResponse:
   opinionCard: OpinionCard
+  error: Exception
+
+@dataclass
+class CreateNewsInfoCardBackfillRequest:
+  numDays: int
+
+@dataclass_json
+@dataclass
+class CreateNewsInfoCardBackfillResponse:
+  numHydrated: int
   error: Exception
 
 

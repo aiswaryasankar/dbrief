@@ -59,6 +59,23 @@ def fetch_news_info_card_batch_view(request):
 
 
 @api_view(['POST'])
+def create_news_info_card_backfill_view(request):
+  """
+    Create backfill for last x days of newsInfoCards
+  """
+
+  req = CreateNewsInfoCardBackfillRequestSerializer(data=request.data)
+  if not req.is_valid():
+    return Response(req.errors)
+
+  createNewsInfoCardBackfillRequest = req.validated_data
+
+  res = createNewsInfoCardBackfill(createNewsInfoCardBackfillRequest)
+
+  return Response(res.to_json())
+
+
+@api_view(['POST'])
 def set_user_engagement_for_news_info_card_view(request):
   """
     Set user engagement for news info card

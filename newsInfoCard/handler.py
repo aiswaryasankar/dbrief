@@ -213,35 +213,39 @@ def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
   newsInfoCards = []
   # Hydrate a batch of news info cards
   if len(createNewsInfoCardBatchRequest.articleList) > 0:
-    for i, article in createNewsInfoCardBatchRequest.articleList:
+    i=0
+    for article in createNewsInfoCardBatchRequest.articleList:
       logger.info("Creating newsInfoCard " + str(i) + " for article " + str(article.url))
 
-      createOpinionCardResponse = createNewsInfoCard(
+      createNewsInfoCardResponse = createNewsInfoCard(
         CreateNewsInfoCardRequest(
           article = article,
         )
       )
-      if createOpinionCardResponse.error != None:
-        logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(article.url))
+      if createNewsInfoCardResponse.error != None:
+        logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(article.url) + " with error: " + str(createNewsInfoCardResponse.error))
         continue
       else:
-        newsInfoCards.append(createOpinionCardResponse.newsInfoCard)
+        i+=1
+        newsInfoCards.append(createNewsInfoCardResponse.newsInfoCard)
         logger.info("Created newsInfoCard " + str(i) + " for article " + str(article.url))
 
   if len(createNewsInfoCardBatchRequest.articleUrls) > 0:
-    for i, url in createNewsInfoCardBatchRequest.articleUrls:
+    i=0
+    for url in createNewsInfoCardBatchRequest.articleUrls:
       logger.info("Creating newsInfoCard " + str(i) + " for article " + str(url))
 
-      createOpinionCardResponse = createNewsInfoCard(
+      createNewsInfoCardResponse = createNewsInfoCard(
         CreateNewsInfoCardRequest(
           articleURL = url,
         )
       )
-      if createOpinionCardResponse.error != None:
-        logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(url))
+      if createNewsInfoCardResponse.error != None:
+        logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(url) + " with error: " + str(createNewsInfoCardResponse.error))
         continue
       else:
-        newsInfoCards.append(createOpinionCardResponse.newsInfoCard)
+        i += 1
+        newsInfoCards.append(createNewsInfoCardResponse.newsInfoCard)
         logger.info("Created newsInfoCard " + str(i) + " for article " + str(url))
 
   return CreateNewsInfoCardBatchResponse(
@@ -305,6 +309,43 @@ def setUserEngagementForNewsInfoCard(setUserEngagementForNewsInfoCardRequest):
   )
 
 
+def createNewsInfoCardBackfill(createNewsInfoCardBackfillRequest):
+  """
+    CreateNewsInfoCard backfill for any articles in the last 3 days that don't have a newsInfoCard tied to it.
+  """
 
+  logger.info("Backfilling for " + str(createNewsInfoCardBackfillRequest.numDays) + " days")
+
+  # Fetch all articles in last 3 days
+  fetchArticlesRes = articleRecHandler.fetch_articles(
+    FetchArticlesRequest(
+      numDays=createNewsInfoCardBackfillRequest.numDays
+    )
+  )
+
+  logger.info("Num articles: " + str(fetchArticlesRes.articleList))
+
+  if fetchArticlesRes.error != None:
+    return CreateNewsInfoCardBackfillResponse(
+      numHydrated=0,
+      error=fetchArticlesRes.error
+    )
+
+  # Call createNewsInfoCardBatch to hydrate news info cards
+  createNewsInfoCardBatchRes = createNewsInfoCardBatch(
+    CreateNewsInfoCardBatchRequest(
+      articleList=fetchArticlesRes.articleList,
+    )
+  )
+  if createNewsInfoCardBatchRes.error != None:
+    return CreateNewsInfoCardBackfillResponse(
+      numHydrated=0,
+      error= createNewsInfoCardBatchRes.error
+    )
+
+  return CreateNewsInfoCardBackfillResponse(
+    numHydrated=len(fetchArticlesRes.articleList),
+    error= createNewsInfoCardBatchRes.error
+  )
 
 

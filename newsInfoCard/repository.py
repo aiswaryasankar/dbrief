@@ -205,6 +205,7 @@ def fetchNewsInfoCardBatchRepo(fetchNewsInfoCardBatchRequest):
         uuid= infoCard.uuid,
         title= infoCard.title,
         summary= infoCard.summary,
+        image=infoCard.image,
         isPolitical= infoCard.is_political,
         leftOpinionCard= leftOpinionCard,
         rightOpinionCard= rightOpinionCard,

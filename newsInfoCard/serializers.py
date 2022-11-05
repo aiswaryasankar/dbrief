@@ -25,6 +25,12 @@ class FetchNewsInfoCardBatchRequestSerializer(DataclassSerializer):
     dataclass = FetchNewsInfoCardBatchRequest
 
 
+class CreateNewsInfoCardBackfillRequestSerializer(DataclassSerializer):
+  parser_classes = JSONParser
+  class Meta:
+    dataclass = CreateNewsInfoCardBackfillRequest
+
+
 class SetUserEngagementForNewsInfoCardRequestSerializer(DataclassSerializer):
   parser_classes = JSONParser
   class Meta:
