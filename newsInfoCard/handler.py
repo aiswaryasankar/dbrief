@@ -217,17 +217,17 @@ def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
     for article in createNewsInfoCardBatchRequest.articleList:
       logger.info("Creating newsInfoCard " + str(i) + " for article " + str(article.url))
 
-      createOpinionCardResponse = createNewsInfoCard(
+      createNewsInfoCardResponse = createNewsInfoCard(
         CreateNewsInfoCardRequest(
           article = article,
         )
       )
-      if createOpinionCardResponse.error != None:
-        logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(article.url))
+      if createNewsInfoCardResponse.error != None:
+        logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(article.url) + " with error: " + str(createNewsInfoCardResponse.error))
         continue
       else:
         i+=1
-        newsInfoCards.append(createOpinionCardResponse.newsInfoCard)
+        newsInfoCards.append(createNewsInfoCardResponse.newsInfoCard)
         logger.info("Created newsInfoCard " + str(i) + " for article " + str(article.url))
 
   if len(createNewsInfoCardBatchRequest.articleUrls) > 0:
@@ -235,17 +235,17 @@ def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
     for url in createNewsInfoCardBatchRequest.articleUrls:
       logger.info("Creating newsInfoCard " + str(i) + " for article " + str(url))
 
-      createOpinionCardResponse = createNewsInfoCard(
+      createNewsInfoCardResponse = createNewsInfoCard(
         CreateNewsInfoCardRequest(
           articleURL = url,
         )
       )
-      if createOpinionCardResponse.error != None:
-        logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(url))
+      if createNewsInfoCardResponse.error != None:
+        logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(url) + " with error: " + str(createNewsInfoCardResponse.error))
         continue
       else:
         i += 1
-        newsInfoCards.append(createOpinionCardResponse.newsInfoCard)
+        newsInfoCards.append(createNewsInfoCardResponse.newsInfoCard)
         logger.info("Created newsInfoCard " + str(i) + " for article " + str(url))
 
   return CreateNewsInfoCardBatchResponse(
