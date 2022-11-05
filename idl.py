@@ -1090,6 +1090,16 @@ class FetchOpinionCardResponse:
   opinionCard: OpinionCard
   error: Exception
 
+@dataclass
+class CreateNewsInfoCardBackfillRequest:
+  numDays: int
+
+@dataclass_json
+@dataclass
+class CreateNewsInfoCardBackfillResponse:
+  numHydrated: int
+  error: Exception
+
 
 ###############
 #

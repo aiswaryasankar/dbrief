@@ -309,6 +309,40 @@ def setUserEngagementForNewsInfoCard(setUserEngagementForNewsInfoCardRequest):
   )
 
 
+def createNewsInfoCardBackfill(createNewsInfoCardBackfillRequest):
+  """
+    CreateNewsInfoCard backfill for any articles in the last 3 days that don't have a newsInfoCard tied to it.
+  """
 
+  print(createNewsInfoCardBackfillRequest.numDays)
+  # Fetch all articles in last 3 days
+  fetchArticlesRes = articleRecHandler.fetch_articles(
+    FetchArticlesRequest(
+      numDays=createNewsInfoCardBackfillRequest.numDays
+    )
+  )
+  print("Num articles: " + str(fetchArticlesRes.articleList))
+  if fetchArticlesRes.error != None:
+    return CreateNewsInfoCardBackfillResponse(
+      numHydrated=0,
+      error=fetchArticlesRes.error
+    )
+
+  # Call createNewsInfoCardBatch to hydrate news info cards
+  createNewsInfoCardBatchRes = createNewsInfoCardBatch(
+    CreateNewsInfoCardBatchRequest(
+      articleList=fetchArticlesRes.articleList,
+    )
+  )
+  if createNewsInfoCardBatchRes.error != None:
+    return CreateNewsInfoCardBackfillResponse(
+      numHydrated=0,
+      error= createNewsInfoCardBatchRes.error
+    )
+
+  return CreateNewsInfoCardBackfillResponse(
+    numHydrated=len(fetchArticlesRes.articleList),
+    error= createNewsInfoCardBatchRes.error
+  )
 
 
