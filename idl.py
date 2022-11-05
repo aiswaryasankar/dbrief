@@ -1001,6 +1001,7 @@ class NewsInfoCard:
   title: str
   summary: str
   isPolitical: bool
+  image: str
   leftOpinionCard: Optional[OpinionCard]
   rightOpinionCard: Optional[OpinionCard]
   articleList: Optional[List[Article]] = field(default_factory=list)

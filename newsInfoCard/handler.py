@@ -213,7 +213,8 @@ def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
   newsInfoCards = []
   # Hydrate a batch of news info cards
   if len(createNewsInfoCardBatchRequest.articleList) > 0:
-    for i, article in createNewsInfoCardBatchRequest.articleList:
+    i=0
+    for article in createNewsInfoCardBatchRequest.articleList:
       logger.info("Creating newsInfoCard " + str(i) + " for article " + str(article.url))
 
       createOpinionCardResponse = createNewsInfoCard(
@@ -225,11 +226,13 @@ def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
         logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(article.url))
         continue
       else:
+        i+=1
         newsInfoCards.append(createOpinionCardResponse.newsInfoCard)
         logger.info("Created newsInfoCard " + str(i) + " for article " + str(article.url))
 
   if len(createNewsInfoCardBatchRequest.articleUrls) > 0:
-    for i, url in createNewsInfoCardBatchRequest.articleUrls:
+    i=0
+    for url in createNewsInfoCardBatchRequest.articleUrls:
       logger.info("Creating newsInfoCard " + str(i) + " for article " + str(url))
 
       createOpinionCardResponse = createNewsInfoCard(
@@ -241,6 +244,7 @@ def createNewsInfoCardBatch(createNewsInfoCardBatchRequest):
         logger.warn("Failed to create newsInfoCard " + str(i) + " for article " + str(url))
         continue
       else:
+        i += 1
         newsInfoCards.append(createOpinionCardResponse.newsInfoCard)
         logger.info("Created newsInfoCard " + str(i) + " for article " + str(url))
 
