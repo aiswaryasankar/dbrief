@@ -70,8 +70,16 @@ class NewsInfoCardViewTest(TestCase):
 
 
   def test_fetch_news_info_card_batch(self):
-    response = self.client.get('/fetchNewsInfoCardFeed/', data={"offset": 10, "limit": 10})
+    response = self.client.post('/fetchNewsInfoCardFeed/', data={"offset": 10, "pageSize": 10})
     self.assertEqual(response.status_code, 200)
 
 
+  def test_create_news_info_card_backfill(self):
+    response = self.client.post('/createNewsInfoCardBackfill/', data={"numDays": 10})
+    self.assertEqual(response.status_code, 200)
+
+
+  def test_set_user_engagement_for_news_info_card(self):
+    response = self.client.post('/setUserEngagementForNewsInfoCard', data={"userUUID": "userUUID", "newsInfoCardUUID": "newsInfoCardUUID", "engagemenType": "right"})
+    self.assertEqual(response.status_code, 200)
 

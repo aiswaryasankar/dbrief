@@ -21,4 +21,64 @@ class OragnizationViewTest(TestCase):
     self.assertEqual(response.status_code, 200)
 
 
+  def test_generate_recommended_orgs_for_news_info_card_uuid(self):
+    response = self.client.post('/generateRecommendedOrgsForNewsInfoCard/', data= {
+      "newsInfoCardUUID": "newsInfoCardUUID",
+    })
+    self.assertEqual(response.status_code, 200)
+
+
+  def test_generate_recommended_orgs_for_news_info_card_article(self):
+    response = self.client.post('/generateRecommendedOrgsForNewsInfoCard/', data= {
+      "newsInfoCard": {
+        "uuid": "uuid",
+        "title": "title",
+        "summary": "summary",
+        "isPolitical": True,
+        "image": "imageURL",
+        "leftOpinionCard": {
+          "uuid": "opinionUUID",
+          "summary": "opinionSummary",
+          "articleURLList": ["url1"],
+        },
+        "rightOpinionCard": {
+          "uuid": "opinionUUID",
+          "summary": "opinionSummary",
+          "articleURLList": ["url1"],
+        },
+        "articleList": ["url1", "url2"]
+      },
+    })
+    self.assertEqual(response.status_code, 200)
+
+
+  def test_get_recommended_orgs_for_news_info_card_uuid(self):
+    response = self.client.post('/getRecommendedOrgsForNewsInfoCard/', data= {
+      "newsInfoCardUUID": "newsInfoCardUUID",
+    })
+    self.assertEqual(response.status_code, 200)
+
+
+  def test_get_recommended_orgs_for_news_info_card_article(self):
+    response = self.client.post('/getRecommendedOrgsForNewsInfoCard/', data= {
+      "newsInfoCard": {
+        "uuid": "uuid",
+        "title": "title",
+        "summary": "summary",
+        "isPolitical": True,
+        "image": "imageURL",
+        "leftOpinionCard": {
+          "uuid": "opinionUUID",
+          "summary": "opinionSummary",
+          "articleURLList": ["url1"],
+        },
+        "rightOpinionCard": {
+          "uuid": "opinionUUID",
+          "summary": "opinionSummary",
+          "articleURLList": ["url1"],
+        },
+        "articleList": ["url1", "url2"]
+      },
+    })
+    self.assertEqual(response.status_code, 200)
 
