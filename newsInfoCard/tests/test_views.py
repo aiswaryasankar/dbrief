@@ -80,6 +80,6 @@ class NewsInfoCardViewTest(TestCase):
 
 
   def test_set_user_engagement_for_news_info_card(self):
-    response = self.client.post('/setUserEngagementForNewsInfoCard', data={"userUUID": "userUUID", "newsInfoCardUUID": "newsInfoCardUUID", "engagemenType": "right"})
+    response = self.client.post('/setUserEngagementForNewsInfoCard', data={"userUUID": "userUUID", "newsInfoCardUUID": "newsInfoCardUUID", "engagementType": "right"})
     self.assertEqual(response.status_code, 200)
 
