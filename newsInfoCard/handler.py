@@ -323,7 +323,7 @@ def createNewsInfoCardBackfill(createNewsInfoCardBackfillRequest):
     )
   )
 
-  logger.info("Num articles: " + str(fetchArticlesRes.articleList))
+  logger.info("Num articles: " + str(len(fetchArticlesRes.articleList)))
 
   if fetchArticlesRes.error != None:
     return CreateNewsInfoCardBackfillResponse(
