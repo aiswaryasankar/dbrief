@@ -58,7 +58,7 @@ def test_create_opinion_card_repo(self):
 
 def test_fetch_opinion_card_repo(self):
   """
-    Tests saving and updating an opinion card
+    Tests fetching an opinion card
   """
 
   article1 = Article()
