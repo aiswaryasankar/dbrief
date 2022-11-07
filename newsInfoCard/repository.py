@@ -50,7 +50,6 @@ def createOpinionCardRepo(createOpinionCardRequest):
   return CreateOpinionCardResponse(opinionCard=opinionCard, error=None)
 
 
-
 def fetchOpinionCardRepo(fetchOpinionCardRequest):
   """
     Will fetch the appropriate opinion card
