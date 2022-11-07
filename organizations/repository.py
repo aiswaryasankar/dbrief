@@ -209,6 +209,7 @@ def createRecommendedOrgsForNewsInfoCardRepo(recommendedOrgsForNewsInfoCardReque
       newsInfoCardUUID=recommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID,
       rank=recommendedOrgsForNewsInfoCardRequest.rank,
       defaults={
+        'uuid':recUuid,
         'newsInfoCardUUID': recommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID,
         'organizationUUID': recommendedOrgsForNewsInfoCardRequest.organizationUUID,
         'rank': recommendedOrgsForNewsInfoCardRequest.rank,
