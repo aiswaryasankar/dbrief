@@ -227,6 +227,20 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   # Pull the description for each of the organizations
   orgList = rankOrganizationsForNewsInfoCardRequest.orgList
   logger.info("Number of orgs to rank: " + str(len(orgList)))
+  if len(orgList) == 0:
+    return RankOrganizationsForNewsInfoCardResponse(
+      rankedOrganizations=[],
+      error="No organizations to rank"
+    )
+
+  if len(orgList) == 1:
+    return RankOrganizationsForNewsInfoCardResponse(
+      rankedOrganizations=[RankedOrganization(
+        organization=orgList[0],
+        rank=0
+      )],
+      error=None
+    )
 
   embeddingModel = hub.load(module)
   descriptions = [org.description for org in orgList]
@@ -244,12 +258,12 @@ def rankOrganizationsForNewsInfoCard(rankOrganizationsForNewsInfoCardRequest):
   dot_products = np.dot(descriptionEmbed, summaryEmbedMatrix.T)
 
   # Return the top row as the result
-  if not isinstance(dot_products, np.float32) :
+  if not isinstance(dot_products, np.float64):
     dot_product_sum = sum(dot_products)
   else:
     dot_product_sum = dot_products
 
-  if len(dot_product_sum) >= 10:
+  if not isinstance(dot_product_sum, np.float64) and len(dot_product_sum) >= 10:
     top_org_indices = np.argpartition(dot_product_sum, -10)[-10:]
   else:
     top_org_indices = [i for i in range(len(dot_product_sum))]

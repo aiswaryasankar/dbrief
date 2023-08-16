@@ -137,7 +137,9 @@ def fetchOrganizationsRepo(fetchOrganizationsRequest):
       # Fetch all orgUUIDs that have a cause in the cause list
       causesRes = OrganizationCausesModel.objects.filter(cause__in=fetchOrganizationsRequest.causes)
 
+      logger.info("Fetched %s orgs matching given causes", len(causesRes))
       # Fetch orgs corresponding to the UUIDs
+      orgUUIDs = set()
       for org in causesRes:
         try:
           organization = OrganizationModel.objects.get(uuid=org.organizationUUID)
@@ -150,14 +152,16 @@ def fetchOrganizationsRepo(fetchOrganizationsRequest):
             backgroundImage= organization.backgroundImage,
             locationUUID=organization.locationUUID,
           )
-          orgList.append(org)
-          logger.info("Fetched %s orgs matching given causes", len(causesRes))
+          if org.uuid not in orgUUIDs:
+            orgUUIDs.add(org.uuid)
+            orgList.append(org)
 
         except Exception as e:
           logger.warn("Failed to fetch organizations with uuid: " + str(org.uuid)  + " error: " + str(e))
 
     except Exception as e:
       logger.warn("Failed to fetch causes for organization with cause: " + str(fetchOrganizationsRequest.causes)  + " error: " + str(e))
+
 
   return FetchAllOrganizationsResponse(
     orgList=orgList,
@@ -202,15 +206,19 @@ def createRecommendedOrgsForNewsInfoCardRepo(recommendedOrgsForNewsInfoCardReque
   recUuid = str(u.uuid1())
   try:
     _, created = RecommendedOrgsForNewsInfoCardModel.objects.update_or_create(
-      uuid = recUuid,
+      newsInfoCardUUID=recommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID,
+      rank=recommendedOrgsForNewsInfoCardRequest.rank,
       defaults={
+        'uuid':recUuid,
         'newsInfoCardUUID': recommendedOrgsForNewsInfoCardRequest.newsInfoCardUUID,
         'organizationUUID': recommendedOrgsForNewsInfoCardRequest.organizationUUID,
         'rank': recommendedOrgsForNewsInfoCardRequest.rank,
       },
     )
     if created:
-      logger.info('Saved org recommendation')
+      logger.info('Created new org recommendation')
+    else:
+      logger.info("Updated existing recommendations for the org")
 
   except Exception as e:
     logger.warn("Failed to save recommendation to the database: " + str(e))

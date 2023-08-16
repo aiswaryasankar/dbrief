@@ -106,10 +106,11 @@ def fetchNewsInfoCardRepo(fetchNewsInfoCardRequest):
       leftOpinionCard= leftOpinionCard,
       rightOpinionCard= rightOpinionCard,
       articleList= [],
+      image=infoCard.image,
     )
 
   except Exception as e:
-    logger.warn("Failed to fetch news info card with uuid: " + str(newsInfoCardUUID))
+    logger.warn("Failed to fetch news info card with uuid: " + str(newsInfoCardUUID) + " with error: " + str(e))
     return FetchNewsInfoCardResponse(
       newsInfoCard=None,
       error=e,
